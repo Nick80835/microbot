@@ -1,0 +1,63 @@
+from platform import python_version, uname
+from time import time_ns
+
+from telethon import version
+
+from ubot.micro_bot import micro_bot
+
+ldr = micro_bot.loader
+
+
+@ldr.add(pattern="alive")
+async def alive(event):
+    alive_format = "`uBot is running under {0}.\n\n" \
+                   "Version: {1}\n" \
+                   "Telethon: {2}\n" \
+                   "Python: {3}`"
+
+    await event.edit(alive_format.format(uname().node, ldr.botversion, version.__version__, python_version()))
+
+
+@ldr.add(pattern="shutdown")
+async def shutdown(event):
+    await event.edit("`Goodbye…`")
+    await micro_bot.stop_client()
+
+
+@ldr.add(pattern="ping")
+async def ping(event):
+    start = time_ns()
+    await event.edit("`Ping…`")
+    time_taken_ms = (time_ns() - start) / 1000000
+    await event.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
+
+
+@ldr.add(pattern="prefix")
+async def change_prefix(event):
+    new_prefix = event.pattern_match.group(1)
+
+    if not new_prefix:
+        await event.edit("`Please specify a valid command prefix!`")
+        return
+
+    micro_bot.settings.set_config("cmd_prefix", new_prefix)
+    micro_bot.refresh_prefix()
+    errors = micro_bot.reload_modules()
+
+    if errors:
+        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}** `but there were errors:`\n\n{errors}")
+    else:
+        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
+
+
+@ldr.add(pattern="reload")
+async def reload_modules(event):
+    await event.edit("`Reloading modules…`")
+
+    micro_bot.refresh_prefix()
+    errors = micro_bot.reload_modules()
+
+    if errors:
+        await event.edit(errors)
+    else:
+        await event.delete()

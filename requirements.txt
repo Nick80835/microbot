@@ -1,0 +1,4 @@
+telethon
+praw
+requests
+pillow
