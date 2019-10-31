@@ -27,6 +27,9 @@ class MicroBot():
         self.loader = Loader(self.client, self.cmd_prefix)
 
     def reload_modules(self):
+        self.cmd_prefix = self.settings.get_config("cmd_prefix")
+        self.loader.cmd_prefix = self.settings.get_config("cmd_prefix")
+
         for callback, _ in self.client.list_event_handlers():
             self.client.remove_event_handler(callback)
 
@@ -43,10 +46,6 @@ class MicroBot():
     def start_logger(self):
         basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
         self.logger = getLogger(__name__)
-
-    def refresh_prefix(self):
-        self.cmd_prefix = self.settings.get_config("cmd_prefix")
-        self.loader.cmd_prefix = self.settings.get_config("cmd_prefix")
 
     def _check_config(self, api_key, api_hash, session_name, cmd_prefix):
         while api_key is None or api_key is "":
