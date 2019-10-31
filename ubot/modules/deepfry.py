@@ -99,30 +99,19 @@ async def deepfryer(event):
         await event.edit("`Deep frying complete.`", file=fried_io)
 
 
-async def deepfry(img: Image) -> Image:
-    colours = (
-        (randint(50, 200), randint(40, 170), randint(40, 190)),
-        (randint(190, 255), randint(170, 240), randint(180, 250))
-    )
-
+async def deepfry(img):
     # Crush image to hell and back
-    width, height = img.width, img.height
-    img = img.resize((int(width ** uniform(0.8, 0.9)), int(height ** uniform(0.8, 0.9))), resample=Image.LANCZOS)
-    img = img.resize((int(width ** uniform(0.85, 0.95)), int(height ** uniform(0.85, 0.95))), resample=Image.BILINEAR)
-    img = img.resize((int(width ** uniform(0.89, 0.98)), int(height ** uniform(0.89, 0.98))), resample=Image.BICUBIC)
-    img = img.resize((width, height), resample=Image.BICUBIC)
     img = ImageOps.posterize(img, randint(3, 7))
 
     # Generate colour overlay
-    overlay = img.split()[0]
-    overlay = ImageEnhance.Contrast(overlay).enhance(uniform(1.0, 2.0))
-    overlay = ImageEnhance.Brightness(overlay).enhance(uniform(1.0, 2.0))
-
-    overlay = ImageOps.colorize(overlay, colours[0], colours[1])
+    overlay = img.copy()
+    overlay = ImageEnhance.Contrast(overlay).enhance(uniform(0.7, 1.8))
+    overlay = ImageEnhance.Brightness(overlay).enhance(uniform(0.8, 1.3))
+    overlay = ImageEnhance.Color(overlay).enhance(uniform(0.7, 1.4))
 
     # Blend random colors onto and sharpen the image
     img = Image.blend(img, overlay, uniform(0.1, 0.4))
-    img = ImageEnhance.Sharpness(img).enhance(randint(5, 300))
+    img = ImageEnhance.Sharpness(img).enhance(randint(5, 200))
 
     return img
 
