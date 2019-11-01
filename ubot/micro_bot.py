@@ -13,7 +13,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-from importlib import reload
 from logging import INFO, basicConfig, getLogger
 from sys import version_info
 
@@ -36,33 +35,22 @@ class MicroBot():
         self.settings = Settings()
         self.logger = None
         self.loader = None
-        self.cmd_prefix = "."
+
+    def start_microbot(self):
+        self.start_logger()
+        self.start_client()
+        self.start_loader()
+        self.loader.load_all_modules()
+        self.client.run_until_disconnected()
 
     def start_loader(self):
-        self.loader = Loader(self.client, self.cmd_prefix, self.logger)
-
-    def reload_modules(self):
-        self.cmd_prefix = self.settings.get_config("cmd_prefix")
-        self.loader.cmd_prefix = self.settings.get_config("cmd_prefix")
-
-        for callback, _ in self.client.list_event_handlers():
-            self.client.remove_event_handler(callback)
-
-        errors = ""
-
-        for module in self.loader.loaded_modules:
-            try:
-                reload(module)
-            except Exception as exception:
-                errors += f"`Error while reloading {module.__name__} -> {exception}\n\n`"
-
-        return errors
+        self.loader = Loader(self.client, self.logger, self.settings)
 
     def start_logger(self):
         basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
         self.logger = getLogger(__name__)
 
-    def _check_config(self, api_key, api_hash, session_name, cmd_prefix):
+    def _check_config(self, api_key, api_hash, session_name):
         while api_key is None or api_key is "":
             api_key = input("Enter your API key: ")
 
@@ -76,18 +64,14 @@ class MicroBot():
             session_name = "user0"
             self.settings.set_config("session_name", session_name)
 
-        if cmd_prefix is not None:
-            self.cmd_prefix = cmd_prefix
-
         return api_key, api_hash, session_name
 
     def start_client(self):
         session_name = self.settings.get_config("session_name")
         api_key = self.settings.get_config("api_key")
         api_hash = self.settings.get_config("api_hash")
-        cmd_prefix = self.settings.get_config("cmd_prefix")
 
-        api_key, api_hash, session_name = self._check_config(api_key, api_hash, session_name, cmd_prefix)
+        api_key, api_hash, session_name = self._check_config(api_key, api_hash, session_name)
 
         self.client = tt.TelegramClient(session_name, api_key, api_hash, connection=CTA)
 
@@ -104,13 +88,7 @@ class MicroBot():
             self.logger.info("Stopping client.")
 
         await self.client.disconnect()
-        self.client = None
 
 
 micro_bot = MicroBot()
-micro_bot.start_logger()
-micro_bot.start_client()
-micro_bot.start_loader()
-micro_bot.loader.load_all_modules()
-
-micro_bot.client.run_until_disconnected()
+micro_bot.start_microbot()

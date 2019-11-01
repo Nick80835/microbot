@@ -56,7 +56,7 @@ async def change_prefix(event):
         return
 
     micro_bot.settings.set_config("cmd_prefix", new_prefix)
-    errors = micro_bot.reload_modules()
+    errors = ldr.reload_all_modules()
 
     if errors:
         await event.edit(f"`Command prefix successfully changed to `**{new_prefix}** `but there were errors:`\n\n{errors}")
@@ -68,7 +68,7 @@ async def change_prefix(event):
 async def reload_modules(event):
     await event.edit("`Reloading modules…`")
 
-    errors = micro_bot.reload_modules()
+    errors = ldr.reload_all_modules()
 
     if errors:
         await event.edit(errors)

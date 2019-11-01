@@ -14,7 +14,7 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import glob
-from importlib import import_module
+from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 from re import escape
 
@@ -22,13 +22,13 @@ from telethon import events
 
 
 class Loader():
-    def __init__(self, client, cmd_prefix, logger):
+    def __init__(self, client, logger, settings):
         self.loaded_modules = []
         self.all_modules = []
         self.client = client
-        self.cmd_prefix = cmd_prefix or '.'
         self.logger = logger
-        self.botversion = "0.1.0"
+        self.settings = settings
+        self.botversion = "0.1.1"
 
     def load_all_modules(self):
         self._find_all_modules()
@@ -36,8 +36,22 @@ class Loader():
         for module_name in self.all_modules:
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
+    def reload_all_modules(self):
+        for callback, _ in self.client.list_event_handlers():
+            self.client.remove_event_handler(callback)
+
+        errors = ""
+
+        for module in self.loaded_modules:
+            try:
+                reload(module)
+            except Exception as exception:
+                errors += f"`Error while reloading {module.__name__} -> {exception}\n\n`"
+
+        return errors
+
     def add(self, **args):
-        prefix = escape(self.cmd_prefix)
+        prefix = escape(self.settings.get_config("cmd_prefix") or '.')
         args['outgoing'] = True
 
         if args.get('pattern', None) is not None:
