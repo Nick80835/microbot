@@ -90,11 +90,11 @@ async def mockify(text):
 
     for letter in text:
         if len(mock_text) >= 2:
-            if mock_text[-1] + mock_text[-2] == mock_text[-1].lower() + mock_text[-2].lower():
+            if ''.join(mock_text[-2:-1]).islower():
                 mock_text += letter.upper()
                 continue
 
-            if mock_text[-1] + mock_text[-2] == mock_text[-1].upper() + mock_text[-2].upper():
+            if ''.join(mock_text[-2:-1]).isupper():
                 mock_text += letter.lower()
                 continue
 
