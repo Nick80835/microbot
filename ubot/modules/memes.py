@@ -37,22 +37,9 @@ async def copypasta(event):
     else:
         text_arg = "Give me some text to fuck it up!"
 
-    cp_text = ""
-
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
-
-    for letter in text_arg:
-        if letter.lower() == "b":
-            cp_text += b_emoji
-        elif letter.lower() == "a":
-            cp_text += a_emoji
-        elif letter.lower() == "i":
-            cp_text += i_emoji
-        elif letter == " ":
-            cp_text += choice(emoji)
-        else:
-            cp_text += letter
+    cp_text = await emojify(text_arg)
 
     await event.edit(cp_text)
 
@@ -104,3 +91,21 @@ async def mockify(text):
             mock_text += letter.upper()
 
     return mock_text
+
+
+async def emojify(text):
+    text = text.replace("ab", "🆎")
+    text = text.replace("cl", "🆑")
+    text = text.replace("b", "🅱️")
+    text = text.replace("a", "🅰️")
+    text = text.replace("i", "ℹ️")
+
+    emoji_text = ""
+
+    for letter in text:
+        if letter == " ":
+            emoji_text += choice(emoji)
+        else:
+            emoji_text += letter
+
+    return emoji_text
