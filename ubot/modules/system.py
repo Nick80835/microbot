@@ -25,7 +25,7 @@ ldr = micro_bot.loader
 
 @ldr.add(pattern="alive")
 async def alive(event):
-    alive_format = "`uBot is running under {0}.\n\n" \
+    alive_format = "`μBot is running under {0}.\n\n" \
                    "Version: {1}\n" \
                    "Telethon: {2}\n" \
                    "Python: {3}`"
