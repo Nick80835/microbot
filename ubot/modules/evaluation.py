@@ -68,6 +68,9 @@ async def evaluate(event):
         eval_ret = exception
 
     if inspect.isawaitable(eval_ret):
+        isawait = " (awaited)"
         eval_ret = await eval_ret
+    else:
+        isawait = ""
 
-    await event.edit(f"**Evaluation:**\n`{code}`\n**Return:**\n`{eval_ret}`")
+    await event.edit(f"**Evaluation:**\n`{code}`\n**Return{isawait}:**\n`{eval_ret}`")
