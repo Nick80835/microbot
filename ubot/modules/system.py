@@ -59,7 +59,7 @@ async def change_prefix(event):
     errors = ldr.reload_all_modules()
 
     if errors:
-        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}** `but there were errors:`\n\n{errors}")
+        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**` but there were errors:`\n\n{errors}")
     else:
         await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
 
