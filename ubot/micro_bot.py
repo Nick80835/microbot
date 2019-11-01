@@ -39,7 +39,7 @@ class MicroBot():
         self.cmd_prefix = "."
 
     def start_loader(self):
-        self.loader = Loader(self.client, self.cmd_prefix)
+        self.loader = Loader(self.client, self.cmd_prefix, self.logger)
 
     def reload_modules(self):
         self.cmd_prefix = self.settings.get_config("cmd_prefix")

@@ -22,11 +22,12 @@ from telethon import events
 
 
 class Loader():
-    def __init__(self, client, cmd_prefix):
+    def __init__(self, client, cmd_prefix, logger):
         self.loaded_modules = []
         self.all_modules = []
         self.client = client
         self.cmd_prefix = cmd_prefix or '.'
+        self.logger = logger
         self.botversion = "0.1.0"
 
     def load_all_modules(self):
@@ -43,9 +44,15 @@ class Loader():
             args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
 
         def decorator(func):
-            self.client.add_event_handler(func, events.NewMessage(**args))
-            return func
+            async def wrapper(event):
+                try:
+                    return await func(event)
+                except Exception as exception:
+                    self.logger.warn(f"{func.__name__} - {exception}")
+                    await event.reply(f"`An error occurred in {func.__name__}: {exception}`")
 
+            self.client.add_event_handler(wrapper, events.NewMessage(**args))
+            return wrapper
         return decorator
 
     def _find_all_modules(self):
