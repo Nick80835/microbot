@@ -16,6 +16,7 @@
 from random import choice
 
 import praw
+import requests
 
 from ubot.micro_bot import micro_bot
 
@@ -71,7 +72,13 @@ async def imagefetcher(event, sub):
         return
 
     try:
-        await event.reply(title, file=image_url)
+        with requests.get(image_url) as response:
+            if response.status_code == 200:
+                image = response.content
+            else:
+                raise Exception
+
+        await event.reply(title, file=image)
     except:
         await event.edit(f"`Failed to download content from `**r/{sub}**`!`")
 
