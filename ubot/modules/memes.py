@@ -62,12 +62,12 @@ async def mock(event):
 
 
 async def shitpostify(text):
+    text = text.replace("dick", "peepee")
     text = text.replace("ck", "cc")
     text = text.replace("lol", "honk honk")
     text = text.replace("though", "tho")
     text = text.replace("cat", "pussy")
     text = text.replace("dark", "dank")
-    text = text.replace("dick", "peepee")
 
     return text
 
