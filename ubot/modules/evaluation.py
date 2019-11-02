@@ -60,6 +60,7 @@ async def dectobin(event):
 @ldr.add(pattern="eval")
 async def evaluate(event):
     code = event.pattern_match.group(1)
+    reply = await event.get_reply_message()
 
     if not code:
         await event.edit("`Give me code to run!`")
