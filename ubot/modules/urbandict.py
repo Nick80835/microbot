@@ -15,7 +15,7 @@
 
 import io
 
-import requests
+from aiohttp import ClientSession
 
 from ubot.micro_bot import micro_bot
 
@@ -36,12 +36,16 @@ async def urban_dict(event):
         params = None
         url = UD_RANDOM_URL
 
-    with requests.get(url, params=params) as response:
-        if response.status_code == 200:
-            response = response.json()
+    session = ClientSession()
+
+    async with session.get(url, params=params) as response:
+        if response.status == 200:
+            response = await response.json()
         else:
-            await event.edit(f"`An error occurred, response code:` **{response.status_code}**")
+            await event.edit(f"`An error occurred, response code:` **{response.status}**")
             return
+
+    await session.close()
 
     if response['list']:
         response_word = response['list'][0]

@@ -18,7 +18,7 @@ import mimetypes
 from random import choice
 
 import praw
-import requests
+from aiohttp import ClientSession
 
 from ubot.micro_bot import micro_bot
 
@@ -75,16 +75,20 @@ async def imagefetcher(event, sub):
 
     try:
         image_io = io.BytesIO()
-        with requests.get(image_url) as response:
-            if response.status_code == 200:
-                image_io.write(response.content)
+        session = ClientSession()
+
+        async with session.get(image_url) as response:
+            if response.status == 200:
+                image_io.write(await response.read())
                 image_io.name = f"reddit_content{mimetypes.guess_extension(response.headers['content-type'])}"
                 image_io.seek(0)
             else:
                 raise Exception
 
+        await session.close()
         await event.reply(title, file=image_io)
     except:
+        await session.close()
         await event.edit(f"`Failed to download content from `**r/{sub}**`!`")
 
 

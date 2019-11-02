@@ -1,4 +1,4 @@
-telethon
-praw
-requests
+aiohttp
 pillow
+praw
+telethon

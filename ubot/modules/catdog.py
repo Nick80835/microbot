@@ -13,7 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-import requests
+from aiohttp import ClientSession
 
 from ubot.micro_bot import micro_bot
 
@@ -32,42 +32,54 @@ GIFPARAM = {"mime_types": "gif"}
 
 
 async def neko_atsume(params):
-    with requests.get(CAT_URL, params=params, headers=CAT_HEADERS) as response:
-        if response.status_code == 200:
-            neko = response.json()
-        else:
-            neko = response.status_code
+    session = ClientSession()
 
+    async with session.get(CAT_URL, params=params, headers=CAT_HEADERS) as response:
+        if response.status == 200:
+            neko = await response.json()
+        else:
+            neko = response.status
+
+    await session.close()
     return neko
 
 
 async def inu_atsume(params):
-    with requests.get(DOG_URL, params=params, headers=DOG_HEADERS) as response:
-        if response.status_code == 200:
-            inu = response.json()
-        else:
-            inu = response.status_code
+    session = ClientSession()
 
+    async with session.get(DOG_URL, params=params, headers=DOG_HEADERS) as response:
+        if response.status == 200:
+            inu = await response.json()
+        else:
+            inu = response.status
+
+    await session.close()
     return inu
 
 
 async def shibe_inu_atsume():
-    with requests.get(SHIBE_URL, params=None, headers=None) as response:
-        if response.status_code == 200:
-            shibe_inu = response.json()
-        else:
-            shibe_inu = response.status_code
+    session = ClientSession()
 
+    async with session.get(SHIBE_URL, params=None, headers=None) as response:
+        if response.status == 200:
+            shibe_inu = await response.json()
+        else:
+            shibe_inu = response.status
+
+    await session.close()
     return shibe_inu
 
 
 async def tori_atsume():
-    with requests.get(BIRD_URL, params=None, headers=None) as response:
-        if response.status_code == 200:
-            tori = response.json()
-        else:
-            tori = response.status_code
+    session = ClientSession()
 
+    async with session.get(BIRD_URL, params=None, headers=None) as response:
+        if response.status == 200:
+            tori = await response.json()
+        else:
+            tori = response.status
+
+    await session.close()
     return tori
 
 
