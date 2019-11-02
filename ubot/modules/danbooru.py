@@ -22,20 +22,24 @@ ldr = micro_bot.loader
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 
 
-@ldr.add(pattern="dan(x|)")
+@ldr.add(pattern="dan(s|x|q|)")
 async def danbooru(event):
     await event.edit(f"`Processing…`")
 
     if "x" in event.pattern_match.group(0):
-        rating = "Explicit"
+        rating = "Rating:explicit"
+    elif "s" in event.pattern_match.group(0):
+        rating = "Rating:safe"
+    elif "q" in event.pattern_match.group(0):
+        rating = "Rating:questionable"
     else:
-        rating = "Safe"
+        rating = ""
 
     search_query = event.pattern_match.group(2)
 
     params = {"limit": 1,
               "random": "true",
-              "tags": f"Rating:{rating} {search_query}".strip()}
+              "tags": f"{rating} {search_query}".strip()}
 
     session = ClientSession()
 
@@ -43,13 +47,13 @@ async def danbooru(event):
         if response.status == 200:
             response = await response.json()
         else:
-            await event.edit(f"`An error occurred, response code:` **{response.status}**")
+            await event.edit(f"`An error occurred, response code: `**{response.status}**")
             return
 
     await session.close()
 
     if not response:
-        await event.edit(f"`No results for query:` **{search_query}**")
+        await event.edit(f"`No results for query: `**{search_query}**")
         return
 
     valid_urls = []
@@ -59,7 +63,7 @@ async def danbooru(event):
             valid_urls.append(response[0][url])
 
     if not valid_urls:
-        await event.edit(f"`Failed to find URLs for query:` **{search_query}**")
+        await event.edit(f"`Failed to find URLs for query: `**{search_query}**")
         return
 
     for image_url in valid_urls:
@@ -70,4 +74,4 @@ async def danbooru(event):
         except:
             pass
 
-    await event.edit(f"``Failed to fetch media for query:` **{search_query}**")
+    await event.edit(f"`Failed to fetch media for query: `**{search_query}**")
