@@ -74,3 +74,8 @@ async def reload_modules(event):
         await event.edit(errors)
     else:
         await event.delete()
+
+
+@ldr.add(pattern="repo")
+async def bot_repo(event):
+    await event.edit("https://github.com/Nick80835/microbot")
