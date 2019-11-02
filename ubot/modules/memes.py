@@ -24,6 +24,9 @@ b_emoji = "🅱️"
 a_emoji = "🅰️"
 i_emoji = "ℹ️"
 
+owo_faces = "owo uwu owu uwo u-u o-o OwO UwU @-@ ;-; ;_; ._. (._.) (o-o) ('._.) (｡◕‿‿◕｡)" \
+    " (｡◕‿◕｡) (─‿‿─) ◔⌣◔ ◉_◉".split(sep=" ")
+
 
 @ldr.add(pattern="cp")
 async def copypasta(event):
@@ -53,6 +56,15 @@ async def vapor(event):
     vapor_text = await vaporize(text_arg)
 
     await event.edit(vapor_text)
+
+
+@ldr.add(pattern="owo")
+async def owo(event):
+    text_arg = await get_text_arg(event)
+
+    owo_text = await owoify(text_arg)
+
+    await event.edit(owo_text)
 
 
 async def get_text_arg(event):
@@ -130,3 +142,18 @@ async def vaporize(text):
         vapor_text += letter
 
     return vapor_text
+
+
+async def owoify(text):
+    text = text.replace("r", "w")
+    text = text.replace("R", "W")
+    text = text.replace("n", "ny")
+    text = text.replace("N", "NY")
+    text = text.replace("ll", "w")
+    text = text.replace("LL", "W")
+    text = text.replace("l", "w")
+    text = text.replace("L", "W")
+
+    text += f" {choice(owo_faces)}"
+
+    return text
