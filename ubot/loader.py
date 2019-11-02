@@ -47,6 +47,7 @@ class Loader():
                 reload(module)
             except Exception as exception:
                 errors += f"`Error while reloading {module.__name__} -> {exception}\n\n`"
+                raise exception
 
         return errors
 
