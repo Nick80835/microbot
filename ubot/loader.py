@@ -28,7 +28,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.botversion = "0.1.1"
+        self.botversion = "0.1.2"
 
     def load_all_modules(self):
         self._find_all_modules()
