@@ -74,3 +74,61 @@ async def evaluate(event):
         isawait = ""
 
     await event.edit(f"**Evaluation:**\n`{code}`\n**Return{isawait}:**\n`{eval_ret}`")
+
+
+@ldr.add(pattern="chatid")
+async def chatidgetter(event):
+    if event.is_reply:
+        reply = await event.get_reply_message()
+        if reply.forward and reply.forward.channel_id:
+            await event.edit(f"**Channel ID:**` {reply.forward.channel_id}`")
+            return
+        chat_id = reply.chat_id
+    else:
+        chat_id = event.chat_id
+
+    await event.edit(f"**Chat ID:**` {chat_id}`")
+
+
+@ldr.add(pattern="userid")
+async def useridgetter(event):
+    if event.is_reply:
+        reply = await event.get_reply_message()
+        user_id = reply.from_id
+    else:
+        user_id = event.from_id
+
+    await event.edit(f"**User ID:**` {user_id}`")
+
+
+@ldr.add(pattern="profile")
+async def userprofilegetter(event):
+    user_arg = event.pattern_match.group(1)
+
+    if user_arg:
+        try:
+            user_entity = await event.client.get_entity(user_arg)
+        except (ValueError, TypeError):
+            await event.edit("`The ID or username you provided was invalid!`")
+            return
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        reply_id = reply.from_id
+        if reply_id:
+            try:
+                user_entity = await event.client.get_entity(reply_id)
+            except (ValueError, TypeError):
+                await event.edit("`There was an error getting the user!`")
+                return
+        else:
+            await event.edit("`The user may have super sneaky privacy settings enabled!`")
+            return
+    else:
+        await event.edit("`Give me a user ID, username or reply!`")
+        return
+
+    userid = user_entity.id
+    username = user_entity.username
+    userfullname = f"{user_entity.first_name} {user_entity.last_name}"
+
+    await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
