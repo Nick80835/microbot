@@ -13,6 +13,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import io
+import mimetypes
 from random import choice
 
 import praw
@@ -72,13 +74,16 @@ async def imagefetcher(event, sub):
         return
 
     try:
+        image_io = io.BytesIO()
         with requests.get(image_url) as response:
             if response.status_code == 200:
-                image = response.content
+                image_io.write(response.content)
+                image_io.name = f"reddit_content{mimetypes.guess_extension(response.headers['content-type'])}"
+                image_io.seek(0)
             else:
                 raise Exception
 
-        await event.reply(title, file=image)
+        await event.reply(title, file=image_io)
     except:
         await event.edit(f"`Failed to download content from `**r/{sub}**`!`")
 
