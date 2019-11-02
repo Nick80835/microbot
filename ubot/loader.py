@@ -53,7 +53,8 @@ class Loader():
 
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
-        args['outgoing'] = True
+        if 'outgoing' not in args and 'incoming' not in args:
+            args['outgoing'] = True
 
         if args.get('pattern', None) is not None:
             args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
