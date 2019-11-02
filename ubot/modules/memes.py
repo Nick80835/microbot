@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+from asyncio import sleep
 from random import choice, randint
 
 from ubot.micro_bot import micro_bot
@@ -26,6 +27,16 @@ i_emoji = "ℹ️"
 
 owo_faces = "owo uwu owu uwo u-u o-o OwO UwU @-@ ;-; ;_; ._. (._.) (o-o) ('._.) (｡◕‿‿◕｡)" \
     " (｡◕‿◕｡) (─‿‿─) ◔⌣◔ ◉_◉".split(sep=" ")
+
+vibe_checks = "Shitting pants…|Unshitting pants…|Checking for good vibes…|Checking for bad vibes…|" \
+    "Analyzing wiggly air…|Sniffing for poopy pants…|Eating a Snickers…|Ripping paper with an eraser…|" \
+    "Vibing…|Connecting to dial-up…|Writing stupid quotes…|Consuming carbohydrates…|Hydrating…|" \
+    "Feeding the wolf…|OwO what's this?|Eating 3 week old pancakes…|Doing quick maths…|Squatting…|" \
+    "Thinking real hard…|Making slime in science class…|Orang man bad…|Browsing 4chan…|Breathing…|" \
+    "Uh oh, stinky…|Splitting strings…|Breaking pencils…|Yeeting…|Releasing Half-Life 3…|Failing…|" \
+    "He do look kinda chill doe…|Cats are liquid…|Stay hydrated…|Using random.choice()…|Licking 9-volt batteries…|" \
+    "Building vibecheck.exe…|Building vibecheck.so…|Flashing custom ROMs…|Suffocating my demons…|" \
+    "Reticulating splines…|Drinking maple syrup…|Failing at life…".split(sep="|")
 
 
 @ldr.add(pattern="cp")
@@ -65,6 +76,27 @@ async def owo(event):
     owo_text = await owoify(text_arg)
 
     await event.edit(owo_text)
+
+
+@ldr.add(pattern="vibecheck")
+async def vibecheck(event):
+    if event.is_reply:
+        await event.edit("`Performing vibe check…`")
+    else:
+        await event.edit("`Performing self vibe check…`")
+
+    for _ in range(5):
+        await sleep(3)
+        try:
+            await event.edit(f"`{choice(vibe_checks)}`")
+        except:
+            pass
+
+    await sleep(3)
+    if choice([True, False]):
+        await event.edit("`Vibe check passed!`")
+    else:
+        await event.edit("`Vibe check failed!`")
 
 
 async def get_text_arg(event):
