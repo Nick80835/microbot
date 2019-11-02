@@ -49,7 +49,7 @@ class Loader():
                 errors += f"`Error while reloading {module.__name__} -> {exception}\n\n`"
                 raise exception
 
-        return errors
+        return errors or None
 
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
