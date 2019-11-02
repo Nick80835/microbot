@@ -129,6 +129,6 @@ async def userprofilegetter(event):
 
     userid = user_entity.id
     username = user_entity.username
-    userfullname = f"{user_entity.first_name} {user_entity.last_name}"
+    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
 
     await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
