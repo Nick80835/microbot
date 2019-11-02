@@ -27,15 +27,7 @@ i_emoji = "ℹ️"
 
 @ldr.add(pattern="cp")
 async def copypasta(event):
-    text_arg = event.pattern_match.group(1)
-
-    if text_arg:
-        pass
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        text_arg = reply.text
-    else:
-        text_arg = "Give me some text to fuck it up!"
+    text_arg = await get_text_arg(event)
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
@@ -47,15 +39,7 @@ async def copypasta(event):
 
 @ldr.add(pattern="mock")
 async def mock(event):
-    text_arg = event.pattern_match.group(1)
-
-    if text_arg:
-        pass
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        text_arg = reply.text
-    else:
-        text_arg = "Give me some text to fuck it up!"
+    text_arg = await get_text_arg(event)
 
     mock_text = await mockify(text_arg)
 
@@ -64,6 +48,14 @@ async def mock(event):
 
 @ldr.add(pattern="vap")
 async def vapor(event):
+    text_arg = await get_text_arg(event)
+
+    vapor_text = await vaporize(text_arg)
+
+    await event.edit(vapor_text)
+
+
+async def get_text_arg(event):
     text_arg = event.pattern_match.group(1)
 
     if text_arg:
@@ -74,9 +66,7 @@ async def vapor(event):
     else:
         text_arg = "Give me some text to fuck it up!"
 
-    vapor_text = await vaporize(text_arg)
-
-    await event.edit(vapor_text)
+    return text_arg
 
 
 async def shitpostify(text):
