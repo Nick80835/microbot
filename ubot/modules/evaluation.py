@@ -14,6 +14,9 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import inspect
+import io
+
+from PIL import Image
 
 from ubot.micro_bot import micro_bot
 
@@ -132,3 +135,25 @@ async def userprofilegetter(event):
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
 
     await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
+
+
+@ldr.add(pattern="stickpng")
+async def stickertopng(event):
+    await event.edit("`Getting sticker as PNG…`")
+    reply = await event.get_reply_message()
+
+    if reply.sticker:
+        sticker_webp_data = reply.sticker
+    else:
+        await event.edit("`Reply to a sticker to get it as a PNG file!`")
+        return
+
+    sticker_webp_io = io.BytesIO()
+    await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    sticker_webp = Image.open(sticker_webp_io)
+    sticker_png_io = io.BytesIO()
+    sticker_webp.save(sticker_png_io, "PNG")
+    sticker_png_io.name = "sticker.png"
+    sticker_png_io.seek(0)
+
+    await event.reply(file=sticker_png_io, force_document=True)
