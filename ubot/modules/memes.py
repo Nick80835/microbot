@@ -39,6 +39,7 @@ async def copypasta(event):
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
+    text_arg = await vaporize(text_arg)
     cp_text = await emojify(text_arg)
 
     await event.edit(cp_text)
@@ -59,6 +60,23 @@ async def mock(event):
     mock_text = await mockify(text_arg)
 
     await event.edit(mock_text)
+
+
+@ldr.add(pattern="vap")
+async def vapor(event):
+    text_arg = event.pattern_match.group(1)
+
+    if text_arg:
+        pass
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        text_arg = reply.text
+    else:
+        text_arg = "Give me some text to fuck it up!"
+
+    vapor_text = await vaporize(text_arg)
+
+    await event.edit(vapor_text)
 
 
 async def shitpostify(text):
@@ -109,3 +127,16 @@ async def emojify(text):
             emoji_text += letter
 
     return emoji_text
+
+
+async def vaporize(text):
+    vapor_text = ""
+    char_distance = 65248
+
+    for letter in text:
+        ord_letter = ord(letter)
+        if ord('!') <= ord_letter <= ord('~'):
+            letter = chr(ord_letter + char_distance)
+        vapor_text += letter
+
+    return vapor_text
