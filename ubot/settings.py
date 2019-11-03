@@ -24,6 +24,9 @@ class Settings():
     def get_config(self, key):
         return self.config.get("DEFAULT", key, fallback=None)
 
+    def get_bool(self, key):
+        return bool(self.config.get("DEFAULT", key, fallback=False) == "True")
+
     def set_config(self, key, value):
         self.config.set("DEFAULT", key, value)
 
