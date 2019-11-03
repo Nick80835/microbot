@@ -58,16 +58,6 @@ async def getnote(event):
         await event.edit(f"`Note `**{notename}**` not found!`")
 
 
-@ldr.add(pattern="toggleincoming")
-async def toggleincoming(event):
-    if micro_bot.settings.get_bool("incoming_allowed"):
-        micro_bot.settings.set_config("incoming_allowed", "False")
-        await event.edit("`Successfully disabled incoming commands!`")
-    else:
-        micro_bot.settings.set_config("incoming_allowed", "True")
-        await event.edit("`Successfully enabled incoming commands!`")
-
-
 @ldr.add(incoming=True, noprefix=True, pattern="#(.*)")
 async def getnoteincoming(event):
     if not micro_bot.settings.get_bool("incoming_allowed"):

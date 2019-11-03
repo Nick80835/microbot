@@ -79,3 +79,13 @@ async def reload_modules(event):
 @ldr.add(pattern="repo")
 async def bot_repo(event):
     await event.edit("https://github.com/Nick80835/microbot")
+
+
+@ldr.add(pattern="toggleincoming")
+async def toggleincoming(event):
+    if micro_bot.settings.get_bool("incoming_allowed"):
+        micro_bot.settings.set_config("incoming_allowed", "False")
+        await event.edit("`Successfully disabled incoming commands!`")
+    else:
+        micro_bot.settings.set_config("incoming_allowed", "True")
+        await event.edit("`Successfully enabled incoming commands!`")
