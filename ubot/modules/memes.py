@@ -45,8 +45,8 @@ async def copypasta(event):
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
-    text_arg = await vaporize(text_arg)
-    cp_text = await emojify(text_arg)
+    text_arg = await emojify(text_arg)
+    cp_text = await vaporize(text_arg)
 
     await event.edit(cp_text)
 
@@ -151,6 +151,11 @@ async def emojify(text):
     text = text.replace("b", "🅱️")
     text = text.replace("a", "🅰️")
     text = text.replace("i", "ℹ️")
+    text = text.replace("AB", "🆎")
+    text = text.replace("CL", "🆑")
+    text = text.replace("B", "🅱️")
+    text = text.replace("A", "🅰️")
+    text = text.replace("I", "ℹ️")
 
     emoji_text = ""
 
