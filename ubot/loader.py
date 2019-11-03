@@ -56,6 +56,10 @@ class Loader():
         if 'outgoing' not in args and 'incoming' not in args:
             args['outgoing'] = True
 
+        if args.get('noprefix', None):
+            del args['noprefix']
+            prefix = ''
+
         if args.get('pattern', None) is not None:
             args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
 
