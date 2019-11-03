@@ -1,4 +1,5 @@
 aiohttp
+databases[sqlite]
 pillow
 praw
 telethon

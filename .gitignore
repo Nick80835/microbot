@@ -1,4 +1,5 @@
 __pycache__
-settings.ini
+*.ini
 *.session
 *.session-journal
+*.db
