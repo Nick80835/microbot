@@ -18,30 +18,28 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 db = micro_bot.database
 
+note_columns = ["notename", "notecontent"]
+
 
 @ldr.add(pattern="save")
 async def savenote(event):
     notename, notecontent = await get_text_arg(event)
-    await db.execute("create table if not exists Notes (notename TEXT, notecontent TEXT)")
 
     if not notename or not notecontent:
         await event.edit("`Provide both a note name and content to save!`")
         return
 
     await event.edit(f"`Saving to note `**{notename}**`…`")
-    await db.execute(f"delete from Notes where notename = '{notename}'")
-    await db.execute(f"insert or ignore into Notes(notename, notecontent) values ('{notename}', '{notecontent}')")
+    await db.single_row_write("Notes", note_columns, notename, notecontent)
     await event.edit(f"`Successfully saved to note `**{notename}**`!`")
 
 
 @ldr.add(pattern="get")
 async def getnote(event):
     notename = event.pattern_match.group(1).replace(" ", "_")
-    await db.execute("create table if not exists Notes (notename TEXT, notecontent TEXT)")
 
     if not notename:
-        notetuplelist = await db.fetch_all("select notename from Notes")
-        notelist = '\n'.join([item[0] for item in notetuplelist])
+        notelist = '\n'.join(await db.single_column_readall("Notes", note_columns, "notename"))
 
         if notelist:
             await event.edit(f"`Provide a note name to get its content, saved notes:`\n**{notelist}**")
@@ -50,12 +48,17 @@ async def getnote(event):
             await event.edit(f"`You haven't saved any notes!\nUse `**{micro_bot.settings.get_config('cmd_prefix') or '.'}save**` to save notes.`")
             return
 
-    notecontent = await db.fetch_one(f"select notecontent from Notes where notename = '{notename}'")
+    notecontent = await db.single_row_read("Notes", note_columns, notename)
 
     if notecontent:
-        await event.edit(f"{notecontent[0]}")
+        await event.edit(f"{notecontent}")
     else:
-        await event.edit(f"`Note `**{notename}**` not found!`")
+        notelist = '\n'.join(await db.single_column_readall("Notes", note_columns, "notename"))
+
+        if notelist:
+            await event.edit(f"`Note `**{notename}**` not found, saved notes:`\n**{notelist}**")
+        else:
+            await event.edit(f"`You haven't saved any notes!\nUse `**{micro_bot.settings.get_config('cmd_prefix') or '.'}save**` to save notes.`")
 
 
 @ldr.add(incoming=True, noprefix=True, pattern="#(.*)")
@@ -64,41 +67,39 @@ async def getnoteincoming(event):
         return
 
     notename = event.pattern_match.group(0).replace(" ", "_").lstrip("#")
-    await db.execute("create table if not exists Notes (notename TEXT, notecontent TEXT)")
 
     if not notename:
-        notetuplelist = await db.fetch_all("select notename from Notes")
-        notelist = []
-
-        for item in notetuplelist:
-            notelist.append(item[0])
-
-        notelist = '\n'.join(notelist)
+        notelist = '\n'.join(await db.single_column_readall("Notes", note_columns, "notename"))
 
         if notelist:
             await event.reply(f"`Provide a note name to get its content, saved notes:`\n**{notelist}**")
             return
+        else:
+            await event.reply(f"`There aren't any saved notes!`")
+            return
 
-    notecontent = await db.fetch_one(f"select notecontent from Notes where notename = '{notename}'")
+    notecontent = await db.single_row_read("Notes", note_columns, notename)
 
     if notecontent:
-        await event.reply(f"{notecontent[0]}")
+        await event.reply(f"{notecontent}")
     else:
-        notetuplelist = await db.fetch_all("select notename from Notes")
-        notelist = '\n'.join([item[0] for item in notetuplelist])
-        await event.reply(f"`Note `**{notename}**` not found, saved notes:`\n**{notelist}**")
+        notelist = '\n'.join(await db.single_column_readall("Notes", note_columns, "notename"))
+
+        if notelist:
+            await event.reply(f"`Note `**{notename}**` not found, saved notes:`\n**{notelist}**")
+        else:
+            await event.reply(f"`There aren't any saved notes!`")
 
 
 @ldr.add(pattern="del")
 async def delnote(event):
     notename = event.pattern_match.group(1).replace(" ", "_")
-    await db.execute("create table if not exists Notes (notename TEXT, notecontent TEXT)")
 
     if not notename:
         await event.edit("`I need a notes name to delete it!`")
         return
 
-    await db.execute(f"delete from Notes where notename = '{notename}'")
+    await db.single_row_delete("Notes", note_columns, notename)
     await event.edit(f"`Note `**{notename}**` successfully deleted!`")
 
 

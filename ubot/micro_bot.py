@@ -17,11 +17,11 @@ from logging import INFO, basicConfig, getLogger
 from sys import version_info
 
 import telethon as tt
-from databases import Database
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
+from .database import Database
 from .loader import Loader
 from .settings import Settings
 
@@ -47,8 +47,7 @@ class MicroBot():
         self.client.run_until_disconnected()
 
     def start_database(self):
-        self.database = Database("sqlite:///database.db")
-        self.client.loop.run_until_complete(self.database.connect())
+        self.database = Database(self.client)
 
     def start_loader(self):
         self.loader = Loader(self.client, self.logger, self.settings)

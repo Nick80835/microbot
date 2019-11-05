@@ -52,7 +52,7 @@ async def dectobin(event):
         await event.edit("`Give me a decimal number!`")
         return
 
-    binary = bin(decimal).replace("0b","") 
+    binary = bin(decimal).replace("0b","")
 
     await event.edit(f"**{decimal}** `=` **{binary}**")
 
