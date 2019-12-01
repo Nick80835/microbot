@@ -57,16 +57,16 @@ class MicroBot():
         self.logger = getLogger(__name__)
 
     def _check_config(self, api_key, api_hash, session_name):
-        while api_key is None or api_key is "":
+        while api_key is None or api_key == "":
             api_key = input("Enter your API key: ")
 
-        while api_hash is None or api_hash is "":
+        while api_hash is None or api_hash == "":
             api_hash = input("Enter your API hash: ")
 
         self.settings.set_config("api_key", api_key)
         self.settings.set_config("api_hash", api_hash)
 
-        if session_name is None or '':
+        if session_name is None or session_name == "":
             session_name = "user0"
             self.settings.set_config("session_name", session_name)
 
