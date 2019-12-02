@@ -23,6 +23,21 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
+@ldr.add(pattern="reload")
+async def reload_modules(event):
+    await event.edit("`Reloading modules…`")
+
+    errors = ldr.reload_all_modules()
+
+    if errors:
+        await event.edit(errors)
+    else:
+        try:
+            await event.delete()
+        except:
+            pass
+
+
 @ldr.add(pattern="alive")
 async def alive(event):
     alive_format = "`μBot is running under {0}.\n\n" \
@@ -62,18 +77,6 @@ async def change_prefix(event):
         await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**` but there were errors:`\n\n{errors}")
     else:
         await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
-
-
-@ldr.add(pattern="reload")
-async def reload_modules(event):
-    await event.edit("`Reloading modules…`")
-
-    errors = ldr.reload_all_modules()
-
-    if errors:
-        await event.edit(errors)
-    else:
-        await event.delete()
 
 
 @ldr.add(pattern="repo")

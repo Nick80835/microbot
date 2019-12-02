@@ -82,3 +82,6 @@ class Loader():
             basename(f)[:-3] for f in mod_paths
             if isfile(f) and f.endswith(".py")
         ]
+
+        system_index = self.all_modules.index("system")
+        self.all_modules.insert(0, self.all_modules.pop(system_index))
