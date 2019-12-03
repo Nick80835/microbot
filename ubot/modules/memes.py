@@ -36,7 +36,12 @@ vibe_checks = "Shitting pants…|Unshitting pants…|Checking for good vibes…|
     "Uh oh, stinky…|Splitting strings…|Breaking pencils…|Yeeting…|Releasing Half-Life 3…|Failing…|" \
     "He do look kinda chill doe…|Cats are liquid…|Stay hydrated…|Using random.choice()…|Licking 9-volt batteries…|" \
     "Building vibecheck.exe…|Building vibecheck.so…|Flashing custom ROMs…|Suffocating my demons…|" \
-    "Reticulating splines…|Drinking maple syrup…|Failing at life…".split(sep="|")
+    "Reticulating splines…|Drinking maple syrup…|Failing at life…|Calibrating battery…|Foraging…|" \
+    "Show me how to lie, you're getting better all the time…|Becoming Pneuma…|Contracting AIDS…|" \
+    "Checkra1n…|Checkm8 motherfucker…|Exploiting your denial…|Checking the door lights…|Flashing Bonnie…|" \
+    "Opening loot-boxes…|Vibing…|Updating to Python 3.8.0…|Having information leading to the arrest of Hil-…|" \
+    "Epstein didn't kill himself…|Cracking open the boys with a cold hatchet…|I'm gonna be sick…|" \
+    "I can feel it in my blood and in my bones…|Writing commit messages…|Creating redsn0w…".split(sep="|")
 
 zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̩̟͚͍̞̳̌́̀̑̐̇̎̚͝ ̸̻̠̮̬̻͇͈̮̯̋̄͛̊͋̐̇͝͠ ̵̧̟͎͈̪̜̫̪͖̎͛̀͋͗́̍̊͠ ̵͍͉̟͕͇͎̖̹̔͌̊̏̌̽́̈́͊ͅ ̷̥͚̼̬̦͓͇̗͕͊̏͂͆̈̀̚͘̚ ̵̢̨̗̝̳͉̱̦͖̔̾͒͊͒̎̂̎͝ ̵̞̜̭̦̖̺͉̞̃͂͋̒̋͂̈́͘̕͜ ̶̢̢͇̲̥̗̟̏͛̇̏̊̑̌̔̚ͅͅ ̷̮͖͚̦̦̞̱̠̰̍̆̐͆͆͆̈̌́ ̶̲͚̪̪̪͍̹̜̬͊̆͋̄͒̾͆͝͝ ̴̨̛͍͖͎̞͍̞͕̟͑͊̉͗͑͆͘̕ ̶͕̪̞̲̘̬͖̙̞̽͌͗̽̒͋̾̍̀ ̵̨̧̡̧̖͔̞̠̝̌̂̐̉̊̈́́̑̓ ̶̛̱̼̗̱̙͖̳̬͇̽̈̀̀̎̋͌͝ ̷̧̺͈̫̖̖͈̱͎͋͌̆̈̃̐́̀̈".replace(" ", "")
 
@@ -96,14 +101,14 @@ async def vibecheck(event):
     else:
         await event.edit("`Performing self vibe check…`")
 
-    for _ in range(5):
-        await sleep(3)
+    for _ in range(7):
+        await sleep(4)
         try:
             await event.edit(f"`{choice(vibe_checks)}`")
         except:
             pass
 
-    await sleep(3)
+    await sleep(4)
     if choice([True, False]):
         await event.edit("`Vibe check passed!`")
     else:
