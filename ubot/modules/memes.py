@@ -38,6 +38,8 @@ vibe_checks = "Shitting pants…|Unshitting pants…|Checking for good vibes…|
     "Building vibecheck.exe…|Building vibecheck.so…|Flashing custom ROMs…|Suffocating my demons…|" \
     "Reticulating splines…|Drinking maple syrup…|Failing at life…".split(sep="|")
 
+zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̩̟͚͍̞̳̌́̀̑̐̇̎̚͝ ̸̻̠̮̬̻͇͈̮̯̋̄͛̊͋̐̇͝͠ ̵̧̟͎͈̪̜̫̪͖̎͛̀͋͗́̍̊͠ ̵͍͉̟͕͇͎̖̹̔͌̊̏̌̽́̈́͊ͅ ̷̥͚̼̬̦͓͇̗͕͊̏͂͆̈̀̚͘̚ ̵̢̨̗̝̳͉̱̦͖̔̾͒͊͒̎̂̎͝ ̵̞̜̭̦̖̺͉̞̃͂͋̒̋͂̈́͘̕͜ ̶̢̢͇̲̥̗̟̏͛̇̏̊̑̌̔̚ͅͅ ̷̮͖͚̦̦̞̱̠̰̍̆̐͆͆͆̈̌́ ̶̲͚̪̪̪͍̹̜̬͊̆͋̄͒̾͆͝͝ ̴̨̛͍͖͎̞͍̞͕̟͑͊̉͗͑͆͘̕ ̶͕̪̞̲̘̬͖̙̞̽͌͗̽̒͋̾̍̀ ̵̨̧̡̧̖͔̞̠̝̌̂̐̉̊̈́́̑̓ ̶̛̱̼̗̱̙͖̳̬͇̽̈̀̀̎̋͌͝ ̷̧̺͈̫̖̖͈̱͎͋͌̆̈̃̐́̀̈".replace(" ", "")
+
 
 @ldr.add(pattern="cp")
 async def copypasta(event):
@@ -67,6 +69,15 @@ async def vapor(event):
     vapor_text = await vaporize(text_arg)
 
     await event.edit(vapor_text)
+
+
+@ldr.add(pattern="zal")
+async def zalgo(event):
+    text_arg = await get_text_arg(event)
+
+    zalgo_text = await zalgofy(text_arg)
+
+    await event.edit(zalgo_text)
 
 
 @ldr.add(pattern="owo")
@@ -194,3 +205,19 @@ async def owoify(text):
     text += f" {choice(owo_faces)}"
 
     return text
+
+
+async def zalgofy(text):
+    zalgo_text = ""
+
+    for letter in text:
+        if letter == " ":
+            zalgo_text += letter
+            continue
+
+        letter += choice(zal_chars)
+        letter += choice(zal_chars)
+        letter += choice(zal_chars)
+        zalgo_text += letter
+
+    return zalgo_text
