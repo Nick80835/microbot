@@ -88,11 +88,10 @@ async def shibe(event):
     shibe_inu = await shibe_inu_atsume()
 
     if isinstance(shibe_inu, int):
-        await event.edit(f"`There was an error finding the shibes! :( -> {shibe_inu}`")
+        await event.reply(f"`There was an error finding the shibes! :( -> {shibe_inu}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), shibe_inu[0])
-    await event.delete()
+    await event.reply(file=shibe_inu[0])
 
 
 @ldr.add(pattern="bird")
@@ -100,11 +99,10 @@ async def bird(event):
     tori = await tori_atsume()
 
     if isinstance(tori, int):
-        await event.edit(f"`There was an error finding the birdies! :( -> {tori}`")
+        await event.reply(f"`There was an error finding the birdies! :( -> {tori}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), tori[0])
-    await event.delete()
+    await event.reply(file=tori[0])
 
 
 @ldr.add(pattern="cat")
@@ -112,11 +110,10 @@ async def cat(event):
     neko = await neko_atsume(IMGPARAM)
 
     if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"])
-    await event.delete()
+    await event.reply(file=neko[0]["url"])
 
 
 @ldr.add(pattern="cathd")
@@ -124,11 +121,10 @@ async def cathd(event):
     neko = await neko_atsume(IMGPARAM)
 
     if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"], force_document=True)
-    await event.delete()
+    await event.reply(file=neko[0]["url"], force_document=True)
 
 
 @ldr.add(pattern="catgif")
@@ -136,11 +132,10 @@ async def catgif(event):
     neko = await neko_atsume(GIFPARAM)
 
     if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"])
-    await event.delete()
+    await event.reply(file=neko[0]["url"])
 
 
 @ldr.add(pattern="dog")
@@ -148,11 +143,10 @@ async def dog(event):
     inu = await inu_atsume(IMGPARAM)
 
     if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"])
-    await event.delete()
+    await event.reply(file=inu[0]["url"])
 
 
 @ldr.add(pattern="doghd")
@@ -160,11 +154,10 @@ async def doghd(event):
     inu = await inu_atsume(IMGPARAM)
 
     if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"], force_document=True)
-    await event.delete()
+    await event.reply(file=inu[0]["url"], force_document=True).delete()
 
 
 @ldr.add(pattern="doggif")
@@ -172,8 +165,7 @@ async def doggif(event):
     inu = await inu_atsume(GIFPARAM)
 
     if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"])
-    await event.delete()
+    await event.reply(file=inu[0]["url"])
