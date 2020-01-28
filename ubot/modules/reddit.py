@@ -53,7 +53,6 @@ async def titlefetcherfallback(sub):
 
 
 async def imagefetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
     image_url = False
 
     for _ in range(10):
@@ -70,7 +69,7 @@ async def imagefetcher(event, sub):
                 break
 
     if not image_url:
-        await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
+        await event.reply(f"`Failed to find any valid content on `**r/{sub}**`!`")
         return
 
     try:
@@ -89,12 +88,10 @@ async def imagefetcher(event, sub):
         await event.reply(title, file=image_io)
     except:
         await session.close()
-        await event.edit(f"`Failed to download content from `**r/{sub}**`!`")
+        await event.reply(f"`Failed to download content from `**r/{sub}**`!`")
 
 
 async def titlefetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
-
     post = REDDIT.subreddit(sub).random()
 
     if not post:
@@ -112,7 +109,7 @@ async def redimg(event):
     if sub:
         await imagefetcher(event, sub)
     else:
-        await event.edit("Syntax: .redi <subreddit name>")
+        await event.reply("Syntax: .redi <subreddit name>")
 
 
 @ldr.add(pattern="redt")
@@ -122,7 +119,7 @@ async def redtit(event):
     if sub:
         await titlefetcher(event, sub)
     else:
-        await event.edit("Syntax: .redt <subreddit name>")
+        await event.reply("Syntax: .redt <subreddit name>")
 
 
 @ldr.add(pattern="suffer")
