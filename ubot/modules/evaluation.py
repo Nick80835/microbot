@@ -28,13 +28,13 @@ async def chatidgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
         if reply.forward and reply.forward.channel_id:
-            await event.edit(f"**Channel ID:**` {reply.forward.channel_id}`")
+            await event.reply(f"**Channel ID:**` {reply.forward.channel_id}`")
             return
         chat_id = reply.chat_id
     else:
         chat_id = event.chat_id
 
-    await event.edit(f"**Chat ID:**` {chat_id}`")
+    await event.reply(f"**Chat ID:**` {chat_id}`")
 
 
 @ldr.add(pattern="userid")
@@ -45,7 +45,7 @@ async def useridgetter(event):
     else:
         user_id = event.from_id
 
-    await event.edit(f"**User ID:**` {user_id}`")
+    await event.reply(f"**User ID:**` {user_id}`")
 
 
 @ldr.add(pattern="profile")
