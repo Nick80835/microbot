@@ -23,7 +23,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="reload")
+#@ldr.add(pattern="reload")
 async def reload_modules(event):
     await event.edit("`Reloading modules…`")
 
@@ -45,10 +45,10 @@ async def alive(event):
                    "Telethon: {2}\n" \
                    "Python: {3}`"
 
-    await event.edit(alive_format.format(uname().node, ldr.botversion, version.__version__, python_version()))
+    await event.reply(alive_format.format(uname().node, ldr.botversion, version.__version__, python_version()))
 
 
-@ldr.add(pattern="shutdown")
+#@ldr.add(pattern="shutdown")
 async def shutdown(event):
     await event.edit("`Goodbye…`")
     await micro_bot.stop_client()
@@ -57,12 +57,12 @@ async def shutdown(event):
 @ldr.add(pattern="ping")
 async def ping(event):
     start = time_ns()
-    await event.edit("`Ping…`")
+    reply = await event.reply("`Ping…`")
     time_taken_ms = (time_ns() - start) / 1000000
-    await event.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
+    await reply.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
 
 
-@ldr.add(pattern="prefix")
+#@ldr.add(pattern="prefix")
 async def change_prefix(event):
     new_prefix = event.pattern_match.group(1)
 
@@ -81,10 +81,10 @@ async def change_prefix(event):
 
 @ldr.add(pattern="repo")
 async def bot_repo(event):
-    await event.edit("https://github.com/Nick80835/microbot")
+    await event.reply("https://github.com/Nick80835/microbot")
 
 
-@ldr.add(pattern="toggleincoming")
+#@ldr.add(pattern="toggleincoming")
 async def toggleincoming(event):
     if micro_bot.settings.get_bool("incoming_allowed"):
         micro_bot.settings.set_config("incoming_allowed", "False")
