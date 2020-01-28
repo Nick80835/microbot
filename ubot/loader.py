@@ -53,15 +53,17 @@ class Loader():
 
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
-        if 'outgoing' not in args and 'incoming' not in args:
-            args['incoming'] = True
+        args['incoming'] = True
 
         if args.get('noprefix', None):
             del args['noprefix']
             prefix = ''
 
-        if args.get('pattern', None) is not None:
+        if not args.get('isfilter', False) and args.get('pattern', None) is not None:
             args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
+        else:
+            del args['isfilter']
+            args['pattern'] = f"(?is)(.*){args['pattern']}(.*)"
 
         def decorator(func):
             async def wrapper(event):
