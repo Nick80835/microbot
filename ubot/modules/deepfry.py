@@ -53,7 +53,9 @@ async def deepfryer(event):
     try:
         frycount = int(event.pattern_match.group(1))
         if frycount < 1:
-            raise ValueError
+            frycount = 1
+        elif frycount > 10:
+            frycount = 10
     except ValueError:
         frycount = 1
 
