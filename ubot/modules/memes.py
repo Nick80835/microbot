@@ -28,95 +28,75 @@ i_emoji = "ℹ️"
 owo_faces = "owo uwu owu uwo u-u o-o OwO UwU @-@ ;-; ;_; ._. (._.) (o-o) ('._.) (｡◕‿‿◕｡)" \
     " (｡◕‿◕｡) (─‿‿─) ◔⌣◔ ◉_◉".split(sep=" ")
 
-vibe_checks = "Shitting pants…|Unshitting pants…|Checking for good vibes…|Checking for bad vibes…|" \
-    "Analyzing wiggly air…|Sniffing for poopy pants…|Eating a Snickers…|Ripping paper with an eraser…|" \
-    "Vibing…|Connecting to dial-up…|Writing stupid quotes…|Consuming carbohydrates…|Hydrating…|" \
-    "Feeding the wolf…|OwO what's this?|Eating 3 week old pancakes…|Doing quick maths…|Squatting…|" \
-    "Thinking real hard…|Making slime in science class…|Orang man bad…|Browsing 4chan…|Breathing…|" \
-    "Uh oh, stinky…|Splitting strings…|Breaking pencils…|Yeeting…|Releasing Half-Life 3…|Failing…|" \
-    "He do look kinda chill doe…|Cats are liquid…|Stay hydrated…|Using random.choice()…|Licking 9-volt batteries…|" \
-    "Building vibecheck.exe…|Building vibecheck.so…|Flashing custom ROMs…|Suffocating my demons…|" \
-    "Reticulating splines…|Drinking maple syrup…|Failing at life…|Calibrating battery…|Foraging…|" \
-    "Show me how to lie, you're getting better all the time…|Becoming Pneuma…|Contracting AIDS…|" \
-    "Checkra1n…|Checkm8 motherfucker…|Exploiting your denial…|Checking the door lights…|Flashing Bonnie…|" \
-    "Opening loot-boxes…|Vibing…|Updating to Python 3.8.0…|Having information leading to the arrest of Hil-…|" \
-    "Epstein didn't kill himself…|Cracking open the boys with a cold hatchet…|I'm gonna be sick…|" \
-    "I can feel it in my blood and in my bones…|Writing commit messages…|Creating redsn0w…".split(sep="|")
-
 zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̩̟͚͍̞̳̌́̀̑̐̇̎̚͝ ̸̻̠̮̬̻͇͈̮̯̋̄͛̊͋̐̇͝͠ ̵̧̟͎͈̪̜̫̪͖̎͛̀͋͗́̍̊͠ ̵͍͉̟͕͇͎̖̹̔͌̊̏̌̽́̈́͊ͅ ̷̥͚̼̬̦͓͇̗͕͊̏͂͆̈̀̚͘̚ ̵̢̨̗̝̳͉̱̦͖̔̾͒͊͒̎̂̎͝ ̵̞̜̭̦̖̺͉̞̃͂͋̒̋͂̈́͘̕͜ ̶̢̢͇̲̥̗̟̏͛̇̏̊̑̌̔̚ͅͅ ̷̮͖͚̦̦̞̱̠̰̍̆̐͆͆͆̈̌́ ̶̲͚̪̪̪͍̹̜̬͊̆͋̄͒̾͆͝͝ ̴̨̛͍͖͎̞͍̞͕̟͑͊̉͗͑͆͘̕ ̶͕̪̞̲̘̬͖̙̞̽͌͗̽̒͋̾̍̀ ̵̨̧̡̧̖͔̞̠̝̌̂̐̉̊̈́́̑̓ ̶̛̱̼̗̱̙͖̳̬͇̽̈̀̀̎̋͌͝ ̷̧̺͈̫̖̖͈̱͎͋͌̆̈̃̐́̀̈".replace(" ", "")
 
 
 @ldr.add(pattern="cp")
 async def copypasta(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
     text_arg = await emojify(text_arg)
     cp_text = await vaporize(text_arg)
 
-    await event.edit(cp_text)
+    if reply:
+        await reply.reply(cp_text)
+    else:
+        await event.reply(cp_text)
 
 
 @ldr.add(pattern="mock")
 async def mock(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     mock_text = await mockify(text_arg)
 
-    await event.edit(mock_text)
+    if reply:
+        await reply.reply(mock_text)
+    else:
+        await event.reply(mock_text)
 
 
 @ldr.add(pattern="vap")
 async def vapor(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     vapor_text = await vaporize(text_arg)
 
-    await event.edit(vapor_text)
+    if reply:
+        await reply.reply(vapor_text)
+    else:
+        await event.reply(vapor_text)
 
 
 @ldr.add(pattern="zal")
 async def zalgo(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     zalgo_text = await zalgofy(text_arg)
 
-    await event.edit(zalgo_text)
+    if reply:
+        await reply.reply(zalgo_text)
+    else:
+        await event.reply(zalgo_text)
 
 
 @ldr.add(pattern="owo")
 async def owo(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     owo_text = await owoify(text_arg)
 
-    await event.edit(owo_text)
-
-
-@ldr.add(pattern="vibecheck")
-async def vibecheck(event):
-    if event.is_reply:
-        await event.edit("`Performing vibe check…`")
+    if reply:
+        await reply.reply(owo_text)
     else:
-        await event.edit("`Performing self vibe check…`")
-
-    for _ in range(7):
-        await sleep(4)
-        try:
-            await event.edit(f"`{choice(vibe_checks)}`")
-        except:
-            pass
-
-    await sleep(4)
-    if choice([True, False]):
-        await event.edit("`Vibe check passed!`")
-    else:
-        await event.edit("`Vibe check failed!`")
+        await event.reply(owo_text)
 
 
 async def get_text_arg(event):
     text_arg = event.pattern_match.group(1)
+    reply = False
 
     if text_arg:
         pass
@@ -126,7 +106,7 @@ async def get_text_arg(event):
     else:
         text_arg = "Give me some text to fuck it up!"
 
-    return text_arg
+    return text_arg, reply
 
 
 async def shitpostify(text):
