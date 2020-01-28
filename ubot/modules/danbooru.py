@@ -24,8 +24,6 @@ DAN_URL = "http://danbooru.donmai.us/posts.json"
 
 @ldr.add(pattern="dan(s|x|q|)")
 async def danbooru(event):
-    await event.edit(f"`Processing…`")
-
     if "x" in event.pattern_match.group(0):
         rating = "Rating:explicit"
     elif "s" in event.pattern_match.group(0):
@@ -47,13 +45,13 @@ async def danbooru(event):
         if response.status == 200:
             response = await response.json()
         else:
-            await event.edit(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
             return
 
     await session.close()
 
     if not response:
-        await event.edit(f"`No results for query: `**{search_query}**")
+        await event.reply(f"`No results for query: `**{search_query}**")
         return
 
     valid_urls = []
@@ -63,15 +61,14 @@ async def danbooru(event):
             valid_urls.append(response[0][url])
 
     if not valid_urls:
-        await event.edit(f"`Failed to find URLs for query: `**{search_query}**")
+        await event.reply(f"`Failed to find URLs for query: `**{search_query}**")
         return
 
     for image_url in valid_urls:
         try:
-            await event.client.send_file(event.chat_id, file=image_url)
-            await event.delete()
+            await event.reply(file=image_url)
             return
         except:
             pass
 
-    await event.edit(f"`Failed to fetch media for query: `**{search_query}**")
+    await event.reply(f"`Failed to fetch media for query: `**{search_query}**")
