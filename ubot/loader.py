@@ -54,7 +54,7 @@ class Loader():
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
         if 'outgoing' not in args and 'incoming' not in args:
-            args['outgoing'] = True
+            args['incoming'] = True
 
         if args.get('noprefix', None):
             del args['noprefix']
