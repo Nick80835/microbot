@@ -23,63 +23,6 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="b2d")
-async def bintodec(event):
-    binary = event.pattern_match.group(1)
-
-    if not binary:
-        await event.edit("`Give me a binary number!`")
-        return
-
-    try:
-        decimal = int(binary, 2)
-    except ValueError:
-        await event.edit("`Give me a binary number!`")
-        return
-
-    await event.edit(f"**{binary}** `=` **{decimal}**")
-
-
-@ldr.add(pattern="d2b")
-async def dectobin(event):
-    try:
-        decimal = int(event.pattern_match.group(1))
-    except ValueError:
-        await event.edit("`Give me a decimal number!`")
-        return
-
-    if not decimal:
-        await event.edit("`Give me a decimal number!`")
-        return
-
-    binary = bin(decimal).replace("0b","")
-
-    await event.edit(f"**{decimal}** `=` **{binary}**")
-
-
-@ldr.add(pattern="eval")
-async def evaluate(event):
-    code = event.pattern_match.group(1)
-    reply = await event.get_reply_message()
-
-    if not code:
-        await event.edit("`Give me code to run!`")
-        return
-
-    try:
-        eval_ret = eval(code)
-    except Exception as exception:
-        eval_ret = exception
-
-    if inspect.isawaitable(eval_ret):
-        isawait = " (awaited)"
-        eval_ret = await eval_ret
-    else:
-        isawait = ""
-
-    await event.edit(f"**Evaluation:**\n`{code}`\n**Return{isawait}:**\n`{eval_ret}`")
-
-
 @ldr.add(pattern="chatid")
 async def chatidgetter(event):
     if event.is_reply:
@@ -113,7 +56,7 @@ async def userprofilegetter(event):
         try:
             user_entity = await event.client.get_entity(user_arg)
         except (ValueError, TypeError):
-            await event.edit("`The ID or username you provided was invalid!`")
+            await event.reply("`The ID or username you provided was invalid!`")
             return
     elif event.is_reply:
         reply = await event.get_reply_message()
@@ -122,31 +65,30 @@ async def userprofilegetter(event):
             try:
                 user_entity = await event.client.get_entity(reply_id)
             except (ValueError, TypeError):
-                await event.edit("`There was an error getting the user!`")
+                await event.reply("`There was an error getting the user!`")
                 return
         else:
-            await event.edit("`The user may have super sneaky privacy settings enabled!`")
+            await event.reply("`The user may have super sneaky privacy settings enabled!`")
             return
     else:
-        await event.edit("`Give me a user ID, username or reply!`")
+        await event.reply("`Give me a user ID, username or reply!`")
         return
 
     userid = user_entity.id
     username = user_entity.username
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
 
-    await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
+    await event.reply(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
 
 
 @ldr.add(pattern="stickpng")
 async def stickertopng(event):
-    await event.edit("`Getting sticker as PNG…`")
     reply = await event.get_reply_message()
 
     if reply.sticker:
         sticker_webp_data = reply.sticker
     else:
-        await event.edit("`Reply to a sticker to get it as a PNG file!`")
+        await event.reply("`Reply to a sticker to get it as a PNG file!`")
         return
 
     sticker_webp_io = io.BytesIO()
