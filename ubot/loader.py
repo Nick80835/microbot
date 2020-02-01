@@ -17,6 +17,7 @@ import glob
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 from re import escape
+from .command_handler import CommandHandler
 
 from telethon import events
 
@@ -28,6 +29,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
+        self.command_handler = CommandHandler(client)
         self.botversion = "0.1.2"
 
     def load_all_modules(self):
@@ -37,6 +39,8 @@ class Loader():
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
     def reload_all_modules(self):
+        self.command_handler.commands = {}
+
         for callback, _ in self.client.list_event_handlers():
             self.client.remove_event_handler(callback)
 
@@ -73,8 +77,10 @@ class Loader():
                     self.logger.warn(f"{func.__name__} - {exception}")
                     await event.reply(f"`An error occurred in {func.__name__}: {exception}`")
 
-            self.client.add_event_handler(wrapper, events.NewMessage(**args))
+            self.command_handler.commands[args['pattern']] = func
+            #self.client.add_event_handler(wrapper, events.NewMessage(**args))
             return wrapper
+
         return decorator
 
     def _find_all_modules(self):
