@@ -17,9 +17,10 @@ import glob
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 from re import escape
-from .command_handler import CommandHandler
 
 from telethon import events
+
+from .command_handler import CommandHandler
 
 
 class Loader():
