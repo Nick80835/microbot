@@ -19,13 +19,19 @@ from telethon import events
 
 
 class CommandHandler():
-    def __init__(self, client):
+    def __init__(self, client, logger):
         self.commands = {}
+        self.logger = logger
         client.add_event_handler(self.handle_outgoing, events.NewMessage(outgoing=True))
 
     async def handle_outgoing(self, event):
         for cmd in self.commands.keys():
             if search(cmd, event.text):
                 event.pattern_match = search(cmd, event.text)
-                await self.commands.get(cmd)(event)
-                return
+
+                try:
+                    await self.commands.get(cmd)(event)
+                    return
+                except Exception as exception:
+                    self.logger.warn(f"{self.commands.get(cmd).__name__} - {exception}")
+                    await event.reply(f"`An error occurred in {self.commands.get(cmd).__name__}: {exception}`")
