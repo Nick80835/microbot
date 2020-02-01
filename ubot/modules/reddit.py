@@ -14,7 +14,6 @@
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 import io
-import mimetypes
 from random import choice
 
 import praw
@@ -64,10 +63,12 @@ async def imagefetcher(event, sub):
             break
 
         if post.url:
-            if post.url.endswith(VALID_ENDS):
-                image_url = post.url
-                title = post.title
-                break
+            for ending in VALID_ENDS:
+                if post.url.endswith(ending):
+                    file_ending = ending
+                    image_url = post.url
+                    title = post.title
+                    break
 
     if not image_url:
         await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
@@ -80,7 +81,7 @@ async def imagefetcher(event, sub):
         async with session.get(image_url) as response:
             if response.status == 200:
                 image_io.write(await response.read())
-                image_io.name = f"reddit_content{mimetypes.guess_extension(response.headers['content-type'])}"
+                image_io.name = f"reddit_content{file_ending}"
                 image_io.seek(0)
             else:
                 raise Exception
