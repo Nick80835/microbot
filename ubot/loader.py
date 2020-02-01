@@ -42,9 +42,6 @@ class Loader():
     def reload_all_modules(self):
         self.command_handler.commands = {}
 
-        for callback, _ in self.client.list_event_handlers():
-            self.client.remove_event_handler(callback)
-
         errors = ""
 
         for module in self.loaded_modules:
