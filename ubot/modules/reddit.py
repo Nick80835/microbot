@@ -90,7 +90,7 @@ async def imagefetcher(event, sub):
         await event.reply(title, file=image_io)
     except:
         await session.close()
-        await event.edit(f"`Failed to download content from `**r/{sub}**`!`")
+        await event.edit(f"`Failed to download content from `**r/{sub}**`!`\n`Title: `**{title}**\n`URL: `{image_url}")
 
 
 async def titlefetcher(event, sub):
