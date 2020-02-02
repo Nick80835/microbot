@@ -40,7 +40,8 @@ class Loader():
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
     def reload_all_modules(self):
-        self.command_handler.commands = {}
+        self.command_handler.outgoing_commands = {}
+        self.command_handler.incoming_commands = {}
 
         errors = ""
 
@@ -55,8 +56,8 @@ class Loader():
 
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
-        if 'outgoing' not in args and 'incoming' not in args:
-            args['outgoing'] = True
+        outgoing = args.get('outgoing', True)
+        incoming = args.get('incoming', False)
 
         if args.get('noprefix', None):
             del args['noprefix']
@@ -66,7 +67,10 @@ class Loader():
             args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
 
         def decorator(func):
-            self.command_handler.commands[args['pattern']] = func
+            if incoming:
+                self.command_handler.incoming_commands[args['pattern']] = func
+            elif outgoing:
+                self.command_handler.outgoing_commands[args['pattern']] = func
 
         return decorator
 
