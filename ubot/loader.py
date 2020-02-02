@@ -56,8 +56,6 @@ class Loader():
 
     def add(self, **args):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
-        outgoing = args.get('outgoing', True)
-        incoming = args.get('incoming', False)
 
         if args.get('noprefix', None):
             del args['noprefix']
@@ -70,10 +68,7 @@ class Loader():
             args['pattern'] = f"(?is)(.*){args['pattern']}(.*)"
 
         def decorator(func):
-            if incoming:
-                self.command_handler.incoming_commands[args['pattern']] = func
-            elif outgoing:
-                self.command_handler.outgoing_commands[args['pattern']] = func
+            self.command_handler.incoming_commands[args['pattern']] = func
 
         return decorator
 
