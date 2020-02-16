@@ -31,7 +31,7 @@ class Loader():
         self.logger = logger
         self.settings = settings
         self.command_handler = CommandHandler(client, logger)
-        self.botversion = "0.1.2"
+        self.botversion = "0.1.3"
 
     def load_all_modules(self):
         self._find_all_modules()
