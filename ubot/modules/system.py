@@ -13,6 +13,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+import asyncio
 from platform import python_version, uname
 from time import time_ns
 
@@ -36,6 +37,24 @@ async def reload_modules(event):
             await event.delete()
         except:
             pass
+
+
+@ldr.add(pattern="sysd")
+async def sysd(event):
+    try:
+        neo = "neofetch --stdout"
+
+        fetch = await asyncio.create_subprocess_shell(
+            neo,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await fetch.communicate()
+
+        await event.edit(f"`{stdout.decode().strip()}{stderr.decode().strip()}`")
+    except FileNotFoundError:
+        await event.edit("`Neofetch not found!`")
 
 
 @ldr.add(pattern="alive")
