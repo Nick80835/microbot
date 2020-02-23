@@ -17,7 +17,6 @@ import io
 from random import choice
 
 import praw
-from aiohttp import ClientSession
 
 from ubot.micro_bot import micro_bot
 
@@ -63,33 +62,19 @@ async def imagefetcher(event, sub):
             break
 
         if post.url:
-            for ending in VALID_ENDS:
-                if post.url.endswith(ending):
-                    file_ending = ending
-                    image_url = post.url
-                    title = post.title
-                    break
+            if post.url.endswith(VALID_ENDS):
+                image_url = post.url
+                title = post.title
+                break
 
     if not image_url:
         await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
         return
 
     try:
-        image_io = io.BytesIO()
-        session = ClientSession()
-
-        async with session.get(image_url) as response:
-            if response.status == 200:
-                image_io.write(await response.read())
-                image_io.name = f"reddit_content{file_ending}"
-                image_io.seek(0)
-            else:
-                raise Exception
-
-        await session.close()
-        await event.reply(title, file=image_io)
+        await event.client.send_file(event.chat_id, image_url, caption=title)
+        await event.delete()
     except:
-        await session.close()
         await event.edit(f"`Failed to download content from `**r/{sub}**`!`\n`Title: `**{title}**\n`URL: `{image_url}")
 
 
