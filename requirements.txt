@@ -1,6 +1,7 @@
 aiohttp
+cryptg
 databases[sqlite]
 pillow
 praw
-telethon
 speedtest-cli
+telethon
