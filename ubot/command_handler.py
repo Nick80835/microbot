@@ -37,6 +37,7 @@ class CommandHandler():
                 except Exception as exception:
                     self.logger.warn(f"{self.outgoing_commands.get(cmd).__name__} - {exception}")
                     await event.reply(f"`An error occurred in {self.outgoing_commands.get(cmd).__name__}: {exception}`")
+                    raise exception
 
     async def handle_incoming(self, event):
         for cmd in self.incoming_commands.keys():
@@ -49,3 +50,4 @@ class CommandHandler():
                 except Exception as exception:
                     self.logger.warn(f"{self.incoming_commands.get(cmd).__name__} - {exception}")
                     await event.reply(f"`An error occurred in {self.incoming_commands.get(cmd).__name__}: {exception}`")
+                    raise exception
