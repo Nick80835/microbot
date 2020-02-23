@@ -17,10 +17,41 @@ import inspect
 import io
 
 from PIL import Image
+from speedtest import Speedtest
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
+
+
+@ldr.add(pattern="speed")
+async def iamspeed(event):
+    await event.edit("`Running speed test…`")
+    test = Speedtest()
+
+    test.get_best_server()
+    test.download()
+    test.upload()
+    test.results.share()
+    result = test.results.dict()
+
+    await event.edit(
+        f"`Started at: {result['timestamp']}\n"
+        f"Download: {speed_convert(result['download'])}\n"
+        f"Upload: {speed_convert(result['upload'])}\n"
+        f"Ping: {result['ping']} milliseconds\n"
+        f"ISP: {result['client']['isp']}`"
+    )
+
+
+def speed_convert(size):
+    power = 2**10
+    zero = 0
+    units = {0: '', 1: 'Kilobits/s', 2: 'Megabits/s', 3: 'Gigabits/s', 4: 'Terabits/s'}
+    while size > power:
+        size /= power
+        zero += 1
+    return f"{round(size, 2)} {units[zero]}"
 
 
 @ldr.add(pattern="b2d")
