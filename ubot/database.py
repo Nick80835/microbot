@@ -43,4 +43,8 @@ class Database():
     async def single_row_read(self, table, columns, row):
         await self.ensure_table(table, columns)
         content = await self.db.fetch_one(f"select {columns[1]} from {table} where {columns[0]} = '{row}'")
-        return content[0]
+
+        if content:
+            return content[0]
+        else:
+            return None
