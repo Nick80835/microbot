@@ -16,12 +16,14 @@
 import inspect
 import io
 
+from gtts import gTTS
 from PIL import Image
 from speedtest import Speedtest
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
+tts_lang = "EN"
 
 
 @ldr.add(pattern="speed")
@@ -52,6 +54,45 @@ def speed_convert(size):
         size /= power
         zero += 1
     return f"{round(size, 2)} {units[zero]}"
+
+
+@ldr.add(pattern="lang")
+async def set_lang(event):
+    global tts_lang
+    tts_lang = event.pattern_match.group(1)
+    await event.edit(f"`Default language changed to `**{tts_lang}**")
+
+
+@ldr.add(pattern="tts")
+async def text_to_speech(event):
+    await event.edit("`Processing…`")
+    message, reply = await get_text_arg(event)
+
+    if not message or message == "":
+        await event.edit("`Give me text or reply to text to use TTS.`")
+        return
+
+    tts_bytesio = io.BytesIO()
+    tts_bytesio.name = "tts.mp3"
+
+    try:
+        tts = gTTS(message, lang=tts_lang)
+        tts.write_to_fp(tts_bytesio)
+        tts_bytesio.seek(0)
+    except AssertionError:
+        await event.edit('`The text is empty.\n'
+                         'Nothing left to speak after pre-precessing, '
+                         'tokenizing and cleaning.`')
+        return
+    except ValueError:
+        await event.edit('`Language is not supported.`')
+        return
+    except RuntimeError:
+        await event.edit('`Error loading the languages dictionary.`')
+        return
+
+    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
+    await event.delete()
 
 
 @ldr.add(pattern="b2d")
@@ -189,3 +230,18 @@ async def stickertopng(event):
     sticker_png_io.seek(0)
 
     await event.reply(file=sticker_png_io, force_document=True)
+
+
+async def get_text_arg(event):
+    text_arg = event.pattern_match.group(1)
+    reply = None
+
+    if text_arg:
+        pass
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        text_arg = reply.text
+    else:
+        text_arg = None
+
+    return text_arg, reply
