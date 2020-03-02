@@ -54,14 +54,6 @@ async def shutdown(event):
     await micro_bot.stop_client()
 
 
-@ldr.add(pattern="ping")
-async def ping(event):
-    start = time_ns()
-    reply = await event.reply("`Ping…`")
-    time_taken_ms = (time_ns() - start) / 1000000
-    await reply.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
-
-
 #@ldr.add(pattern="prefix")
 async def change_prefix(event):
     new_prefix = event.pattern_match.group(1)
