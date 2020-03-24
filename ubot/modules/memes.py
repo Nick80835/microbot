@@ -63,6 +63,24 @@ async def vapor(event):
     await event.edit(vapor_text)
 
 
+@ldr.add(pattern="pop")
+async def popifycmd(event):
+    text_arg = await get_text_arg(event)
+
+    pop_text = await popify(text_arg)
+
+    await event.edit(pop_text)
+
+
+@ldr.add(pattern="cheem")
+async def cheemifycmd(event):
+    text_arg = await get_text_arg(event)
+
+    cheems_text = await cheemify(text_arg)
+
+    await event.edit(cheems_text)
+
+
 @ldr.add(pattern="zal")
 async def zalgo(event):
     text_arg = await get_text_arg(event)
@@ -123,6 +141,27 @@ async def shitpostify(text):
     text = text.replace("though", "tho")
     text = text.replace("cat", "pussy")
     text = text.replace("dark", "dank")
+
+    return text
+
+
+async def popify(text):
+    text = text.replace(" ", "!_")
+
+    return text
+
+
+async def cheemify(text):
+    text = text.replace("se", "mse")
+    text = text.replace("ck", "mk")
+    text = text.replace("as", "ams")
+    text = text.replace("n", "m")
+    text = text.replace("ab", "amb")
+    text = text.replace("lp", "lmp")
+    text = text.replace("ke", "mke")
+    text = text.replace("ec", "emc")
+    text = text.replace("ig", "img")
+    text = text.replace("ob", "omb")
 
     return text
 
