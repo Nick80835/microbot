@@ -162,6 +162,9 @@ async def cheemify(text):
     text = text.replace("ec", "emc")
     text = text.replace("ig", "img")
     text = text.replace("ob", "omb")
+    text = text.replace("pep", "pemp")
+    text = text.replace("pop", "pomp")
+    text = text.replace("rib", "rimb")
 
     return text
 
