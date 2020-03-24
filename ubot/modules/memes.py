@@ -59,20 +59,26 @@ async def vapor(event):
 
 @ldr.add(pattern="pop")
 async def popifycmd(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     pop_text = await popify(text_arg)
 
-    await event.edit(pop_text)
+    if reply:
+        await reply.reply(pop_text)
+    else:
+        await event.reply(pop_text)
 
 
 @ldr.add(pattern="cheem")
 async def cheemifycmd(event):
-    text_arg = await get_text_arg(event)
+    text_arg, reply = await get_text_arg(event)
 
     cheems_text = await cheemify(text_arg)
 
-    await event.edit(cheems_text)
+    if reply:
+        await reply.reply(cheems_text)
+    else:
+        await event.reply(cheems_text)
 
 
 @ldr.add(pattern="zal")
