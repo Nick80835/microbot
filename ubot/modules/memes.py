@@ -152,7 +152,8 @@ async def popify(text):
 
 
 async def cheemify(text):
-    text = text.replace("se", "ms")
+    text = text.replace("ese", "ms")
+    text = text.replace("se", "mse")
     text = text.replace("ck", "mk")
     text = text.replace("as", "ams")
     text = text.replace("n", "m")
