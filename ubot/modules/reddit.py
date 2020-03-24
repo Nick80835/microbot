@@ -122,3 +122,8 @@ async def imsorryjon(event):
 @ldr.add(pattern="tihi")
 async def thanksihateit(event):
     await imagefetcher(event, "TIHI")
+
+
+@ldr.add(pattern="gab")
+async def tenma(event):
+    await imagefetcher(event, "tenma")
