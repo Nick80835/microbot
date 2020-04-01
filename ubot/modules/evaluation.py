@@ -4,6 +4,7 @@ import inspect
 import io
 from re import sub
 
+import wikipedia
 from gtts import gTTS
 from PIL import Image
 from requests import get
@@ -112,6 +113,29 @@ async def ip_lookup(event):
 
     for key, value in fixed_lookup.items():
         text = text + f"**{key}:** `{value}`\n"
+
+    await event.edit(text)
+
+
+@ldr.add(pattern="wiki")
+async def wiki_cmd(event):
+    query, _ = await get_text_arg(event)
+
+    if not query:
+        await event.edit("`You didn't specify what to search for!`")
+        return
+    
+    await event.edit("`Processing…`")
+
+    wiki_results = wikipedia.search(query)
+
+    text = f"**Results for:**` {query}`\n\n"
+
+    for result in wiki_results:
+        try:
+            text +=  f"`> `[{result}]({wikipedia.page(result).url})\n"
+        except:
+            pass
 
     await event.edit(text)
 
