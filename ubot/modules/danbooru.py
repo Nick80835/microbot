@@ -9,7 +9,7 @@ ldr = micro_bot.loader
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 
 
-@ldr.add(pattern="dan(s|x|q|)")
+@ldr.add(pattern="dan(s|x|q|)(f|)")
 async def danbooru(event):
     await event.edit(f"`Processing…`")
 
@@ -22,7 +22,12 @@ async def danbooru(event):
     else:
         rating = ""
 
-    search_query = event.pattern_match.group(2)
+    if event.pattern_match.group(2):
+        as_file = True
+    else:
+        as_file = False
+
+    search_query = event.pattern_match.group(3)
 
     params = {"limit": 1,
               "random": "true",
@@ -55,7 +60,7 @@ async def danbooru(event):
 
     for image_url in valid_urls:
         try:
-            await event.client.send_file(event.chat_id, file=image_url)
+            await event.client.send_file(event.chat_id, file=image_url, force_document=as_file)
             await event.delete()
             return
         except:
