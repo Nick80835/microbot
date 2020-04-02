@@ -42,7 +42,6 @@ async def gelbooru(event):
     async with session.get(GEL_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
-            print(response)
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
             return
