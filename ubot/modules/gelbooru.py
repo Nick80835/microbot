@@ -13,8 +13,6 @@ GEL_URL = "https://gelbooru.com/index.php"
 
 @ldr.add(pattern="gel(s|x|q|)(f|)")
 async def gelbooru(event):
-    await event.edit(f"`Processing…`")
-
     if "x" in event.pattern_match.group(0):
         rating = "Rating:explicit"
     elif "s" in event.pattern_match.group(0):
@@ -43,13 +41,13 @@ async def gelbooru(event):
         if response.status == 200:
             response = await response.json()
         else:
-            await event.edit(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
             return
 
     await session.close()
 
     if not response:
-        await event.edit(f"`No results for query: `**{search_query}**")
+        await event.reply(f"`No results for query: `**{search_query}**")
         return
 
     response = choice(response)
@@ -61,15 +59,14 @@ async def gelbooru(event):
             valid_urls.append(response[url])
 
     if not valid_urls:
-        await event.edit(f"`Failed to find URLs for query: `**{search_query}**")
+        await event.reply(f"`Failed to find URLs for query: `**{search_query}**")
         return
 
     for image_url in valid_urls:
         try:
-            await event.client.send_file(event.chat_id, file=image_url, force_document=as_file)
-            await event.delete()
+            await event.reply(file=image_url, force_document=as_file)
             return
         except:
             pass
 
-    await event.edit(f"`Failed to fetch media for query: `**{search_query}**")
+    await event.reply(f"`Failed to fetch media for query: `**{search_query}**")
