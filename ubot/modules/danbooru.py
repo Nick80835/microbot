@@ -58,7 +58,7 @@ async def danbooru(event):
 
     for image_url in valid_urls:
         try:
-            await event.reply(file=image_url)
+            await event.reply(file=image_url, force_document=as_file)
             return
         except:
             pass

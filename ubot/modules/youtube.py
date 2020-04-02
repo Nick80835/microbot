@@ -13,7 +13,7 @@ async def youtube_cmd(event):
     video = pafy.new(query)
     video_stream = video.getbest()
     try:
-        await event.client.send_file(event.chat_id, file=video_stream.url)
+        await event.reply(file=video_stream.url)
     except:
         await event.reply(f"`Download failed: `[URL]({video_stream.url})")
 
@@ -24,6 +24,6 @@ async def youtube_audio_cmd(event):
     video = pafy.new(query)
     video_stream = video.getbestaudio()
     try:
-        await event.client.send_file(event.chat_id, file=video_stream.url)
+        await event.reply(file=video_stream.url)
     except:
         await event.reply(f"`Download failed: `[URL]({video_stream.url})")
