@@ -11,7 +11,7 @@ ldr = micro_bot.loader
 GEL_URL = "https://gelbooru.com/index.php"
 
 
-@ldr.add(pattern="gel(s|x|q|)")
+@ldr.add(pattern="gel(s|x|q|)(f|)")
 async def gelbooru(event):
     await event.edit(f"`Processing…`")
 
@@ -24,7 +24,12 @@ async def gelbooru(event):
     else:
         rating = ""
 
-    search_query = event.pattern_match.group(2)
+    if event.pattern_match.group(2):
+        as_file = True
+    else:
+        as_file = False
+
+    search_query = event.pattern_match.group(3)
 
     params = {"page": "dapi",
               "s": "post",
@@ -62,7 +67,7 @@ async def gelbooru(event):
 
     for image_url in valid_urls:
         try:
-            await event.client.send_file(event.chat_id, file=image_url)
+            await event.client.send_file(event.chat_id, file=image_url, force_document=as_file)
             await event.delete()
             return
         except:
