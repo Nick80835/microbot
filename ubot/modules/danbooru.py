@@ -9,7 +9,7 @@ ldr = micro_bot.loader
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 
 
-@ldr.add(pattern="dan(s|x|q|)")
+@ldr.add(pattern="dan(s|x|q|)(f|)")
 async def danbooru(event):
     if "x" in event.pattern_match.group(0):
         rating = "Rating:explicit"
@@ -20,7 +20,12 @@ async def danbooru(event):
     else:
         rating = ""
 
-    search_query = event.pattern_match.group(2)
+    if event.pattern_match.group(2):
+        as_file = True
+    else:
+        as_file = False
+
+    search_query = event.pattern_match.group(3)
 
     params = {"limit": 1,
               "random": "true",
