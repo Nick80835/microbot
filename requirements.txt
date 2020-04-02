@@ -8,3 +8,5 @@ praw
 speedtest-cli
 telethon
 wikipedia
+Pafy
+youtube-dl
