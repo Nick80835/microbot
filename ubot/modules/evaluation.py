@@ -11,13 +11,6 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="corona")
-async def corona(event):
-    corona_data = get("https://corona.lmao.ninja/all").json()
-    response_text = f"`Cases: `**{corona_data['cases']}**\n`Deaths: `**{corona_data['deaths']}**\n`Recoveries: `**{corona_data['recovered']}**"
-    await event.reply(response_text)
-
-
 @ldr.add(pattern="chatid")
 async def chatidgetter(event):
     if event.is_reply:
