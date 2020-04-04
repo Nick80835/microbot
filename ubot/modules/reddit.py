@@ -43,7 +43,7 @@ async def bodyfetcherfallback(sub):
     shuffle(hot_list)
 
     for i in hot_list:
-        if i.selftext:
+        if i.selftext and not i.permalink in i.url:
             return i.selftext, i.title
 
     return None, None
@@ -89,10 +89,11 @@ async def titlefetcher(event, sub):
 async def bodyfetcher(event, sub):
     for _ in range(10):
         post = REDDIT.subreddit(sub).random()
+        body = None
 
         if not post:
-            body, title = await titlefetcherfallback(sub)
-        elif post.selftext:
+            body, title = await bodyfetcherfallback(sub)
+        elif post.selftext and not post.permalink is post.url:
             body = post.selftext
             title = post.title
 
