@@ -56,7 +56,7 @@ class Loader():
         def decorator(func):
             if incoming:
                 self.command_handler.incoming_commands[args['pattern']] = func
-            if outgoing:
+            elif outgoing:
                 self.command_handler.outgoing_commands[args['pattern']] = func
 
         return decorator
