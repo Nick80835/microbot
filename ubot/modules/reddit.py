@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import io
-from random import choice
+from random import choice, shuffle
 
 import praw
 
@@ -35,6 +35,18 @@ async def titlefetcherfallback(sub):
     hot_list = list(hot.__iter__())
 
     return choice(hot_list).title
+
+
+async def bodyfetcherfallback(sub):
+    hot = REDDIT.subreddit(sub).hot()
+    hot_list = list(hot.__iter__())
+    shuffle(hot_list)
+
+    for i in hot_list:
+        if i.selftext:
+            return i.selftext, i.title
+
+    return None, None
 
 
 async def imagefetcher(event, sub):
@@ -74,6 +86,27 @@ async def titlefetcher(event, sub):
     await event.reply(title)
 
 
+async def bodyfetcher(event, sub):
+    await event.edit(f"`Fetching from `**r/{sub}**`…`")
+
+    for _ in range(10):
+        post = REDDIT.subreddit(sub).random()
+
+        if not post:
+            body, title = await titlefetcherfallback(sub)
+        elif post.selftext:
+            body = post.selftext
+            title = post.title
+
+        if not body:
+            continue
+
+        await event.edit(f"**{title}**\n\n{body}")
+        return
+    
+    await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
+
+
 @ldr.add(pattern="redi")
 async def redimg(event):
     sub = event.pattern_match.group(1)
@@ -92,6 +125,16 @@ async def redtit(event):
         await titlefetcher(event, sub)
     else:
         await event.reply("Syntax: .redt <subreddit name>")
+
+
+@ldr.add(pattern="redb")
+async def redbod(event):
+    sub = event.pattern_match.group(1)
+
+    if sub:
+        await bodyfetcher(event, sub)
+    else:
+        await event.edit("Syntax: .redb <subreddit name>")
 
 
 @ldr.add(pattern="suffer")
