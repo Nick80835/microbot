@@ -87,8 +87,6 @@ async def titlefetcher(event, sub):
 
 
 async def bodyfetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
-
     for _ in range(10):
         post = REDDIT.subreddit(sub).random()
 
@@ -101,10 +99,10 @@ async def bodyfetcher(event, sub):
         if not body:
             continue
 
-        await event.edit(f"**{title}**\n\n{body}")
+        await event.reply(f"**{title}**\n\n{body}")
         return
     
-    await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
+    await event.reply(f"`Failed to find any valid content on `**r/{sub}**`!`")
 
 
 @ldr.add(pattern="redi")
@@ -134,7 +132,7 @@ async def redbod(event):
     if sub:
         await bodyfetcher(event, sub)
     else:
-        await event.edit("Syntax: .redb <subreddit name>")
+        await event.reply("Syntax: .redb <subreddit name>")
 
 
 @ldr.add(pattern="suffer")
