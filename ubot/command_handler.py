@@ -15,7 +15,7 @@ class CommandHandler():
 
     async def handle_outgoing(self, event):
         for cmd in self.outgoing_commands.keys():
-            if search(cmd, event.text):
+            if search(cmd, event.text) and not event.via_bot_id:
                 event.pattern_match = search(cmd, event.text)
 
                 try:
@@ -28,7 +28,7 @@ class CommandHandler():
 
     async def handle_incoming(self, event):
         for cmd in self.incoming_commands.keys():
-            if search(cmd, event.text):
+            if search(cmd, event.text) and not event.via_bot_id:
                 event.pattern_match = search(cmd, event.text)
 
                 try:
