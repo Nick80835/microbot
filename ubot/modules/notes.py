@@ -50,9 +50,6 @@ async def getnote(event):
 
 @ldr.add(incoming=True, noprefix=True, pattern="#(.*)")
 async def getnoteincoming(event):
-    if not micro_bot.settings.get_bool("incoming_allowed"):
-        return
-
     notename = event.pattern_match.group(0).replace(" ", "_").lstrip("#")
 
     if not notename:

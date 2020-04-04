@@ -17,7 +17,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, logger)
+        self.command_handler = CommandHandler(client, logger, settings)
         self.botversion = "0.1.3"
 
     def load_all_modules(self):
@@ -56,7 +56,7 @@ class Loader():
         def decorator(func):
             if incoming:
                 self.command_handler.incoming_commands[args['pattern']] = func
-            elif outgoing:
+            if outgoing:
                 self.command_handler.outgoing_commands[args['pattern']] = func
 
         return decorator
