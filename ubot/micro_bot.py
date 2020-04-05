@@ -8,7 +8,6 @@ from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
-from .database import Database
 from .loader import Loader
 from .settings import Settings
 
@@ -23,18 +22,13 @@ class MicroBot():
         self.settings = Settings()
         self.logger = None
         self.loader = None
-        self.database = None
 
     def start_microbot(self):
         self.start_logger()
         self.start_client()
-        self.start_database()
         self.start_loader()
         self.loader.load_all_modules()
         self.client.run_until_disconnected()
-
-    def start_database(self):
-        self.database = Database(self.client)
 
     def start_loader(self):
         self.loader = Loader(self.client, self.logger, self.settings)

@@ -1,6 +1,5 @@
 aiohttp
 cryptg
-databases[sqlite]
 hachoir
 pillow
 praw
