@@ -114,7 +114,7 @@ async def bodyfetcher(event, sub):
 
 @ldr.add(pattern="redi")
 async def redimg(event):
-    sub = event.pattern_match.group(1)
+    sub = event.pattern_match.group(1).replace(" ", "_")
 
     if sub:
         await imagefetcher(event, sub)
@@ -124,7 +124,7 @@ async def redimg(event):
 
 @ldr.add(pattern="redt")
 async def redtit(event):
-    sub = event.pattern_match.group(1)
+    sub = event.pattern_match.group(1).replace(" ", "_")
 
     if sub:
         await titlefetcher(event, sub)
@@ -134,7 +134,7 @@ async def redtit(event):
 
 @ldr.add(pattern="redb")
 async def redbod(event):
-    sub = event.pattern_match.group(1)
+    sub = event.pattern_match.group(1).replace(" ", "_")
 
     if sub:
         await bodyfetcher(event, sub)
