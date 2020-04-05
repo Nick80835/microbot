@@ -65,6 +65,10 @@ async def imagefetcher(event, sub):
                 image_url = post.url
                 title = post.title
                 break
+            elif "v.redd.it" in post.url:
+                image_url = post.media['reddit_video']['fallback_url'].split("?")[0]
+                title = post.title
+                break
 
     if not image_url:
         await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
