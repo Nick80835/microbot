@@ -1,6 +1,5 @@
 aiohttp
 cryptg
-databases[sqlite]
 gtts
 hachoir
 pillow
