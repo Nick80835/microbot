@@ -77,12 +77,8 @@ async def change_prefix(event):
         return
 
     micro_bot.settings.set_config("cmd_prefix", new_prefix)
-    errors = ldr.reload_all_modules()
 
-    if errors:
-        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**` but there were errors:`\n\n{errors}")
-    else:
-        await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
+    await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
 
 
 @ldr.add(pattern="repo")

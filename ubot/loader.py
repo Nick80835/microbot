@@ -42,22 +42,14 @@ class Loader():
         return errors or None
 
     def add(self, **args):
-        prefix = escape(self.settings.get_config("cmd_prefix") or '.')
         outgoing = args.get('outgoing', True)
         incoming = args.get('incoming', False)
 
-        if args.get('noprefix', None):
-            del args['noprefix']
-            prefix = ''
-
-        if args.get('pattern', None) is not None:
-            args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
-
         def decorator(func):
             if incoming:
-                self.command_handler.incoming_commands[args['pattern']] = func
+                self.command_handler.incoming_commands[args['pattern']] = [func, args.get('noprefix', False)]
             elif outgoing:
-                self.command_handler.outgoing_commands[args['pattern']] = func
+                self.command_handler.outgoing_commands[args['pattern']] = [func, args.get('noprefix', False)]
 
         return decorator
 
