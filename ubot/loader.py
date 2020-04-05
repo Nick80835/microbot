@@ -49,7 +49,7 @@ class Loader():
             prefix = ''
 
         if not args.get('isfilter', False) and args.get('pattern', None) is not None:
-            args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$)(.*)"
+            args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$|_)(.*)"
         else:
             del args['isfilter']
             args['pattern'] = f"(?is)(.*){args['pattern']}(.*)"
