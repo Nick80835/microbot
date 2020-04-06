@@ -40,6 +40,7 @@ async def danbooru(event):
             response = await response.json()
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
+            await session.close()
             return
 
     await session.close()
