@@ -15,8 +15,6 @@ CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
 
 @ldr.add(pattern="4c(f|)")
 async def fourchan(event):
-    await event.edit(f"`Processing…`")
-
     if event.pattern_match.group(1):
         as_file = True
     else:
@@ -31,7 +29,7 @@ async def fourchan(event):
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
         else:
-            await event.edit(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
             return
 
@@ -41,21 +39,20 @@ async def fourchan(event):
             post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i])
             post_file_url = CONTENT_URL.format(board, post_info[0], post_info[1])
         else:
-            await event.edit(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
             return
 
     await session.close()
 
     if not response:
-        await event.edit(f"`No results for board: `**{board}**")
+        await event.reply(f"`No results for board: `**{board}**")
         return
 
     try:
-        await event.client.send_file(event.chat_id, file=post_file_url, force_document=as_file, caption=post_info[2].replace("<br>", "\n"), parse_mode="html")
-        await event.delete()
+        await event.reply(post_info[2].replace("<br>", "\n"), file=post_file_url, force_document=as_file, parse_mode="html")
         return
     except:
         pass
 
-    await event.edit(f"`Failed to fetch media for board: `**{board}**")
+    await event.reply(f"`Failed to fetch media for board: `**{board}**")
