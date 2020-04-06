@@ -42,6 +42,7 @@ async def gelbooru(event):
             response = await response.json()
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await session.close()
             return
 
     await session.close()
