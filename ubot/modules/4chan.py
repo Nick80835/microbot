@@ -50,7 +50,7 @@ async def fourchan(event):
         return
 
     try:
-        await event.reply(post_info[2].replace("<br>", "\n"), file=post_file_url, force_document=as_file, parse_mode="html")
+        await event.reply(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=post_file_url, force_document=as_file, parse_mode="html")
         return
     except:
         pass
