@@ -11,6 +11,7 @@ ldr = micro_bot.loader
 BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
 POST_URL = "https://a.4cdn.org/{0}/thread/{1}.json"
 CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
+VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 
 @ldr.add(pattern="4c(f|)")
@@ -36,7 +37,7 @@ async def fourchan(event):
     async with session.get(POST_URL.format(board, op_id)) as response:
         if response.status == 200:
             post_response = await response.json()
-            post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i])
+            post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS])
             post_file_url = CONTENT_URL.format(board, post_info[0], post_info[1])
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
