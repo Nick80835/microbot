@@ -17,7 +17,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, logger)
+        self.command_handler = CommandHandler(client, logger, settings)
         self.botversion = "0.1.3"
 
     def load_all_modules(self):
@@ -42,20 +42,12 @@ class Loader():
         return errors or None
 
     def add(self, **args):
-        prefix = escape(self.settings.get_config("cmd_prefix") or '.')
-
-        if args.get('noprefix', None):
-            del args['noprefix']
-            prefix = ''
-
-        if not args.get('isfilter', False) and args.get('pattern', None) is not None:
-            args['pattern'] = f"(?is)^{prefix}{args['pattern']}(?: |$|_)(.*)"
-        else:
-            del args['isfilter']
-            args['pattern'] = f"(?is)(.*){args['pattern']}(.*)"
-
         def decorator(func):
-            self.command_handler.incoming_commands[args['pattern']] = func
+            self.command_handler.incoming_commands[args['pattern']] = {
+                "function": func,
+                "noprefix": args.get('noprefix', False),
+                "sudo": args.get('sudo', False)
+            }
 
         return decorator
 
