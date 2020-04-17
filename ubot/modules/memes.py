@@ -175,16 +175,7 @@ async def mockify(text):
     mock_text = ""
 
     for letter in text:
-        if len(mock_text) >= 2:
-            if ''.join(mock_text[-2:-1]).islower():
-                mock_text += letter.upper()
-                continue
-
-            if ''.join(mock_text[-2:-1]).isupper():
-                mock_text += letter.lower()
-                continue
-
-        if randint(1, 2) == randint(1, 2):
+        if choice([True, False]):
             mock_text += letter.lower()
         else:
             mock_text += letter.upper()
