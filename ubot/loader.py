@@ -35,6 +35,8 @@ class Loader():
         for module in self.loaded_modules:
             try:
                 reload(module)
+            except ModuleNotFoundError:
+                pass
             except Exception as exception:
                 errors += f"`Error while reloading {module.__name__} -> {exception}\n\n`"
                 raise exception
