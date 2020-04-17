@@ -27,7 +27,6 @@ class Loader():
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
     def reload_all_modules(self):
-        self.command_handler.outgoing_commands = {}
         self.command_handler.incoming_commands = {}
 
         errors = ""
