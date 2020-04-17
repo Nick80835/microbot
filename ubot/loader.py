@@ -49,9 +49,15 @@ class Loader():
 
         def decorator(func):
             if incoming:
-                self.command_handler.incoming_commands[args['pattern']] = [func, args.get('noprefix', False)]
+                self.command_handler.incoming_commands[args['pattern']] = {
+                    "function": func,
+                    "noprefix": args.get('noprefix', False)
+                }
             elif outgoing:
-                self.command_handler.outgoing_commands[args['pattern']] = [func, args.get('noprefix', False)]
+                self.command_handler.outgoing_commands[args['pattern']] = {
+                    "function": func,
+                    "noprefix": args.get('noprefix', False)
+                }
 
             return func
 

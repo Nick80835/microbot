@@ -22,16 +22,16 @@ class CommandHandler():
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.outgoing_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value[1] else prefix, key), event.text)
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
 
             if pattern_match:
                 event.pattern_match = pattern_match
 
                 try:
-                    await value[0](event)
+                    await value["function"](event)
                 except Exception as exception:
-                    self.logger.warn(f"{value[0].__name__} - {exception}")
-                    await event.reply(f"`An error occurred in {value[0].__name__}: {exception}`")
+                    self.logger.warn(f"{value['function'].__name__} - {exception}")
+                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
                     raise exception
 
     async def handle_incoming(self, event):
@@ -41,14 +41,14 @@ class CommandHandler():
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.outgoing_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value[1] else prefix, key), event.text)
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
 
             if pattern_match:
                 event.pattern_match = pattern_match
 
                 try:
-                    await value[0](event)
+                    await value["function"](event)
                 except Exception as exception:
-                    self.logger.warn(f"{value[0].__name__} - {exception}")
-                    await event.reply(f"`An error occurred in {value[0].__name__}: {exception}`")
+                    self.logger.warn(f"{value['function'].__name__} - {exception}")
+                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
                     raise exception
