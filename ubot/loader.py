@@ -51,6 +51,8 @@ class Loader():
                 "sudo": args.get('sudo', False)
             }
 
+            return func
+
         return decorator
 
     def _find_all_modules(self):
