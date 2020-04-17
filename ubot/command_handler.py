@@ -40,7 +40,7 @@ class CommandHandler():
 
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
-        for key, value in self.outgoing_commands.items():
+        for key, value in self.incoming_commands.items():
             pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
 
             if pattern_match:
