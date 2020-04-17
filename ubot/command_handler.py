@@ -16,34 +16,38 @@ class CommandHandler():
         client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
 
     async def handle_outgoing(self, event):
+        if event.via_bot_id:
+            return
+
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.outgoing_commands.items():
-            pattern = self.pattern_template.format("" if value[1] else prefix, key)
+            pattern_match = search(self.pattern_template.format("" if value[1] else prefix, key), event.text)
 
-            if search(pattern, event.text) and not event.via_bot_id:
-                event.pattern_match = search(pattern, event.text)
+            if pattern_match:
+                event.pattern_match = pattern_match
 
                 try:
                     await value[0](event)
-                    return
                 except Exception as exception:
                     self.logger.warn(f"{value[0].__name__} - {exception}")
                     await event.reply(f"`An error occurred in {value[0].__name__}: {exception}`")
                     raise exception
 
     async def handle_incoming(self, event):
+        if event.via_bot_id:
+            return
+
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
-        for key, value in self.incoming_commands.items():
-            pattern = self.pattern_template.format("" if value[1] else prefix, key)
+        for key, value in self.outgoing_commands.items():
+            pattern_match = search(self.pattern_template.format("" if value[1] else prefix, key), event.text)
 
-            if search(pattern, event.text) and not event.via_bot_id:
-                event.pattern_match = search(pattern, event.text)
+            if pattern_match:
+                event.pattern_match = pattern_match
 
                 try:
                     await value[0](event)
-                    return
                 except Exception as exception:
                     self.logger.warn(f"{value[0].__name__} - {exception}")
                     await event.reply(f"`An error occurred in {value[0].__name__}: {exception}`")
