@@ -23,7 +23,7 @@ class CommandHandler():
             pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
 
             if pattern_match:
-                if value["sudo"] and str(event.from_id) != self.settings.get_config("owner_id"):
+                if value["sudo"] and str(event.from_id) not in self.settings.get_config("owner_id").split(","):
                     print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
                     continue
 
