@@ -53,6 +53,8 @@ class Loader():
             elif outgoing:
                 self.command_handler.outgoing_commands[args['pattern']] = [func, args.get('noprefix', False)]
 
+            return func
+
         return decorator
 
     def _find_all_modules(self):
