@@ -94,7 +94,7 @@ async def bird(event):
     await event.delete()
 
 
-@ldr.add(pattern="cat")
+@ldr.add(pattern="(cat|pussy)")
 async def cat(event):
     neko = await neko_atsume(IMGPARAM)
 
@@ -106,7 +106,7 @@ async def cat(event):
     await event.delete()
 
 
-@ldr.add(pattern="cathd")
+@ldr.add(pattern="(cathd|pussyhd)")
 async def cathd(event):
     neko = await neko_atsume(IMGPARAM)
 
@@ -118,7 +118,7 @@ async def cathd(event):
     await event.delete()
 
 
-@ldr.add(pattern="catgif")
+@ldr.add(pattern="(catgif|pussygif)")
 async def catgif(event):
     neko = await neko_atsume(GIFPARAM)
 
@@ -130,7 +130,7 @@ async def catgif(event):
     await event.delete()
 
 
-@ldr.add(pattern="dog")
+@ldr.add(pattern="(dog|bitch)")
 async def dog(event):
     inu = await inu_atsume(IMGPARAM)
 
@@ -142,7 +142,7 @@ async def dog(event):
     await event.delete()
 
 
-@ldr.add(pattern="doghd")
+@ldr.add(pattern="(doghd|bitchhd)")
 async def doghd(event):
     inu = await inu_atsume(IMGPARAM)
 
@@ -154,7 +154,7 @@ async def doghd(event):
     await event.delete()
 
 
-@ldr.add(pattern="doggif")
+@ldr.add(pattern="(doggif|bitchgif)")
 async def doggif(event):
     inu = await inu_atsume(GIFPARAM)
 
