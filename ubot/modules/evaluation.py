@@ -3,12 +3,40 @@
 import inspect
 import io
 
+from gtts import gTTS
 from PIL import Image
 from requests import get
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
+
+
+@ldr.add(pattern="tts")
+async def text_to_speech(event):
+    message, reply = await get_text_arg(event)
+
+    if not message or message == "":
+        await event.reply("`Give me text or reply to text to use TTS.`")
+        return
+
+    tts_bytesio = io.BytesIO()
+    tts_bytesio.name = "tts.mp3"
+
+    try:
+        tts = gTTS(message, lang="EN")
+        tts.write_to_fp(tts_bytesio)
+        tts_bytesio.seek(0)
+    except AssertionError:
+        await event.reply('`The text is empty.\n'
+                         'Nothing left to speak after pre-precessing, '
+                         'tokenizing and cleaning.`')
+        return
+    except RuntimeError:
+        await event.reply('`Error loading the languages dictionary.`')
+        return
+
+    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply or event)
 
 
 @ldr.add(pattern="chatid")
@@ -88,3 +116,18 @@ async def stickertopng(event):
     sticker_png_io.seek(0)
 
     await event.reply(file=sticker_png_io, force_document=True)
+
+
+async def get_text_arg(event):
+    text_arg = event.pattern_match.group(1)
+    reply = None
+
+    if text_arg:
+        pass
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        text_arg = reply.text
+    else:
+        text_arg = None
+
+    return text_arg, reply
