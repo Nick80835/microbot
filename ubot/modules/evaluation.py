@@ -84,6 +84,7 @@ async def text_to_speech(event):
     await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
     await event.delete()
 
+
 @ldr.add(pattern="ip")
 async def ip_lookup(event):
     ip, _ = await get_text_arg(event)
