@@ -33,13 +33,13 @@ async def gelbooru(event):
               "s": "post",
               "q": "index",
               "json": 1,
-              "tags": f"{rating} {search_query}".strip()}
+              "tags": f"{rating} {search_query} sort:random".strip()}
 
     session = ClientSession()
 
     async with session.get(GEL_URL, params=params) as response:
         if response.status == 200:
-            response = await response.json()
+            response = (await response.json())[0]
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
@@ -50,8 +50,6 @@ async def gelbooru(event):
     if not response:
         await event.reply(f"`No results for query: `**{search_query}**")
         return
-
-    response = choice(response)
 
     valid_urls = []
 
