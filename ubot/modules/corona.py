@@ -12,16 +12,16 @@ async def corona(event):
     text_arg = event.pattern_match.group(1)
 
     if text_arg:
-        with get(f"https://corona.lmao.ninja/countries/{text_arg}") as response:
+        with get(f"https://corona.lmao.ninja/v2/countries/{text_arg}") as response:
             if response.status_code == 200:
                 response = response.json()
             else:
                 await event.edit(f"`An error occurred, response code: `**{response.status}**")
                 return
 
-        response_text = f"`Stats for `**{response['country']}**\n\n`Cases: `**{response['cases']}**\n`Deaths: `**{response['deaths']}**\n`Recoveries: `**{response['recovered']}**"
+        response_text = f"`Stats for `**{response['country']}**\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
         await event.edit(response_text)
     else:
-        corona_data = get("https://corona.lmao.ninja/all").json()
-        response_text = f"`Global stats`\n\n`Cases: `**{corona_data['cases']}**\n`Deaths: `**{corona_data['deaths']}**\n`Recoveries: `**{corona_data['recovered']}**"
+        response = get("https://corona.lmao.ninja/v2/all").json()
+        response_text = f"`Global stats`\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
         await event.edit(response_text)
