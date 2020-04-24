@@ -7,7 +7,8 @@ from telethon import events
 
 class CommandHandler():
     def __init__(self, client, logger, settings):
-        self.pattern_template = "(?is)^{0}{1}(?: |$|_)(.*)"
+        self.username = client.loop.run_until_complete(client.get_me()).username
+        self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2})(.*)"
         self.incoming_commands = {}
         self.logger = logger
         self.settings = settings
@@ -20,7 +21,7 @@ class CommandHandler():
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.incoming_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key, self.username), event.text)
 
             if pattern_match:
                 if value["sudo"] and str(event.from_id) not in self.settings.get_config("owner_id").split(","):
