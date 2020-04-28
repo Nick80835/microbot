@@ -8,7 +8,7 @@ from telethon import events
 class CommandHandler():
     def __init__(self, client, logger, settings):
         self.username = client.loop.run_until_complete(client.get_me()).username
-        self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2})(.*)"
+        self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2}(?: |$|_))(.*)"
         self.incoming_commands = {}
         self.logger = logger
         self.settings = settings
