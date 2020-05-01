@@ -25,6 +25,13 @@ async def reload_modules(event):
             pass
 
 
+@ldr.add(pattern="del")
+async def delete_message(event):
+    message_to_delete = await event.get_reply_message()
+    if message_to_delete.from_id == (await event.client.get_me()).id:
+        await message_to_delete.delete()
+
+
 @ldr.add(pattern="alive", sudo=True)
 async def alive(event):
     alive_format = "`μBot is running under {0}.\n\n" \
