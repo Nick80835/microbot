@@ -38,7 +38,7 @@ ldr = micro_bot.loader
 @ldr.add(pattern="deepfry")
 async def deepfryer(event):
     try:
-        frycount = int(event.pattern_match.group(1))
+        frycount = int(event.args)
         if frycount < 1:
             frycount = 1
         elif frycount > 10:

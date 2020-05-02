@@ -27,13 +27,11 @@ async def gelbooru(event):
     else:
         as_file = False
 
-    search_query = event.pattern_match.group(3)
-
     params = {"page": "dapi",
               "s": "post",
               "q": "index",
               "json": 1,
-              "tags": f"{rating} {search_query} sort:random".strip()}
+              "tags": f"{rating} {event.args} sort:random".strip()}
 
     session = ClientSession()
 
@@ -48,7 +46,7 @@ async def gelbooru(event):
     await session.close()
 
     if not response:
-        await event.reply(f"`No results for query: `**{search_query}**")
+        await event.reply(f"`No results for query: `**{event.args}**")
         return
 
     valid_urls = []
@@ -58,7 +56,7 @@ async def gelbooru(event):
             valid_urls.append(response[url])
 
     if not valid_urls:
-        await event.reply(f"`Failed to find URLs for query: `**{search_query}**")
+        await event.reply(f"`Failed to find URLs for query: `**{event.args}**")
         return
 
     for image_url in valid_urls:
@@ -68,4 +66,4 @@ async def gelbooru(event):
         except:
             pass
 
-    await event.reply(f"`Failed to fetch media for query: `**{search_query}**")
+    await event.reply(f"`Failed to fetch media for query: `**{event.args}**")

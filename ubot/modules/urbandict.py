@@ -14,7 +14,7 @@ UD_RANDOM_URL = 'http://api.urbandictionary.com/v0/random'
 
 @ldr.add(pattern="ud")
 async def urban_dict(event):
-    udquery = event.pattern_match.group(1)
+    udquery = event.args
 
     if udquery:
         params = {'term': udquery}

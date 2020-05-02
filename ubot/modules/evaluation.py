@@ -97,11 +97,9 @@ async def useridgetter(event):
 
 @ldr.add(pattern="profile")
 async def userprofilegetter(event):
-    user_arg = event.pattern_match.group(1)
-
-    if user_arg:
+    if event.args:
         try:
-            user_entity = await event.client.get_entity(user_arg)
+            user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
             await event.reply("`The ID or username you provided was invalid!`")
             return
@@ -150,7 +148,7 @@ async def stickertopng(event):
 
 
 async def get_text_arg(event):
-    text_arg = event.pattern_match.group(1)
+    text_arg = event.args
     reply = None
 
     if text_arg:
