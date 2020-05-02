@@ -42,9 +42,11 @@ class Loader():
 
         return errors or None
 
-    def add(self, **args):
+    def add(self, pattern=None, **args):
+        pattern = args.get("pattern", pattern)
+
         def decorator(func):
-            self.command_handler.incoming_commands[args['pattern']] = {
+            self.command_handler.incoming_commands[pattern] = {
                 "function": func,
                 "noprefix": args.get('noprefix', False),
                 "sudo": args.get('sudo', False)

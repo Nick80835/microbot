@@ -14,7 +14,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="speed", sudo=True)
+@ldr.add("speed", sudo=True)
 async def iamspeed(event):
     speed_message = await event.reply("`Running speed test…`")
     test = Speedtest()
@@ -44,7 +44,7 @@ def speed_convert(size):
     return f"{round(size, 2)} {units[zero]}"
 
 
-@ldr.add(pattern="tts")
+@ldr.add("tts")
 async def text_to_speech(event):
     message, reply = await get_text_arg(event)
 
@@ -71,7 +71,7 @@ async def text_to_speech(event):
     await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply or event)
 
 
-@ldr.add(pattern="ip")
+@ldr.add("ip")
 async def ip_lookup(event):
     ip, _ = await get_text_arg(event)
 
@@ -104,7 +104,7 @@ async def ip_lookup(event):
     await event.reply(text)
 
 
-@ldr.add(pattern="chatid")
+@ldr.add("chatid")
 async def chatidgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
@@ -118,7 +118,7 @@ async def chatidgetter(event):
     await event.reply(f"**Chat ID:**` {chat_id}`")
 
 
-@ldr.add(pattern="userid")
+@ldr.add("userid")
 async def useridgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
@@ -129,7 +129,7 @@ async def useridgetter(event):
     await event.reply(f"**User ID:**` {user_id}`")
 
 
-@ldr.add(pattern="profile")
+@ldr.add("profile")
 async def userprofilegetter(event):
     if event.args:
         try:
@@ -160,7 +160,7 @@ async def userprofilegetter(event):
     await event.reply(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
 
 
-@ldr.add(pattern="stickpng")
+@ldr.add("stickpng")
 async def stickertopng(event):
     reply = await event.get_reply_message()
 

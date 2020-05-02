@@ -35,7 +35,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="deepfry")
+@ldr.add("deepfry")
 async def deepfryer(event):
     try:
         frycount = int(event.args)

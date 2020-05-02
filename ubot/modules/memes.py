@@ -18,7 +18,7 @@ owo_faces = "owo uwu owu uwo u-u o-o OwO UwU @-@ ;-; ;_; ._. (._.) (o-o) ('._.) 
 zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̩̟͚͍̞̳̌́̀̑̐̇̎̚͝ ̸̻̠̮̬̻͇͈̮̯̋̄͛̊͋̐̇͝͠ ̵̧̟͎͈̪̜̫̪͖̎͛̀͋͗́̍̊͠ ̵͍͉̟͕͇͎̖̹̔͌̊̏̌̽́̈́͊ͅ ̷̥͚̼̬̦͓͇̗͕͊̏͂͆̈̀̚͘̚ ̵̢̨̗̝̳͉̱̦͖̔̾͒͊͒̎̂̎͝ ̵̞̜̭̦̖̺͉̞̃͂͋̒̋͂̈́͘̕͜ ̶̢̢͇̲̥̗̟̏͛̇̏̊̑̌̔̚ͅͅ ̷̮͖͚̦̦̞̱̠̰̍̆̐͆͆͆̈̌́ ̶̲͚̪̪̪͍̹̜̬͊̆͋̄͒̾͆͝͝ ̴̨̛͍͖͎̞͍̞͕̟͑͊̉͗͑͆͘̕ ̶͕̪̞̲̘̬͖̙̞̽͌͗̽̒͋̾̍̀ ̵̨̧̡̧̖͔̞̠̝̌̂̐̉̊̈́́̑̓ ̶̛̱̼̗̱̙͖̳̬͇̽̈̀̀̎̋͌͝ ̷̧̺͈̫̖̖͈̱͎͋͌̆̈̃̐́̀̈".replace(" ", "")
 
 
-@ldr.add(pattern="cp")
+@ldr.add("cp")
 async def copypasta(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -33,7 +33,7 @@ async def copypasta(event):
         await event.reply(cp_text)
 
 
-@ldr.add(pattern="mock")
+@ldr.add("mock")
 async def mock(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -45,7 +45,7 @@ async def mock(event):
         await event.reply(mock_text)
 
 
-@ldr.add(pattern="vap")
+@ldr.add("vap")
 async def vapor(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -57,7 +57,7 @@ async def vapor(event):
         await event.reply(vapor_text)
 
 
-@ldr.add(pattern="pop")
+@ldr.add("pop")
 async def popifycmd(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -69,7 +69,7 @@ async def popifycmd(event):
         await event.reply(pop_text)
 
 
-@ldr.add(pattern="cheem")
+@ldr.add("cheem")
 async def cheemifycmd(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -81,7 +81,7 @@ async def cheemifycmd(event):
         await event.reply(cheems_text)
 
 
-@ldr.add(pattern="zal")
+@ldr.add("zal")
 async def zalgo(event):
     text_arg, reply = await get_text_arg(event)
 
@@ -93,7 +93,7 @@ async def zalgo(event):
         await event.reply(zalgo_text)
 
 
-@ldr.add(pattern="owo")
+@ldr.add("owo")
 async def owo(event):
     text_arg, reply = await get_text_arg(event)
 
