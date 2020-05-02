@@ -106,7 +106,7 @@ async def owo(event):
 
 
 async def get_text_arg(event):
-    text_arg = event.pattern_match.group(1)
+    text_arg = event.args
     reply = False
 
     if text_arg:

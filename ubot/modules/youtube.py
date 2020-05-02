@@ -9,8 +9,7 @@ ldr = micro_bot.loader
 
 @ldr.add(pattern="yt")
 async def youtube_cmd(event):
-    query = event.pattern_match.group(1)
-    video = pafy.new(query)
+    video = pafy.new(event.args)
     video_stream = video.getbest()
     try:
         await event.reply(file=video_stream.url)
@@ -20,8 +19,7 @@ async def youtube_cmd(event):
 
 @ldr.add(pattern="yta")
 async def youtube_audio_cmd(event):
-    query = event.pattern_match.group(1)
-    video = pafy.new(query)
+    video = pafy.new(event.args)
     video_stream = video.getbestaudio()
     try:
         await event.reply(file=video_stream.url)

@@ -25,11 +25,9 @@ async def danbooru(event):
     else:
         as_file = False
 
-    search_query = event.pattern_match.group(3)
-
     params = {"limit": 1,
               "random": "true",
-              "tags": f"{rating} {search_query}".strip()}
+              "tags": f"{rating} {event.args}".strip()}
 
     session = ClientSession()
 
@@ -44,7 +42,7 @@ async def danbooru(event):
     await session.close()
 
     if not response:
-        await event.reply(f"`No results for query: `**{search_query}**")
+        await event.reply(f"`No results for query: `**{event.args}**")
         return
 
     valid_urls = []
@@ -54,7 +52,7 @@ async def danbooru(event):
             valid_urls.append(response[0][url])
 
     if not valid_urls:
-        await event.reply(f"`Failed to find URLs for query: `**{search_query}**")
+        await event.reply(f"`Failed to find URLs for query: `**{event.args}**")
         return
 
     for image_url in valid_urls:
@@ -64,4 +62,4 @@ async def danbooru(event):
         except:
             pass
 
-    await event.reply(f"`Failed to fetch media for query: `**{search_query}**")
+    await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
