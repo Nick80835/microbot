@@ -2,6 +2,7 @@
 
 import inspect
 import io
+from re import sub
 
 from gtts import gTTS
 from PIL import Image
@@ -68,6 +69,39 @@ async def text_to_speech(event):
         return
 
     await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply or event)
+
+
+@ldr.add(pattern="ip")
+async def ip_lookup(event):
+    ip, _ = await get_text_arg(event)
+
+    if not ip:
+        await event.reply("`Provide an IP!`")
+        return
+
+    lookup_json = get(f"http://ip-api.com/json/{ip}").json()
+    fixed_lookup = {}
+
+    for key, value in lookup_json.items():
+        special = {"lat": "Latitude", "lon": "Longitude", "isp": "ISP", "as": "AS", "asname": "AS name"}
+        if key in special:
+            fixed_lookup[special[key]] = str(value)
+            continue
+
+        key = sub(r"([a-z])([A-Z])", r"\g<1> \g<2>", key)
+        key = key.capitalize()
+
+        if not value:
+            value = "None"
+
+        fixed_lookup[key] = str(value)
+
+    text = ""
+
+    for key, value in fixed_lookup.items():
+        text = text + f"**{key}:** `{value}`\n"
+
+    await event.reply(text)
 
 
 @ldr.add(pattern="chatid")

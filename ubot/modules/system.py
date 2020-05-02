@@ -48,6 +48,14 @@ async def shutdown(event):
     await micro_bot.stop_client()
 
 
+@ldr.add(pattern="ping")
+async def ping(event):
+    start = time_ns()
+    ping_msg = await event.reply("`Ping…`")
+    time_taken_ms = (time_ns() - start) / 1000000
+    await ping_msg.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
+
+
 @ldr.add(pattern="repo")
 async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot")
