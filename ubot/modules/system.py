@@ -11,7 +11,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="reload")
+@ldr.add("reload")
 async def reload_modules(event):
     await event.edit("`Reloading modules…`")
 
@@ -26,7 +26,7 @@ async def reload_modules(event):
             pass
 
 
-@ldr.add(pattern="sysd")
+@ldr.add("sysd")
 async def sysd(event):
     try:
         neo = "neofetch --stdout"
@@ -44,7 +44,7 @@ async def sysd(event):
         await event.edit("`Neofetch not found!`")
 
 
-@ldr.add(pattern="alive")
+@ldr.add("alive")
 async def alive(event):
     alive_format = "`μBot is running under {0}.\n\n" \
                    "Version: {1}\n" \
@@ -54,13 +54,13 @@ async def alive(event):
     await event.edit(alive_format.format(uname().node, ldr.botversion, version.__version__, python_version()))
 
 
-@ldr.add(pattern="shutdown")
+@ldr.add("shutdown")
 async def shutdown(event):
     await event.edit("`Goodbye…`")
     await micro_bot.stop_client()
 
 
-@ldr.add(pattern="ping")
+@ldr.add("ping")
 async def ping(event):
     start = time_ns()
     await event.edit("`Ping…`")
@@ -68,7 +68,7 @@ async def ping(event):
     await event.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
 
 
-@ldr.add(pattern="prefix")
+@ldr.add("prefix")
 async def change_prefix(event):
     new_prefix = event.args
 
@@ -81,12 +81,12 @@ async def change_prefix(event):
     await event.edit(f"`Command prefix successfully changed to `**{new_prefix}**`!`")
 
 
-@ldr.add(pattern="repo")
+@ldr.add("repo")
 async def bot_repo(event):
     await event.edit("https://github.com/Nick80835/microbot")
 
 
-@ldr.add(pattern="toggleincoming")
+@ldr.add("toggleincoming")
 async def toggleincoming(event):
     if micro_bot.settings.get_bool("incoming_allowed"):
         micro_bot.settings.set_config("incoming_allowed", "False")

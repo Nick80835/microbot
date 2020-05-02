@@ -33,7 +33,7 @@ vibe_checks = "Shitting pants…|Unshitting pants…|Checking for good vibes…|
 zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̩̟͚͍̞̳̌́̀̑̐̇̎̚͝ ̸̻̠̮̬̻͇͈̮̯̋̄͛̊͋̐̇͝͠ ̵̧̟͎͈̪̜̫̪͖̎͛̀͋͗́̍̊͠ ̵͍͉̟͕͇͎̖̹̔͌̊̏̌̽́̈́͊ͅ ̷̥͚̼̬̦͓͇̗͕͊̏͂͆̈̀̚͘̚ ̵̢̨̗̝̳͉̱̦͖̔̾͒͊͒̎̂̎͝ ̵̞̜̭̦̖̺͉̞̃͂͋̒̋͂̈́͘̕͜ ̶̢̢͇̲̥̗̟̏͛̇̏̊̑̌̔̚ͅͅ ̷̮͖͚̦̦̞̱̠̰̍̆̐͆͆͆̈̌́ ̶̲͚̪̪̪͍̹̜̬͊̆͋̄͒̾͆͝͝ ̴̨̛͍͖͎̞͍̞͕̟͑͊̉͗͑͆͘̕ ̶͕̪̞̲̘̬͖̙̞̽͌͗̽̒͋̾̍̀ ̵̨̧̡̧̖͔̞̠̝̌̂̐̉̊̈́́̑̓ ̶̛̱̼̗̱̙͖̳̬͇̽̈̀̀̎̋͌͝ ̷̧̺͈̫̖̖͈̱͎͋͌̆̈̃̐́̀̈".replace(" ", "")
 
 
-@ldr.add(pattern="cp")
+@ldr.add("cp")
 async def copypasta(event):
     text_arg = await get_text_arg(event)
 
@@ -45,7 +45,7 @@ async def copypasta(event):
     await event.edit(cp_text)
 
 
-@ldr.add(pattern="mock")
+@ldr.add("mock")
 async def mock(event):
     text_arg = await get_text_arg(event)
 
@@ -54,7 +54,7 @@ async def mock(event):
     await event.edit(mock_text)
 
 
-@ldr.add(pattern="vap")
+@ldr.add("vap")
 async def vapor(event):
     text_arg = await get_text_arg(event)
 
@@ -63,7 +63,7 @@ async def vapor(event):
     await event.edit(vapor_text)
 
 
-@ldr.add(pattern="pop")
+@ldr.add("pop")
 async def popifycmd(event):
     text_arg = await get_text_arg(event)
 
@@ -72,7 +72,7 @@ async def popifycmd(event):
     await event.edit(pop_text)
 
 
-@ldr.add(pattern="cheem")
+@ldr.add("cheem")
 async def cheemifycmd(event):
     text_arg = await get_text_arg(event)
 
@@ -81,7 +81,7 @@ async def cheemifycmd(event):
     await event.edit(cheems_text)
 
 
-@ldr.add(pattern="zal")
+@ldr.add("zal")
 async def zalgo(event):
     text_arg = await get_text_arg(event)
 
@@ -90,7 +90,7 @@ async def zalgo(event):
     await event.edit(zalgo_text)
 
 
-@ldr.add(pattern="owo")
+@ldr.add("owo")
 async def owo(event):
     text_arg = await get_text_arg(event)
 
@@ -99,7 +99,7 @@ async def owo(event):
     await event.edit(owo_text)
 
 
-@ldr.add(pattern="vibecheck")
+@ldr.add("vibecheck")
 async def vibecheck(event):
     if event.is_reply:
         await event.edit("`Performing vibe check…`")

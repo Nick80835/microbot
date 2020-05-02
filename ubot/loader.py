@@ -43,18 +43,19 @@ class Loader():
 
         return errors or None
 
-    def add(self, **args):
+    def add(self, pattern=None, **args):
         outgoing = args.get('outgoing', True)
         incoming = args.get('incoming', False)
+        pattern = args.get("pattern", pattern)
 
         def decorator(func):
             if incoming:
-                self.command_handler.incoming_commands[args['pattern']] = {
+                self.command_handler.incoming_commands[pattern] = {
                     "function": func,
                     "noprefix": args.get('noprefix', False)
                 }
             elif outgoing:
-                self.command_handler.outgoing_commands[args['pattern']] = {
+                self.command_handler.outgoing_commands[pattern] = {
                     "function": func,
                     "noprefix": args.get('noprefix', False)
                 }

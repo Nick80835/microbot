@@ -116,7 +116,7 @@ async def bodyfetcher(event, sub):
     await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
 
 
-@ldr.add(pattern="redi")
+@ldr.add("redi")
 async def redimg(event):
     sub = event.args.replace(" ", "_")
 
@@ -126,7 +126,7 @@ async def redimg(event):
         await event.edit("Syntax: .redi <subreddit name>")
 
 
-@ldr.add(pattern="redt")
+@ldr.add("redt")
 async def redtit(event):
     sub = event.args.replace(" ", "_")
 
@@ -136,7 +136,7 @@ async def redtit(event):
         await event.edit("Syntax: .redt <subreddit name>")
 
 
-@ldr.add(pattern="redb")
+@ldr.add("redb")
 async def redbod(event):
     sub = event.args.replace(" ", "_")
 
@@ -146,22 +146,22 @@ async def redbod(event):
         await event.edit("Syntax: .redb <subreddit name>")
 
 
-@ldr.add(pattern="suffer")
+@ldr.add("suffer")
 async def makemesuffer(event):
     await imagefetcher(event, "MakeMeSuffer")
 
 
-@ldr.add(pattern="snafu")
+@ldr.add("snafu")
 async def coaxedintoasnafu(event):
     await imagefetcher(event, "CoaxedIntoASnafu")
 
 
-@ldr.add(pattern="aita")
+@ldr.add("aita")
 async def amitheasshole(event):
     await titlefetcher(event, "AmITheAsshole")
 
 
-@ldr.add(pattern="jon(x|)")
+@ldr.add("jon(x|)")
 async def imsorryjon(event):
     if "x" in event.pattern_match.group(0):
         sub = "ImReallySorryJon"
@@ -171,11 +171,11 @@ async def imsorryjon(event):
     await imagefetcher(event, sub)
 
 
-@ldr.add(pattern="tihi")
+@ldr.add("tihi")
 async def thanksihateit(event):
     await imagefetcher(event, "TIHI")
 
 
-@ldr.add(pattern="gab")
+@ldr.add("gab")
 async def tenma(event):
     await imagefetcher(event, "tenma")

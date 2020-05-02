@@ -12,7 +12,7 @@ UD_QUERY_URL = 'http://api.urbandictionary.com/v0/define'
 UD_RANDOM_URL = 'http://api.urbandictionary.com/v0/random'
 
 
-@ldr.add(pattern="ud")
+@ldr.add("ud")
 async def urban_dict(event):
     udquery = event.args
 

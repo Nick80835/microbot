@@ -16,7 +16,7 @@ ldr = micro_bot.loader
 tts_lang = "EN"
 
 
-@ldr.add(pattern="speed")
+@ldr.add("speed")
 async def iamspeed(event):
     await event.edit("`Running speed test…`")
     test = Speedtest()
@@ -46,14 +46,14 @@ def speed_convert(size):
     return f"{round(size, 2)} {units[zero]}"
 
 
-@ldr.add(pattern="lang")
+@ldr.add("lang")
 async def set_lang(event):
     global tts_lang
     tts_lang = event.args
     await event.edit(f"`Default language changed to `**{event.args}**")
 
 
-@ldr.add(pattern="tts")
+@ldr.add("tts")
 async def text_to_speech(event):
     await event.edit("`Processing…`")
     message, reply = await get_text_arg(event)
@@ -85,7 +85,7 @@ async def text_to_speech(event):
     await event.delete()
 
 
-@ldr.add(pattern="ip")
+@ldr.add("ip")
 async def ip_lookup(event):
     ip, _ = await get_text_arg(event)
 
@@ -118,7 +118,7 @@ async def ip_lookup(event):
     await event.edit(text)
 
 
-@ldr.add(pattern="wiki")
+@ldr.add("wiki")
 async def wiki_cmd(event):
     query, _ = await get_text_arg(event)
 
@@ -141,7 +141,7 @@ async def wiki_cmd(event):
     await event.edit(text)
 
 
-@ldr.add(pattern="b2d")
+@ldr.add("b2d")
 async def bintodec(event):
     if not event.args:
         await event.edit("`Give me a binary number!`")
@@ -156,7 +156,7 @@ async def bintodec(event):
     await event.edit(f"**{event.args}** `=` **{decimal}**")
 
 
-@ldr.add(pattern="d2b")
+@ldr.add("d2b")
 async def dectobin(event):
     try:
         decimal = int(event.args)
@@ -173,7 +173,7 @@ async def dectobin(event):
     await event.edit(f"**{decimal}** `=` **{binary}**")
 
 
-@ldr.add(pattern="eval")
+@ldr.add("eval")
 async def evaluate(event):
     reply = await event.get_reply_message()
 
@@ -195,7 +195,7 @@ async def evaluate(event):
     await event.edit(f"**Evaluation:**\n`{event.args}`\n**Return{isawait}:**\n`{eval_ret}`")
 
 
-@ldr.add(pattern="chatid")
+@ldr.add("chatid")
 async def chatidgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
@@ -209,7 +209,7 @@ async def chatidgetter(event):
     await event.edit(f"**Chat ID:**` {chat_id}`")
 
 
-@ldr.add(pattern="userid")
+@ldr.add("userid")
 async def useridgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
@@ -220,7 +220,7 @@ async def useridgetter(event):
     await event.edit(f"**User ID:**` {user_id}`")
 
 
-@ldr.add(pattern="profile")
+@ldr.add("profile")
 async def userprofilegetter(event):
     if event.args:
         try:
@@ -251,7 +251,7 @@ async def userprofilegetter(event):
     await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
 
 
-@ldr.add(pattern="stickpng")
+@ldr.add("stickpng")
 async def stickertopng(event):
     await event.edit("`Getting sticker as PNG…`")
     reply = await event.get_reply_message()

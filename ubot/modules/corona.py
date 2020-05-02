@@ -7,7 +7,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="corona")
+@ldr.add("corona")
 async def corona(event):
     if event.args:
         with get(f"https://corona.lmao.ninja/v2/countries/{event.args}") as response:

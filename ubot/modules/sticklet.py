@@ -10,7 +10,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="slet")
+@ldr.add("slet")
 async def sticklet(event):
     sticktext = event.args
 

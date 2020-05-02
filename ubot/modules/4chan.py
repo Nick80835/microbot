@@ -14,7 +14,7 @@ CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
 VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 
-@ldr.add(pattern="4c(f|)")
+@ldr.add("4c(f|)")
 async def fourchan(event):
     await event.edit(f"`Processing…`")
 
