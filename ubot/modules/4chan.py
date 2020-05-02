@@ -23,11 +23,9 @@ async def fourchan(event):
     else:
         as_file = False
 
-    board = event.pattern_match.group(2)
-
     session = ClientSession()
 
-    async with session.get(BOARD_URL.format(board)) as response:
+    async with session.get(BOARD_URL.format(event.args)) as response:
         if response.status == 200:
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
@@ -36,11 +34,11 @@ async def fourchan(event):
             await session.close()
             return
 
-    async with session.get(POST_URL.format(board, op_id)) as response:
+    async with session.get(POST_URL.format(event.args, op_id)) as response:
         if response.status == 200:
             post_response = await response.json()
             post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS])
-            post_file_url = CONTENT_URL.format(board, post_info[0], post_info[1])
+            post_file_url = CONTENT_URL.format(event.args, post_info[0], post_info[1])
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
@@ -49,7 +47,7 @@ async def fourchan(event):
     await session.close()
 
     if not response:
-        await event.edit(f"`No results for board: `**{board}**")
+        await event.edit(f"`No results for board: `**{event.args}**")
         return
 
     try:
@@ -59,4 +57,4 @@ async def fourchan(event):
     except:
         pass
 
-    await event.edit(f"`Failed to fetch media for board: `**{board}**")
+    await event.edit(f"`Failed to fetch media for board: `**{event.args}**")

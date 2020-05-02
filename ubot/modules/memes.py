@@ -121,7 +121,7 @@ async def vibecheck(event):
 
 
 async def get_text_arg(event):
-    text_arg = event.pattern_match.group(1)
+    text_arg = event.args
 
     if text_arg:
         pass

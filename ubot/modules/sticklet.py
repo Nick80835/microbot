@@ -12,7 +12,7 @@ ldr = micro_bot.loader
 
 @ldr.add(pattern="slet")
 async def sticklet(event):
-    sticktext = event.pattern_match.group(1)
+    sticktext = event.args
 
     if not sticktext:
         await event.edit("`I need text to sticklet!`")

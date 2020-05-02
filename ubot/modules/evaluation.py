@@ -49,8 +49,8 @@ def speed_convert(size):
 @ldr.add(pattern="lang")
 async def set_lang(event):
     global tts_lang
-    tts_lang = event.pattern_match.group(1)
-    await event.edit(f"`Default language changed to `**{tts_lang}**")
+    tts_lang = event.args
+    await event.edit(f"`Default language changed to `**{event.args}**")
 
 
 @ldr.add(pattern="tts")
@@ -143,25 +143,23 @@ async def wiki_cmd(event):
 
 @ldr.add(pattern="b2d")
 async def bintodec(event):
-    binary = event.pattern_match.group(1)
-
-    if not binary:
+    if not event.args:
         await event.edit("`Give me a binary number!`")
         return
 
     try:
-        decimal = int(binary, 2)
+        decimal = int(event.args, 2)
     except ValueError:
         await event.edit("`Give me a binary number!`")
         return
 
-    await event.edit(f"**{binary}** `=` **{decimal}**")
+    await event.edit(f"**{event.args}** `=` **{decimal}**")
 
 
 @ldr.add(pattern="d2b")
 async def dectobin(event):
     try:
-        decimal = int(event.pattern_match.group(1))
+        decimal = int(event.args)
     except ValueError:
         await event.edit("`Give me a decimal number!`")
         return
@@ -177,15 +175,14 @@ async def dectobin(event):
 
 @ldr.add(pattern="eval")
 async def evaluate(event):
-    code = event.pattern_match.group(1)
     reply = await event.get_reply_message()
 
-    if not code:
+    if not event.args:
         await event.edit("`Give me code to run!`")
         return
 
     try:
-        eval_ret = eval(code)
+        eval_ret = eval(event.args)
     except Exception as exception:
         eval_ret = exception
 
@@ -195,7 +192,7 @@ async def evaluate(event):
     else:
         isawait = ""
 
-    await event.edit(f"**Evaluation:**\n`{code}`\n**Return{isawait}:**\n`{eval_ret}`")
+    await event.edit(f"**Evaluation:**\n`{event.args}`\n**Return{isawait}:**\n`{eval_ret}`")
 
 
 @ldr.add(pattern="chatid")
@@ -225,11 +222,9 @@ async def useridgetter(event):
 
 @ldr.add(pattern="profile")
 async def userprofilegetter(event):
-    user_arg = event.pattern_match.group(1)
-
-    if user_arg:
+    if event.args:
         try:
-            user_entity = await event.client.get_entity(user_arg)
+            user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
             await event.edit("`The ID or username you provided was invalid!`")
             return
@@ -279,7 +274,7 @@ async def stickertopng(event):
 
 
 async def get_text_arg(event):
-    text_arg = event.pattern_match.group(1)
+    text_arg = event.args
     reply = None
 
     if text_arg:

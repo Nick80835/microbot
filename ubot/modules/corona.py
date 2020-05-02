@@ -9,10 +9,8 @@ ldr = micro_bot.loader
 
 @ldr.add(pattern="corona")
 async def corona(event):
-    text_arg = event.pattern_match.group(1)
-
-    if text_arg:
-        with get(f"https://corona.lmao.ninja/v2/countries/{text_arg}") as response:
+    if event.args:
+        with get(f"https://corona.lmao.ninja/v2/countries/{event.args}") as response:
             if response.status_code == 200:
                 response = response.json()
             else:

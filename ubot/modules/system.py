@@ -70,7 +70,7 @@ async def ping(event):
 
 @ldr.add(pattern="prefix")
 async def change_prefix(event):
-    new_prefix = event.pattern_match.group(1)
+    new_prefix = event.args
 
     if not new_prefix:
         await event.edit("`Please specify a valid command prefix!`")
