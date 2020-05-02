@@ -7,7 +7,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add(pattern="yt")
+@ldr.add("yt")
 async def youtube_cmd(event):
     video = pafy.new(event.args)
     video_stream = video.getbest()
@@ -17,7 +17,7 @@ async def youtube_cmd(event):
         await event.reply(f"`Download failed: `[URL]({video_stream.url})")
 
 
-@ldr.add(pattern="yta")
+@ldr.add("yta")
 async def youtube_audio_cmd(event):
     video = pafy.new(event.args)
     video_stream = video.getbestaudio()

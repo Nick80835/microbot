@@ -11,7 +11,7 @@ ldr = micro_bot.loader
 GEL_URL = "https://gelbooru.com/index.php"
 
 
-@ldr.add(pattern="gel(s|x|q|)(f|)")
+@ldr.add("gel(s|x|q|)(f|)")
 async def gelbooru(event):
     if "x" in event.pattern_match.group(0):
         rating = "Rating:explicit"

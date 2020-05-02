@@ -70,7 +70,7 @@ async def tori_atsume():
     return tori
 
 
-@ldr.add(pattern="shibe")
+@ldr.add("shibe")
 async def shibe(event):
     shibe_inu = await shibe_inu_atsume()
 
@@ -81,7 +81,7 @@ async def shibe(event):
     await event.reply(file=shibe_inu[0])
 
 
-@ldr.add(pattern="bird")
+@ldr.add("bird")
 async def bird(event):
     tori = await tori_atsume()
 
@@ -92,7 +92,7 @@ async def bird(event):
     await event.reply(file=tori[0])
 
 
-@ldr.add(pattern="(cat|pussy)")
+@ldr.add("(cat|pussy)")
 async def cat(event):
     neko = await neko_atsume(IMGPARAM)
 
@@ -103,7 +103,7 @@ async def cat(event):
     await event.reply(file=neko[0]["url"])
 
 
-@ldr.add(pattern="(cathd|pussyhd)")
+@ldr.add("(cathd|pussyhd)")
 async def cathd(event):
     neko = await neko_atsume(IMGPARAM)
 
@@ -114,7 +114,7 @@ async def cathd(event):
     await event.reply(file=neko[0]["url"], force_document=True)
 
 
-@ldr.add(pattern="(catgif|pussygif)")
+@ldr.add("(catgif|pussygif)")
 async def catgif(event):
     neko = await neko_atsume(GIFPARAM)
 
@@ -125,7 +125,7 @@ async def catgif(event):
     await event.reply(file=neko[0]["url"])
 
 
-@ldr.add(pattern="(dog|bitch)")
+@ldr.add("(dog|bitch)")
 async def dog(event):
     inu = await inu_atsume(IMGPARAM)
 
@@ -136,7 +136,7 @@ async def dog(event):
     await event.reply(file=inu[0]["url"])
 
 
-@ldr.add(pattern="(doghd|bitchhd)")
+@ldr.add("(doghd|bitchhd)")
 async def doghd(event):
     inu = await inu_atsume(IMGPARAM)
 
@@ -147,7 +147,7 @@ async def doghd(event):
     await event.reply(file=inu[0]["url"], force_document=True).delete()
 
 
-@ldr.add(pattern="(doggif|bitchgif)")
+@ldr.add("(doggif|bitchgif)")
 async def doggif(event):
     inu = await inu_atsume(GIFPARAM)
 
