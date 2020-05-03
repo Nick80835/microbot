@@ -13,27 +13,22 @@ GEL_URL = "https://gelbooru.com/index.php"
 
 @ldr.add("gel(s|x|q|)(f|)")
 async def gelbooru(event):
-    await event.edit(f"`Processing…`")
+    safety_arg = event.pattern_match.group(1)
+    as_file = bool(event.pattern_match.group(2))
+    rating = " "
 
-    if "x" in event.pattern_match.group(0):
+    if safety_arg == "x":
         rating = "Rating:explicit"
-    elif "s" in event.pattern_match.group(0):
+    elif safety_arg == "s":
         rating = "Rating:safe"
-    elif "q" in event.pattern_match.group(0):
+    elif safety_arg == "q":
         rating = "Rating:questionable"
-    else:
-        rating = ""
-
-    if event.pattern_match.group(2):
-        as_file = True
-    else:
-        as_file = False
 
     params = {"page": "dapi",
               "s": "post",
               "q": "index",
               "json": 1,
-              "tags": f"{rating} {event.args} sort:random".strip()}
+              "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
 
     session = ClientSession()
 

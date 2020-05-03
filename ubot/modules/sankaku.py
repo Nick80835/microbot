@@ -6,29 +6,30 @@ from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
 
-DAN_URL = "http://danbooru.donmai.us/posts.json"
+SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 
 
-@ldr.add("dan(s|x|q|)(f|)")
-async def danbooru(event):
+@ldr.add("san(s|x|q|)(f|)")
+async def sankaku(event):
+    await event.edit(f"`Processing…`")
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
-    rating = " "
+    rating = ""
 
     if safety_arg == "x":
-        rating = "Rating:explicit"
+        rating = "rating:explicit"
     elif safety_arg == "s":
-        rating = "Rating:safe"
+        rating = "rating:safe"
     elif safety_arg == "q":
-        rating = "Rating:questionable"
+        rating = "rating:questionable"
 
-    params = {"limit": 1,
-              "random": "true",
-              "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
+    params = {"page": 1,
+              "limit": 5,
+              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
 
     session = ClientSession()
 
-    async with session.get(DAN_URL, params=params) as response:
+    async with session.get(SAN_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
         else:
@@ -44,9 +45,9 @@ async def danbooru(event):
 
     valid_urls = []
 
-    for url in ['file_url', 'large_file_url', 'source']:
-        if url in response[0].keys():
-            valid_urls.append(response[0][url])
+    for item in response:
+        if 'file_url' in item.keys():
+            valid_urls.append(item['file_url'])
 
     if not valid_urls:
         await event.edit(f"`Failed to find URLs for query: `**{event.args}**")
