@@ -57,7 +57,7 @@ async def imagefetcher(event, sub):
         except redex.Forbidden:
             await event.edit(f"**r/{sub}**` is private!`")
             return
-        except redex.NotFound:
+        except (redex.NotFound, KeyError):
             await event.edit(f"**r/{sub}**` doesn't exist!`")
             return
         except AttributeError:
@@ -93,7 +93,7 @@ async def titlefetcher(event, sub):
     except redex.Forbidden:
         await event.edit(f"**r/{sub}**` is private!`")
         return
-    except redex.NotFound:
+    except (redex.NotFound, KeyError):
         await event.edit(f"**r/{sub}**` doesn't exist!`")
         return
 
@@ -110,7 +110,7 @@ async def bodyfetcher(event, sub):
         except redex.Forbidden:
             await event.edit(f"**r/{sub}**` is private!`")
             return
-        except redex.NotFound:
+        except (redex.NotFound, KeyError):
             await event.edit(f"**r/{sub}**` doesn't exist!`")
             return
         except AttributeError:
