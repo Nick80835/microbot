@@ -3,11 +3,30 @@
 import io
 import textwrap
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageColor, ImageDraw, ImageFont
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
+
+
+@ldr.add("color")
+async def stickcolor(event):
+    try:
+        image = Image.new("RGBA", (512, 512), event.args)
+    except:
+        try:
+            image = Image.new("RGBA", (512, 512), "#" + event.args)
+        except:
+            await event.edit(f"**{event.args}**` is an invalid color, use #colorhex or a color name.`")
+            return
+
+    await event.delete()
+    image_stream = io.BytesIO()
+    image_stream.name = "sticker.webp"
+    image.save(image_stream, "WebP")
+    image_stream.seek(0)
+    await event.client.send_file(event.chat_id, image_stream)
 
 
 @ldr.add("slet")
