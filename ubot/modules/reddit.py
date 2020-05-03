@@ -4,6 +4,7 @@ import io
 from random import choice, shuffle
 
 import praw
+from prawcore import exceptions as redex
 
 from ubot.micro_bot import micro_bot
 
@@ -19,22 +20,18 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 async def imagefetcherfallback(sub):
     hot = REDDIT.subreddit(sub).hot()
     hot_list = list(hot.__iter__())
+    shuffle(hot_list)
 
-    for _ in range(10):
-        post = choice(hot_list)
+    for post in hot_list:
+        if post.url and post.url.endswith(VALID_ENDS):
+            return post
 
-        if post.url:
-            if post.url.endswith(VALID_ENDS):
-                return post.url, post.title
-
-    return None, None
+    return None
 
 
 async def titlefetcherfallback(sub):
     hot = REDDIT.subreddit(sub).hot()
-    hot_list = list(hot.__iter__())
-
-    return choice(hot_list).title
+    return choice(list(hot.__iter__()))
 
 
 async def bodyfetcherfallback(sub):
@@ -42,11 +39,11 @@ async def bodyfetcherfallback(sub):
     hot_list = list(hot.__iter__())
     shuffle(hot_list)
 
-    for i in hot_list:
-        if i.selftext and not i.permalink in i.url:
-            return i.selftext, i.title
+    for post in hot_list:
+        if post.selftext and not post.permalink in post.url:
+            return post
 
-    return None, None
+    return None
 
 
 async def imagefetcher(event, sub):
@@ -54,11 +51,17 @@ async def imagefetcher(event, sub):
     image_url = False
 
     for _ in range(10):
-        post = REDDIT.subreddit(sub).random()
-
-        if not post:
-            image_url, title = await imagefetcherfallback(sub)
-            break
+        try:
+            post = REDDIT.subreddit(sub).random() or await imagefetcherfallback(sub)
+            post.title
+        except redex.Forbidden:
+            await event.edit(f"**r/{sub}**` is private!`")
+            return
+        except redex.NotFound:
+            await event.edit(f"**r/{sub}**` doesn't exist!`")
+            return
+        except AttributeError:
+            continue
 
         if post.url:
             if post.url.endswith(VALID_ENDS):
@@ -84,26 +87,38 @@ async def imagefetcher(event, sub):
 async def titlefetcher(event, sub):
     await event.edit(f"`Fetching from `**r/{sub}**`…`")
 
-    post = REDDIT.subreddit(sub).random()
+    try:
+        post = REDDIT.subreddit(sub).random() or await titlefetcherfallback(sub)
+        post.title
+    except redex.Forbidden:
+        await event.edit(f"**r/{sub}**` is private!`")
+        return
+    except redex.NotFound:
+        await event.edit(f"**r/{sub}**` doesn't exist!`")
+        return
 
-    if not post:
-        title = await titlefetcherfallback(sub)
-    else:
-        title = post.title
-
-    await event.reply(title)
+    await event.reply(post.title)
 
 
 async def bodyfetcher(event, sub):
     await event.edit(f"`Fetching from `**r/{sub}**`…`")
 
     for _ in range(10):
-        post = REDDIT.subreddit(sub).random()
+        try:
+            post = REDDIT.subreddit(sub).random() or await bodyfetcherfallback(sub)
+            post.title
+        except redex.Forbidden:
+            await event.edit(f"**r/{sub}**` is private!`")
+            return
+        except redex.NotFound:
+            await event.edit(f"**r/{sub}**` doesn't exist!`")
+            return
+        except AttributeError:
+            continue
+
         body = None
 
-        if not post:
-            body, title = await bodyfetcherfallback(sub)
-        elif post.selftext and not post.permalink is post.url:
+        if post.selftext and not post.permalink is post.url:
             body = post.selftext
             title = post.title
 
@@ -158,7 +173,12 @@ async def coaxedintoasnafu(event):
 
 @ldr.add("aita")
 async def amitheasshole(event):
-    await titlefetcher(event, "AmITheAsshole")
+    await bodyfetcher(event, "AmITheAsshole")
+
+
+@ldr.add("tifu")
+async def todayifuckedup(event):
+    await bodyfetcher(event, "TIFU")
 
 
 @ldr.add("jon(x|)")
