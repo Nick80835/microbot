@@ -1,40 +1,36 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from random import choice
-
 from aiohttp import ClientSession
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
 
-GEL_URL = "https://gelbooru.com/index.php"
+SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 
 
-@ldr.add("gel(s|x|q|)(f|)")
-async def gelbooru(event):
+@ldr.add("san(s|x|q|)(f|)")
+async def sankaku(event):
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
-    rating = " "
+    rating = ""
 
     if safety_arg == "x":
-        rating = "Rating:explicit"
+        rating = "rating:explicit"
     elif safety_arg == "s":
-        rating = "Rating:safe"
+        rating = "rating:safe"
     elif safety_arg == "q":
-        rating = "Rating:questionable"
+        rating = "rating:questionable"
 
-    params = {"page": "dapi",
-              "s": "post",
-              "q": "index",
-              "json": 1,
-              "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
+    params = {"page": 1,
+              "limit": 5,
+              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
 
     session = ClientSession()
 
-    async with session.get(GEL_URL, params=params) as response:
+    async with session.get(SAN_URL, params=params) as response:
         if response.status == 200:
-            response = (await response.json())[0]
+            response = await response.json()
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
@@ -48,9 +44,9 @@ async def gelbooru(event):
 
     valid_urls = []
 
-    for url in ['file_url', 'large_file_url', 'source']:
-        if url in response.keys():
-            valid_urls.append(response[url])
+    for item in response:
+        if 'file_url' in item.keys():
+            valid_urls.append(item['file_url'])
 
     if not valid_urls:
         await event.reply(f"`Failed to find URLs for query: `**{event.args}**")
