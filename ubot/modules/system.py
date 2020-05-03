@@ -52,7 +52,7 @@ async def shutdown(event):
 async def ping(event):
     start = time_ns()
     ping_msg = await event.reply("`Ping…`")
-    time_taken_ms = (time_ns() - start) / 1000000
+    time_taken_ms = int((time_ns() - start) / 1000000)
     await ping_msg.edit(f"`Ping… Pong! -> `**{time_taken_ms}**`ms`")
 
 
