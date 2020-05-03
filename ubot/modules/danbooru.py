@@ -11,23 +11,20 @@ DAN_URL = "http://danbooru.donmai.us/posts.json"
 
 @ldr.add("dan(s|x|q|)(f|)")
 async def danbooru(event):
-    if "x" in event.pattern_match.group(0):
-        rating = "Rating:explicit"
-    elif "s" in event.pattern_match.group(0):
-        rating = "Rating:safe"
-    elif "q" in event.pattern_match.group(0):
-        rating = "Rating:questionable"
-    else:
-        rating = ""
+    safety_arg = event.pattern_match.group(1)
+    as_file = bool(event.pattern_match.group(2))
+    rating = " "
 
-    if event.pattern_match.group(2):
-        as_file = True
-    else:
-        as_file = False
+    if safety_arg == "x":
+        rating = "Rating:explicit"
+    elif safety_arg == "s":
+        rating = "Rating:safe"
+    elif safety_arg == "q":
+        rating = "Rating:questionable"
 
     params = {"limit": 1,
               "random": "true",
-              "tags": f"{rating} {event.args}".strip()}
+              "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
 
     session = ClientSession()
 
