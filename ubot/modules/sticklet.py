@@ -11,6 +11,10 @@ ldr = micro_bot.loader
 
 @ldr.add("color")
 async def stickcolor(event):
+    if not event.args:
+        await event.reply(f"`Specify a valid color, use #colorhex or a color name.`")
+        return
+
     try:
         image = Image.new("RGBA", (512, 512), event.args)
     except:
