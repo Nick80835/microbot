@@ -47,7 +47,7 @@ async def bodyfetcherfallback(sub):
 
 
 async def imagefetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
+    await event.edit(f"`Fetching image from `**r/{sub}**`…`")
     image_url = False
 
     for _ in range(10):
@@ -85,7 +85,7 @@ async def imagefetcher(event, sub):
 
 
 async def titlefetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
+    await event.edit(f"`Fetchingn title from `**r/{sub}**`…`")
 
     try:
         post = REDDIT.subreddit(sub).random() or await titlefetcherfallback(sub)
@@ -97,11 +97,11 @@ async def titlefetcher(event, sub):
         await event.edit(f"**r/{sub}**` doesn't exist!`")
         return
 
-    await event.reply(post.title)
+    await event.edit(post.title)
 
 
 async def bodyfetcher(event, sub):
-    await event.edit(f"`Fetching from `**r/{sub}**`…`")
+    await event.edit(f"`Fetching text from `**r/{sub}**`…`")
 
     for _ in range(10):
         try:
@@ -131,34 +131,21 @@ async def bodyfetcher(event, sub):
     await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
 
 
-@ldr.add("redi")
+@ldr.add("red(i|t|b)")
 async def redimg(event):
     sub = event.args.replace(" ", "_")
+    fetch_type = event.pattern_match.group(1)
 
-    if sub:
+    if not sub:
+        await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>`")
+        return
+
+    if fetch_type == "i":
         await imagefetcher(event, sub)
-    else:
-        await event.edit("Syntax: .redi <subreddit name>")
-
-
-@ldr.add("redt")
-async def redtit(event):
-    sub = event.args.replace(" ", "_")
-
-    if sub:
+    elif fetch_type == "t":
         await titlefetcher(event, sub)
-    else:
-        await event.edit("Syntax: .redt <subreddit name>")
-
-
-@ldr.add("redb")
-async def redbod(event):
-    sub = event.args.replace(" ", "_")
-
-    if sub:
+    elif fetch_type == "b":
         await bodyfetcher(event, sub)
-    else:
-        await event.edit("Syntax: .redb <subreddit name>")
 
 
 @ldr.add("suffer")
