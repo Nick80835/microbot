@@ -12,6 +12,8 @@ b_emoji = "🅱️"
 a_emoji = "🅰️"
 i_emoji = "ℹ️"
 
+filler = "Give me some text to fuck it up!"
+
 owo_faces = "owo uwu owu uwo u-u o-o OwO UwU @-@ ;-; ;_; ._. (._.) (o-o) ('._.) (｡◕‿‿◕｡)" \
     " (｡◕‿◕｡) (─‿‿─) ◔⌣◔ ◉_◉".split(sep=" ")
 
@@ -35,7 +37,7 @@ zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̌́̀̑̐̇̎̚͝�
 
 @ldr.add("cp")
 async def copypasta(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
@@ -47,7 +49,7 @@ async def copypasta(event):
 
 @ldr.add("mock")
 async def mock(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     mock_text = await mockify(text_arg)
 
@@ -56,7 +58,7 @@ async def mock(event):
 
 @ldr.add("vap")
 async def vapor(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     vapor_text = await vaporize(text_arg)
 
@@ -65,7 +67,7 @@ async def vapor(event):
 
 @ldr.add("pop")
 async def popifycmd(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     pop_text = await popify(text_arg)
 
@@ -74,7 +76,7 @@ async def popifycmd(event):
 
 @ldr.add("cheem")
 async def cheemifycmd(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     cheems_text = await cheemify(text_arg)
 
@@ -83,7 +85,7 @@ async def cheemifycmd(event):
 
 @ldr.add("zal")
 async def zalgo(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     zalgo_text = await zalgofy(text_arg)
 
@@ -92,7 +94,7 @@ async def zalgo(event):
 
 @ldr.add("owo")
 async def owo(event):
-    text_arg = await get_text_arg(event)
+    text_arg = await ldr.get_text(event, default=filler)
 
     owo_text = await owoify(text_arg)
 
@@ -118,20 +120,6 @@ async def vibecheck(event):
         await event.edit("`Vibe check passed!`")
     else:
         await event.edit("`Vibe check failed!`")
-
-
-async def get_text_arg(event):
-    text_arg = event.args
-
-    if text_arg:
-        pass
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        text_arg = reply.text
-    else:
-        text_arg = "Give me some text to fuck it up!"
-
-    return text_arg
 
 
 async def shitpostify(text):

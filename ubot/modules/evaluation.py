@@ -56,9 +56,9 @@ async def set_lang(event):
 @ldr.add("tts")
 async def text_to_speech(event):
     await event.edit("`Processing…`")
-    message, reply = await get_text_arg(event)
+    text, reply = await ldr.get_text(event, return_msg=True)
 
-    if not message or message == "":
+    if not text:
         await event.edit("`Give me text or reply to text to use TTS.`")
         return
 
@@ -66,7 +66,7 @@ async def text_to_speech(event):
     tts_bytesio.name = "tts.mp3"
 
     try:
-        tts = gTTS(message, lang=tts_lang)
+        tts = gTTS(text, lang=tts_lang)
         tts.write_to_fp(tts_bytesio)
         tts_bytesio.seek(0)
     except AssertionError:
@@ -87,7 +87,7 @@ async def text_to_speech(event):
 
 @ldr.add("ip")
 async def ip_lookup(event):
-    ip, _ = await get_text_arg(event)
+    ip = await ldr.get_text(event)
 
     if not ip:
         await event.edit("`Provide an IP!`")
@@ -120,7 +120,7 @@ async def ip_lookup(event):
 
 @ldr.add("wiki")
 async def wiki_cmd(event):
-    query, _ = await get_text_arg(event)
+    query = await ldr.get_text(event)
 
     if not query:
         await event.edit("`You didn't specify what to search for!`")
@@ -271,18 +271,3 @@ async def stickertopng(event):
     sticker_png_io.seek(0)
 
     await event.reply(file=sticker_png_io, force_document=True)
-
-
-async def get_text_arg(event):
-    text_arg = event.args
-    reply = None
-
-    if text_arg:
-        pass
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        text_arg = reply.text
-    else:
-        text_arg = None
-
-    return text_arg, reply
