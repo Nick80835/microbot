@@ -46,9 +46,9 @@ def speed_convert(size):
 
 @ldr.add("tts")
 async def text_to_speech(event):
-    message, reply = await get_text_arg(event)
+    text, reply = await ldr.get_text(event, return_msg=True)
 
-    if not message or message == "":
+    if not text:
         await event.reply("`Give me text or reply to text to use TTS.`")
         return
 
@@ -56,7 +56,7 @@ async def text_to_speech(event):
     tts_bytesio.name = "tts.mp3"
 
     try:
-        tts = gTTS(message, lang="EN")
+        tts = gTTS(text, lang="EN")
         tts.write_to_fp(tts_bytesio)
         tts_bytesio.seek(0)
     except AssertionError:
@@ -68,12 +68,12 @@ async def text_to_speech(event):
         await event.reply('`Error loading the languages dictionary.`')
         return
 
-    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply or event)
+    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
 
 
 @ldr.add("ip")
 async def ip_lookup(event):
-    ip, _ = await get_text_arg(event)
+    ip = await ldr.get_text(event)
 
     if not ip:
         await event.reply("`Provide an IP!`")
@@ -179,18 +179,3 @@ async def stickertopng(event):
     sticker_png_io.seek(0)
 
     await event.reply(file=sticker_png_io, force_document=True)
-
-
-async def get_text_arg(event):
-    text_arg = event.args
-    reply = None
-
-    if text_arg:
-        pass
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        text_arg = reply.text
-    else:
-        text_arg = None
-
-    return text_arg, reply
