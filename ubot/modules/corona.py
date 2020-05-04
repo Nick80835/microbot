@@ -14,7 +14,7 @@ async def corona(event):
             if response.status_code == 200:
                 response = response.json()
             else:
-                await event.edit(f"`An error occurred, response code: `**{response.status}**")
+                await event.edit(f"`An error occurred, response code: `**{response.status_code}**")
                 return
 
         response_text = f"`Stats for `**{response['country']}**\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
