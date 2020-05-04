@@ -125,34 +125,21 @@ async def bodyfetcher(event, sub):
     await event.reply(f"`Failed to find any valid content on `**r/{sub}**`!`")
 
 
-@ldr.add("redi")
+@ldr.add("red(i|t|b)")
 async def redimg(event):
     sub = event.args.replace(" ", "_")
+    fetch_type = event.pattern_match.group(1)
 
-    if sub:
+    if not sub:
+        await event.reply(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>`")
+        return
+
+    if fetch_type == "i":
         await imagefetcher(event, sub)
-    else:
-        await event.reply("Syntax: .redi <subreddit name>")
-
-
-@ldr.add("redt")
-async def redtit(event):
-    sub = event.args.replace(" ", "_")
-
-    if sub:
+    elif fetch_type == "t":
         await titlefetcher(event, sub)
-    else:
-        await event.reply("Syntax: .redt <subreddit name>")
-
-
-@ldr.add("redb")
-async def redbod(event):
-    sub = event.args.replace(" ", "_")
-
-    if sub:
+    elif fetch_type == "b":
         await bodyfetcher(event, sub)
-    else:
-        await event.reply("Syntax: .redb <subreddit name>")
 
 
 @ldr.add("suffer")
