@@ -6,6 +6,7 @@ from os.path import basename, dirname, isfile
 from re import escape
 
 from telethon import events
+from telethon.tl.types import DocumentAttributeFilename
 
 from .command_handler import CommandHandler
 
@@ -55,6 +56,45 @@ class Loader():
             return func
 
         return decorator
+
+    async def get_text(self, event, with_reply=True, return_msg=False, default=None):
+        if event.args:
+            if return_msg:
+                return event.args, event
+
+            return event.args
+        elif event.is_reply and with_reply:
+            reply = await event.get_reply_message()
+
+            if return_msg:
+                return reply.text, reply
+
+            return reply.text
+        else:
+            if return_msg:
+                return default, event
+
+            return default
+
+    async def get_image(self, event):
+        if event and event.media:
+            if event.photo:
+                data = event.photo
+            elif event.document:
+                if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
+                    return False
+                if event.gif or event.video or event.audio or event.voice:
+                    return False
+                data = event.media.document
+            else:
+                return False
+        else:
+            return False
+
+        if not data or data is None:
+            return False
+        else:
+            return data
 
     def _find_all_modules(self):
         mod_paths = glob.glob(dirname(__file__) + "/modules/*.py")
