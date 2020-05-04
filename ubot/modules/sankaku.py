@@ -32,12 +32,11 @@ async def sankaku(event):
     async with session.get(SAN_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
+            await session.close()
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
             return
-
-    await session.close()
 
     if not response:
         await event.edit(f"`No results for query: `**{event.args}**")
@@ -45,9 +44,9 @@ async def sankaku(event):
 
     valid_urls = []
 
-    for item in response:
-        if 'file_url' in item.keys():
-            valid_urls.append(item['file_url'])
+    for post in response:
+        if 'file_url' in post.keys():
+            valid_urls.append(post['file_url'])
 
     if not valid_urls:
         await event.edit(f"`Failed to find URLs for query: `**{event.args}**")

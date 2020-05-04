@@ -31,12 +31,11 @@ async def danbooru(event):
     async with session.get(DAN_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
+            await session.close()
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
             await session.close()
             return
-
-    await session.close()
 
     if not response:
         await event.edit(f"`No results for query: `**{event.args}**")
@@ -44,9 +43,9 @@ async def danbooru(event):
 
     valid_urls = []
 
-    for url in ['file_url', 'large_file_url', 'source']:
-        if url in response[0].keys():
-            valid_urls.append(response[0][url])
+    for post in response:
+        if 'file_url' in post.keys():
+            valid_urls.append(post['file_url'])
 
     if not valid_urls:
         await event.edit(f"`Failed to find URLs for query: `**{event.args}**")

@@ -17,11 +17,7 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 @ldr.add("4c(f|)")
 async def fourchan(event):
     await event.edit(f"`Processing…`")
-
-    if event.pattern_match.group(1):
-        as_file = True
-    else:
-        as_file = False
+    as_file = bool(event.pattern_match.group(1))
 
     session = ClientSession()
 
