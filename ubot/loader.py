@@ -68,6 +68,9 @@ class Loader():
     async def get_text(self, event, with_reply=True, return_msg=False, default=None):
         if event.args:
             if return_msg:
+                if event.is_reply:
+                    return event.args, await event.get_reply_message()
+
                 return event.args, None
 
             return event.args
