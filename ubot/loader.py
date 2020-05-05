@@ -53,12 +53,14 @@ class Loader():
             if incoming:
                 self.command_handler.incoming_commands[pattern] = {
                     "function": func,
-                    "noprefix": args.get('noprefix', False)
+                    "noprefix": args.get('noprefix', False),
+                    "extras": args.get('extras', None)
                 }
             elif outgoing:
                 self.command_handler.outgoing_commands[pattern] = {
                     "function": func,
-                    "noprefix": args.get('noprefix', False)
+                    "noprefix": args.get('noprefix', False),
+                    "extras": args.get('extras', None)
                 }
 
             return func
