@@ -50,7 +50,8 @@ class Loader():
             self.command_handler.incoming_commands[pattern] = {
                 "function": func,
                 "noprefix": args.get('noprefix', False),
-                "sudo": args.get('sudo', False)
+                "sudo": args.get('sudo', False),
+                "extras": args.get('extras', None)
             }
 
             return func
