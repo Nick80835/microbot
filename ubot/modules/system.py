@@ -26,6 +26,19 @@ async def reload_modules(event):
             pass
 
 
+@ldr.add("help")
+async def help_cmd(event):
+    help_string = ""
+
+    for key, value in ldr.help_dict.items():
+        help_string += f"\n**{key}**: "
+        for info in value:
+            help_string += f"`{info}`, "
+        help_string = help_string.rstrip(", ")
+
+    await event.edit(f"`Available commands:`\n{help_string}")
+
+
 @ldr.add("sysd")
 async def sysd(event):
     try:
