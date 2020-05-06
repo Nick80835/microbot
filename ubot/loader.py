@@ -19,6 +19,7 @@ class Loader():
         self.logger = logger
         self.settings = settings
         self.command_handler = CommandHandler(client, logger, settings)
+        self.help_dict = {}
         self.botversion = "0.1.3"
 
     def load_all_modules(self):
@@ -29,6 +30,7 @@ class Loader():
 
     def reload_all_modules(self):
         self.command_handler.incoming_commands = {}
+        self.help_dict = {}
 
         errors = ""
 
@@ -47,6 +49,11 @@ class Loader():
         pattern = args.get("pattern", pattern)
 
         def decorator(func):
+            if func.__module__.split(".")[-1] in self.help_dict:
+                self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+            else:
+                self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+
             self.command_handler.incoming_commands[pattern] = {
                 "function": func,
                 "noprefix": args.get('noprefix', False),
