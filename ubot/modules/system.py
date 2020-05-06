@@ -32,6 +32,19 @@ async def delete_message(event):
         await message_to_delete.delete()
 
 
+@ldr.add("help")
+async def help_cmd(event):
+    help_string = ""
+
+    for key, value in ldr.help_dict.items():
+        help_string += f"\n**{key}**: "
+        for info in value:
+            help_string += f"`{info}`, "
+        help_string = help_string.rstrip(", ")
+
+    await event.reply(f"`Available commands:`\n{help_string}")
+
+
 @ldr.add("alive", sudo=True)
 async def alive(event):
     alive_format = "`μBot is running under {0}.\n\n" \
