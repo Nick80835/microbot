@@ -8,12 +8,18 @@ ldr = micro_bot.loader
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
 NEKO_TYPES = "neko|lewd|smug|tits|trap|anal|cuddle|hug|goose|waifu|gasm|slap|spank|pat|feet|woof"
+REPLY_TYPES = "cuddle hug slap spank pat"
 
 
 @ldr.add(f"({NEKO_TYPES})(f|)")
 async def supernekoatsume(event):
     nekotype = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
+
+    if nekotype in REPLY_TYPES:
+        reply_to = await event.get_reply_message() or event
+    else:
+        reply_to = event
 
     session = ClientSession()
 
@@ -27,6 +33,6 @@ async def supernekoatsume(event):
             return
 
     try:
-        await event.reply(file=image_url, force_document=as_file)
+        await event.client.send_file(event.chat_id, file=image_url, force_document=as_file, reply_to=reply_to)
     except:
         await event.reply(f"`Failed to fetch media for query: `**{nekotype}**")
