@@ -13,6 +13,7 @@ GEL_URL = "https://gelbooru.com/index.php"
 
 @ldr.add("gel(s|x|q|)(f|)")
 async def gelbooru(event):
+    await event.edit(f"`Processing…`")
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
     rating = ""
