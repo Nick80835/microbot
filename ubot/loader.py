@@ -5,6 +5,7 @@ from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 from re import escape
 
+from aiohttp import ClientSession
 from telethon import events
 from telethon.tl.types import DocumentAttributeFilename
 
@@ -20,6 +21,7 @@ class Loader():
         self.settings = settings
         self.command_handler = CommandHandler(client, logger, settings)
         self.help_dict = {}
+        self.aioclient = ClientSession()
         self.botversion = "0.1.3"
 
     def load_all_modules(self):

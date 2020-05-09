@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -19,54 +17,42 @@ GIFPARAM = {"mime_types": "gif"}
 
 
 async def neko_atsume(params):
-    session = ClientSession()
-
-    async with session.get(CAT_URL, params=params, headers=CAT_HEADERS) as response:
+    async with ldr.aioclient.get(CAT_URL, params=params, headers=CAT_HEADERS) as response:
         if response.status == 200:
             neko = await response.json()
         else:
             neko = response.status
 
-    await session.close()
     return neko
 
 
 async def inu_atsume(params):
-    session = ClientSession()
-
-    async with session.get(DOG_URL, params=params, headers=DOG_HEADERS) as response:
+    async with ldr.aioclient.get(DOG_URL, params=params, headers=DOG_HEADERS) as response:
         if response.status == 200:
             inu = await response.json()
         else:
             inu = response.status
 
-    await session.close()
     return inu
 
 
 async def shibe_inu_atsume():
-    session = ClientSession()
-
-    async with session.get(SHIBE_URL, params=None, headers=None) as response:
+    async with ldr.aioclient.get(SHIBE_URL, params=None, headers=None) as response:
         if response.status == 200:
             shibe_inu = await response.json()
         else:
             shibe_inu = response.status
 
-    await session.close()
     return shibe_inu
 
 
 async def tori_atsume():
-    session = ClientSession()
-
-    async with session.get(BIRD_URL, params=None, headers=None) as response:
+    async with ldr.aioclient.get(BIRD_URL, params=None, headers=None) as response:
         if response.status == 200:
             tori = await response.json()
         else:
             tori = response.status
 
-    await session.close()
     return tori
 
 

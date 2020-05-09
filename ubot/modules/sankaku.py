@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -27,15 +25,11 @@ async def sankaku(event):
               "limit": 5,
               "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
 
-    session = ClientSession()
-
-    async with session.get(SAN_URL, params=params) as response:
+    async with ldr.aioclient.get(SAN_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
-            await session.close()
         else:
             await event.edit(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
 
     if not response:
