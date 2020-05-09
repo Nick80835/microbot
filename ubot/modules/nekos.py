@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -21,15 +19,11 @@ async def supernekoatsume(event):
     else:
         reply_to = event
 
-    session = ClientSession()
-
-    async with session.get(NEKO_URL + nekotype) as response:
+    async with ldr.aioclient.get(NEKO_URL + nekotype) as response:
         if response.status == 200:
             image_url = (await response.json())["url"]
-            await session.close()
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
 
     try:

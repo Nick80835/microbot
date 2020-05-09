@@ -74,8 +74,13 @@ class MicroBot():
         else:
             self.logger.info("Stopping client.")
 
+        await self.loader.aioclient.close()
         await self.client.disconnect()
 
 
 micro_bot = MicroBot()
-micro_bot.start_microbot()
+
+try:
+    micro_bot.start_microbot()
+except KeyboardInterrupt:
+    micro_bot.client.loop.run_until_complete(micro_bot.stop_client())
