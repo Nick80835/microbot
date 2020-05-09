@@ -2,8 +2,6 @@
 
 from random import choice
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -18,28 +16,22 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 async def fourchan(event):
     as_file = bool(event.pattern_match.group(1))
 
-    session = ClientSession()
-
-    async with session.get(BOARD_URL.format(event.args)) as response:
+    async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
         if response.status == 200:
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
 
-    async with session.get(POST_URL.format(event.args, op_id)) as response:
+    async with ldr.aioclient.get(POST_URL.format(event.args, op_id)) as response:
         if response.status == 200:
             post_response = await response.json()
             post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS])
             post_file_url = CONTENT_URL.format(event.args, post_info[0], post_info[1])
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
-
-    await session.close()
 
     if not response:
         await event.reply(f"`No results for board: `**{event.args}**")

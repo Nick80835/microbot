@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -26,15 +24,11 @@ async def danbooru(event):
               "random": "true",
               "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
 
-    session = ClientSession()
-
-    async with session.get(DAN_URL, params=params) as response:
+    async with ldr.aioclient.get(DAN_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
-            await session.close()
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
 
     if not response:

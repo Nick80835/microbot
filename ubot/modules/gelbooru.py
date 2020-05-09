@@ -2,8 +2,6 @@
 
 from random import choice
 
-from aiohttp import ClientSession
-
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -30,15 +28,11 @@ async def gelbooru(event):
               "json": 1,
               "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
 
-    session = ClientSession()
-
-    async with session.get(GEL_URL, params=params) as response:
+    async with ldr.aioclient.get(GEL_URL, params=params) as response:
         if response.status == 200:
             response = await response.json()
-            await session.close()
         else:
             await event.reply(f"`An error occurred, response code: `**{response.status}**")
-            await session.close()
             return
 
     if not response:

@@ -6,7 +6,6 @@ from re import sub
 
 from gtts import gTTS
 from PIL import Image
-from requests import get
 from speedtest import Speedtest
 
 from ubot.micro_bot import micro_bot
@@ -79,7 +78,13 @@ async def ip_lookup(event):
         await event.reply("`Provide an IP!`")
         return
 
-    lookup_json = get(f"http://ip-api.com/json/{ip}").json()
+    async with ldr.aioclient.get(f"http://ip-api.com/json/{ip}") as response:
+        if response.status == 200:
+            lookup_json = await response.json()
+        else:
+            await event.reply(f"`An error occurred when looking for `**{ip}**`: `**{response.status}**")
+            return
+
     fixed_lookup = {}
 
     for key, value in lookup_json.items():
