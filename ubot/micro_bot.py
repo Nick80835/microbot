@@ -28,7 +28,9 @@ class MicroBot():
         self.start_client()
         self.start_loader()
         self.loader.load_all_modules()
+        self.logger.info("Client successfully started.")
         self.client.run_until_disconnected()
+        self.client.loop.run_until_complete(self.loader.aioclient.close())
 
     def start_loader(self):
         self.loader = Loader(self.client, self.logger, self.settings)
