@@ -99,22 +99,18 @@ class Loader():
     async def get_image(self, event):
         if event and event.media:
             if event.photo:
-                data = event.photo
+                return event.photo
             elif event.document:
                 if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
-                    return False
+                    return None
                 if event.gif or event.video or event.audio or event.voice:
-                    return False
-                data = event.media.document
-            else:
-                return False
-        else:
-            return False
+                    return None
 
-        if not data or data is None:
-            return False
+                return event.media.document
+            else:
+                return None
         else:
-            return data
+            return None
 
     def _find_all_modules(self):
         mod_paths = glob.glob(dirname(__file__) + "/modules/*.py")
