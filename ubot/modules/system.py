@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import asyncio
 from platform import python_version, uname
 from time import time_ns
 
@@ -43,6 +44,24 @@ async def help_cmd(event):
         help_string = help_string.rstrip(", ")
 
     await event.reply(f"`Available commands:`\n{help_string}")
+
+
+@ldr.add("sysd", sudo=True)
+async def sysd(event):
+    try:
+        neo = "neofetch --stdout"
+
+        fetch = await asyncio.create_subprocess_shell(
+            neo,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+
+        stdout, stderr = await fetch.communicate()
+
+        await event.reply(f"`{stdout.decode().strip()}{stderr.decode().strip()}`")
+    except FileNotFoundError:
+        await event.reply("`Neofetch not found!`")
 
 
 @ldr.add("alive", sudo=True)
