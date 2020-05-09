@@ -35,8 +35,10 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add("deepfry")
+@ldr.add("deepfry(f|)")
 async def deepfryer(event):
+    as_file = bool(event.pattern_match.group(1))
+
     try:
         frycount = int(event.args)
         if frycount < 1:
@@ -46,20 +48,17 @@ async def deepfryer(event):
     except ValueError:
         frycount = 1
 
-    replied_fry = True
-
     if event.is_reply:
         reply_message = await event.get_reply_message()
         data = await ldr.get_image(reply_message)
 
-        if isinstance(data, bool):
+        if not data:
             await event.reply("`I can't deep fry that!`")
             return
     else:
         data = await ldr.get_image(event)
-        replied_fry = False
 
-        if isinstance(data, bool):
+        if not data:
             await event.reply("`Reply to an image or sticker or caption an image to deep fry it!`")
             return
 
@@ -68,28 +67,22 @@ async def deepfryer(event):
     await event.client.download_media(data, image)
     image = Image.open(image)
 
-    # Fry the image
-    image = image.convert("RGB")
-
     for _ in range(frycount):
         image = await deepfry(image)
 
     fried_io = io.BytesIO()
-    fried_io.name = "image.jpeg"
-    image.save(fried_io, "JPEG")
+    fried_io.name = "image.png"
+    image.save(fried_io, "PNG")
     fried_io.seek(0)
 
-    if replied_fry:
-        await reply_message.reply(file=fried_io)
+    if event.is_reply:
+        await reply_message.reply(file=fried_io, force_document=as_file)
     else:
-        await event.reply(file=fried_io)
+        await event.reply(file=fried_io, force_document=as_file)
 
 
 async def deepfry(img):
-    # Crush image to hell and back
-    img = ImageOps.posterize(img, randint(3, 7))
-
-    # Generate colour overlay
+    # Generate color overlay
     overlay = img.copy()
     overlay = ImageEnhance.Contrast(overlay).enhance(uniform(0.7, 1.8))
     overlay = ImageEnhance.Brightness(overlay).enhance(uniform(0.8, 1.3))
