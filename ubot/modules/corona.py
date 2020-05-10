@@ -12,7 +12,7 @@ async def corona(event):
             if response.status == 200:
                 response = await response.json()
             else:
-                await event.edit(f"`An error occurred, response code: `**{response.status_code}**")
+                await event.edit(f"`An error occurred, response code: `**{response.status}**")
                 return
 
         response_text = f"`Stats for `**{response['country']}**\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
@@ -22,7 +22,7 @@ async def corona(event):
             if response.status == 200:
                 response = await response.json()
             else:
-                await event.edit(f"`An error occurred, response code: `**{response.status_code}**")
+                await event.edit(f"`An error occurred, response code: `**{response.status}**")
                 return
 
         response_text = f"`Global stats`\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
