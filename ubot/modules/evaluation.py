@@ -254,6 +254,8 @@ async def compressor(event):
         compress_count = int(event.args)
         if compress_count < 1:
             raise ValueError
+        if compress_count > 15:
+            compress_count = 15
     except ValueError:
         compress_count = 3
 
