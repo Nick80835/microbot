@@ -299,3 +299,74 @@ async def flipsticker(event):
     sticker_flipped_io.seek(0)
 
     await event.reply(file=sticker_flipped_io)
+
+
+@ldr.add("stickimg")
+async def createsticker(event):
+    await event.edit("`Creating sticker PNG…`")
+
+    if event.is_reply:
+        reply_message = await event.get_reply_message()
+        data = await ldr.get_image(reply_message)
+
+        if not data:
+            await event.edit("`Reply to or caption an image to make it sticker-sized!`")
+            return
+    else:
+        data = await ldr.get_image(event)
+
+        if not data:
+            await event.edit("`Reply to or caption an image to make it sticker-sized!`")
+            return
+
+    image_io = io.BytesIO()
+    await event.client.download_media(data, image_io)
+    sticker_png = Image.open(image_io)
+    sticker_png = sticker_png.crop(sticker_png.getbbox())
+
+    final_width = 512
+    final_height = 512
+
+    if sticker_png.width > sticker_png.height:
+        final_height = 512 * (sticker_png.height / sticker_png.width)
+    elif sticker_png.width < sticker_png.height:
+        final_width = 512 * (sticker_png.width / sticker_png.height)
+
+    sticker_png = ImageOps.fit(sticker_png, (int(final_width), int(final_height)))
+    sticker_new_io = io.BytesIO()
+    sticker_png.save(sticker_new_io, "PNG")
+    sticker_new_io.name = "sticker.png"
+    sticker_new_io.seek(0)
+
+    await event.reply(file=sticker_new_io, force_document=True)
+
+
+@ldr.add("compress")
+async def compressor(event):
+    await event.edit("`Compressing this bitch…`")
+    reply = await event.get_reply_message()
+
+    try:
+        compress_count = int(event.args)
+        if compress_count < 1:
+            raise ValueError
+    except ValueError:
+        compress_count = 3
+
+    if reply and reply.sticker:
+        sticker_webp_data = reply.sticker
+    else:
+        await event.edit("`Reply to a sticker to compress that bitch!`")
+        return
+
+    sticker_io = io.BytesIO()
+    await event.client.download_media(sticker_webp_data, sticker_io)
+
+    for _ in range(compress_count):
+        sticker_image = Image.open(sticker_io)
+        sticker_io = io.BytesIO()
+        sticker_image.save(sticker_io, "WebP", quality=1)
+        sticker_io.seek(0)
+
+    sticker_io.name = "sticker.webp"
+    await event.reply(file=sticker_io)
