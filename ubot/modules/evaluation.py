@@ -169,7 +169,7 @@ async def userprofilegetter(event):
 async def stickertopng(event):
     reply = await event.get_reply_message()
 
-    if reply.sticker:
+    if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
         await event.reply("`Reply to a sticker to get it as a PNG file!`")
@@ -190,7 +190,7 @@ async def stickertopng(event):
 async def flipsticker(event):
     reply = await event.get_reply_message()
 
-    if reply.sticker:
+    if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
         await event.reply("`Reply to a sticker to flip that bitch!`")
