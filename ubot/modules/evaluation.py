@@ -261,7 +261,7 @@ async def stickertopng(event):
     await event.edit("`Getting sticker as PNG…`")
     reply = await event.get_reply_message()
 
-    if reply.sticker:
+    if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
         await event.edit("`Reply to a sticker to get it as a PNG file!`")
@@ -283,7 +283,7 @@ async def flipsticker(event):
     await event.edit("`Flipping this bitch…`")
     reply = await event.get_reply_message()
 
-    if reply.sticker:
+    if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
         await event.edit("`Reply to a sticker to flip that bitch!`")
