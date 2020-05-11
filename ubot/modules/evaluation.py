@@ -6,7 +6,7 @@ from re import sub
 
 import wikipedia
 from gtts import gTTS
-from PIL import Image
+from PIL import Image, ImageOps
 from speedtest import Speedtest
 
 from ubot.micro_bot import micro_bot
@@ -276,3 +276,26 @@ async def stickertopng(event):
     sticker_png_io.seek(0)
 
     await event.reply(file=sticker_png_io, force_document=True)
+
+
+@ldr.add("stickflip")
+async def flipsticker(event):
+    await event.edit("`Flipping this bitch…`")
+    reply = await event.get_reply_message()
+
+    if reply.sticker:
+        sticker_webp_data = reply.sticker
+    else:
+        await event.edit("`Reply to a sticker to flip that bitch!`")
+        return
+
+    sticker_webp_io = io.BytesIO()
+    await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    sticker_webp = Image.open(sticker_webp_io)
+    sticker_webp = ImageOps.mirror(sticker_webp)
+    sticker_flipped_io = io.BytesIO()
+    sticker_webp.save(sticker_flipped_io, "WebP")
+    sticker_flipped_io.name = "sticker.webp"
+    sticker_flipped_io.seek(0)
+
+    await event.reply(file=sticker_flipped_io)
