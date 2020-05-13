@@ -35,7 +35,7 @@ async def stickcolor(event):
 
 @ldr.add("slet")
 async def sticklet(event):
-    sticktext = event.args
+    sticktext = await ldr.get_text(event)
 
     if not sticktext:
         await event.edit("`I need text to sticklet!`")
@@ -49,21 +49,22 @@ async def sticklet(event):
     image = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
     draw = ImageDraw.Draw(image)
     fontsize = 230
-    font = ImageFont.truetype("ubot/resources/RobotoMono-Regular.ttf", size=fontsize)
+    font = ImageFont.truetype("ubot/resources/Roboto-Regular.ttf", size=fontsize)
 
     while True:
-        current_size = draw.multiline_textsize(sticktext, font=font, stroke_width=8, spacing=-10)
+        current_size = draw.multiline_textsize(sticktext, font=font, stroke_width=6, spacing=-10)
 
-        if current_size[0] > 512 or current_size[1] > 512:
+        if current_size[0] > 512 or current_size[1] > 512-64:
             fontsize -= 3
-            font = ImageFont.truetype("ubot/resources/RobotoMono-Regular.ttf", size=fontsize)
+            font = ImageFont.truetype("ubot/resources/Roboto-Regular.ttf", size=fontsize)
         else:
             break
 
-    width, height = draw.multiline_textsize(sticktext, font=font, stroke_width=8, spacing=-10)
-    image = Image.new("RGBA", (512, height), (255, 255, 255, 0))
+    width, height = draw.multiline_textsize(sticktext, font=font, stroke_width=6, spacing=-10)
+    image = Image.new("RGBA", (width, height+64), (255, 255, 255, 0))
     draw = ImageDraw.Draw(image)
-    draw.multiline_text(((512-width)/2, -10), sticktext, font=font, fill="white", stroke_width=8, stroke_fill="black", spacing=-10)
+    draw.multiline_text((0, 0), sticktext, font=font, fill="white", stroke_width=6, stroke_fill="black", spacing=-10)
+    image = image.crop(image.getbbox())
 
     image_stream = io.BytesIO()
     image_stream.name = "sticker.webp"
