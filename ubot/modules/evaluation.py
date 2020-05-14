@@ -180,6 +180,7 @@ async def dectobin(event):
 
 @ldr.add("eval")
 async def evaluate(event):
+    await event.edit("`Processing…`")
     reply = await event.get_reply_message()
 
     if not event.args:
@@ -196,6 +197,13 @@ async def evaluate(event):
         eval_ret = await eval_ret
     else:
         isawait = ""
+
+    if len(f"**Evaluation:**\n`{event.args}`\n**Return{isawait}:**\n`{eval_ret}`") > 4096:
+        text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
+        text_io.name = "return.txt"
+        await event.edit("`Output too large for a message, sending as a file…`")
+        await event.reply(file=text_io)
+        return
 
     await event.edit(f"**Evaluation:**\n`{event.args}`\n**Return{isawait}:**\n`{eval_ret}`")
 
