@@ -53,7 +53,7 @@ async def kang(event):
             await event.edit("`You can't kang that!`")
             return
 
-        image_io = resize_image(image_io)
+        image_io = resize_image(sticker_image)
     elif static_sticker:
         sticker_image = Image.open(image_io)
 
