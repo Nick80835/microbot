@@ -55,7 +55,7 @@ async def sankaku(event):
     await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
 
 
-@ldr.add_inline_photo()
+#@ldr.add_inline_photo()
 async def sankaku_inline(search_query):
     params = {"page": 1,
               "limit": 5,
