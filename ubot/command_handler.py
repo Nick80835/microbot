@@ -44,7 +44,6 @@ class CommandHandler():
 
 
     async def handle_inline_photo(self, event):
-        print(str(event))
         builder = event.builder
         result_list = []
         fetch_coros = []
