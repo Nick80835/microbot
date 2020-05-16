@@ -32,6 +32,7 @@ class Loader():
 
     def reload_all_modules(self):
         self.command_handler.incoming_commands = {}
+        self.command_handler.inline_photo_commands = {}
         self.help_dict = {}
 
         errors = ""
@@ -61,6 +62,16 @@ class Loader():
                 "noprefix": args.get('noprefix', False),
                 "sudo": args.get('sudo', False),
                 "extras": args.get('extras', None)
+            }
+
+            return func
+
+        return decorator
+
+    def add_inline_photo(self, **args):
+        def decorator(func):
+            self.command_handler.inline_photo_commands[func.__name__] = {
+                "function": func
             }
 
             return func

@@ -53,3 +53,30 @@ async def sankaku(event):
             pass
 
     await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
+
+
+@ldr.add_inline_photo()
+async def sankaku_inline(search_query):
+    params = {"page": 1,
+              "limit": 5,
+              "tags": f"order:random {search_query}".strip().replace("  ", " ")}
+
+    async with ldr.aioclient.get(SAN_URL, params=params) as response:
+        if response.status == 200:
+            response = await response.json()
+        else:
+            return None
+
+    if not response:
+        return None
+
+    valid_urls = []
+
+    for post in response:
+        if 'file_url' in post.keys():
+            valid_urls.append(post['file_url'])
+
+    if not valid_urls:
+        return None
+
+    return valid_urls[0]
