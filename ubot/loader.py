@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import glob
+from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 from re import escape
@@ -22,6 +23,7 @@ class Loader():
         self.command_handler = CommandHandler(client, logger, settings)
         self.help_dict = {}
         self.aioclient = ClientSession()
+        self.thread_pool = ThreadPoolExecutor()
         self.botversion = "0.1.3"
 
     def load_all_modules(self):
