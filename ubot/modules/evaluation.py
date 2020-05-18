@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import asyncio
 import inspect
 import io
 from re import sub
@@ -378,3 +379,13 @@ async def compressor(event):
 
     sticker_io.name = "sticker.webp"
     await event.reply(file=sticker_io)
+
+
+@ldr.add("eiter")
+async def edit_iterator(event):
+    for i in range(100):
+        await asyncio.sleep(0.08)
+        try:
+            await event.edit(f"`{i}`")
+        except:
+            pass
