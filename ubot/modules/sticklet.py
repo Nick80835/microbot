@@ -61,10 +61,11 @@ async def sticklet(event):
             break
 
     width, height = draw.multiline_textsize(sticktext, font=font, stroke_width=6, spacing=-10)
-    image = Image.new("RGBA", (width, height+64), (255, 255, 255, 0))
+    image = Image.new("RGBA", (512, height+64), (255, 255, 255, 0))
     draw = ImageDraw.Draw(image)
-    draw.multiline_text((0, 0), sticktext, font=font, fill="white", stroke_width=6, stroke_fill="black", spacing=-10)
-    image = image.crop(image.getbbox())
+    draw.multiline_text((int((512 - width) / 2), 0), sticktext, font=font, fill="white", stroke_width=6, stroke_fill="black", spacing=-10)
+    bbox = image.getbbox()
+    image = image.crop((0, bbox[1], 512, bbox[3]))
 
     image_stream = io.BytesIO()
     image_stream.name = "sticker.webp"
