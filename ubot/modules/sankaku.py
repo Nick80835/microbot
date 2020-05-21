@@ -55,11 +55,21 @@ async def sankaku(event):
     await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
 
 
-#@ldr.add_inline_photo()
-async def sankaku_inline(search_query):
+@ldr.add_inline_photo("san(s|x|q|)", default="san")
+async def sankaku_inline(event):
+    safety_arg = event.pattern_match.group(1)
+    rating = ""
+
+    if safety_arg == "x":
+        rating = "rating:explicit"
+    elif safety_arg == "s":
+        rating = "rating:safe"
+    elif safety_arg == "q":
+        rating = "rating:questionable"
+
     params = {"page": 1,
-              "limit": 5,
-              "tags": f"order:random {search_query}".strip().replace("  ", " ")}
+              "limit": 3,
+              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(SAN_URL, params=params) as response:
         if response.status == 200:
@@ -79,4 +89,4 @@ async def sankaku_inline(search_query):
     if not valid_urls:
         return None
 
-    return valid_urls[0]
+    return valid_urls[:3]

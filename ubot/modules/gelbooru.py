@@ -59,13 +59,23 @@ async def gelbooru(event):
     await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
 
 
-@ldr.add_inline_photo()
-async def gelbooru_inline(search_query):
+@ldr.add_inline_photo("gel(s|x|q|)", default="gel")
+async def gelbooru_inline(event):
+    safety_arg = event.pattern_match.group(1)
+    rating = ""
+
+    if safety_arg == "x":
+        rating = "Rating:explicit"
+    elif safety_arg == "s":
+        rating = "Rating:safe"
+    elif safety_arg == "q":
+        rating = "Rating:questionable"
+
     params = {"page": "dapi",
               "s": "post",
               "q": "index",
               "json": 1,
-              "tags": f"{search_query} sort:random".strip().replace("  ", " ")}
+              "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(GEL_URL, params=params) as response:
         if response.status == 200:
@@ -85,4 +95,4 @@ async def gelbooru_inline(search_query):
     if not valid_urls:
         return None
 
-    return valid_urls[0]
+    return valid_urls[:3]
