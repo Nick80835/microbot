@@ -55,11 +55,21 @@ async def danbooru(event):
     await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
 
 
-@ldr.add_inline_photo()
-async def danbooru_inline(search_query):
-    params = {"limit": 1,
+@ldr.add_inline_photo("dan(s|x|q|)", default="dan")
+async def danbooru_inline(event):
+    safety_arg = event.pattern_match.group(1)
+    rating = ""
+
+    if safety_arg == "x":
+        rating = "Rating:explicit"
+    elif safety_arg == "s":
+        rating = "Rating:safe"
+    elif safety_arg == "q":
+        rating = "Rating:questionable"
+
+    params = {"limit": 3,
               "random": "true",
-              "tags": f"{search_query}".strip().replace("  ", " ")}
+              "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(DAN_URL, params=params) as response:
         if response.status == 200:
@@ -79,4 +89,4 @@ async def danbooru_inline(search_query):
     if not valid_urls:
         return None
 
-    return valid_urls[0]
+    return valid_urls[:3]

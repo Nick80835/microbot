@@ -70,10 +70,13 @@ class Loader():
 
         return decorator
 
-    def add_inline_photo(self, **args):
+    def add_inline_photo(self, pattern=None, **args):
+        pattern = args.get("pattern", pattern)
+
         def decorator(func):
-            self.command_handler.inline_photo_commands[func.__name__] = {
-                "function": func
+            self.command_handler.inline_photo_commands[pattern] = {
+                "function": func,
+                "default": args.get("default", None)
             }
 
             return func
