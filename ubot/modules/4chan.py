@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from random import choice
+from random import choice, shuffle
 
 from ubot.micro_bot import micro_bot
 
@@ -48,3 +48,34 @@ async def fourchan(event):
         pass
 
     await event.reply(f"`Failed to fetch media for board: `**{event.args}**")
+
+
+@ldr.add_inline_photo("4c", default="4c")
+async def gelbooru_inline(event):
+    if not event.args:
+        return None
+
+    async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
+        if response.status == 200:
+            board_response = await response.json()
+            op_id = choice(choice(board_response)["threads"])["no"]
+        else:
+            return None
+
+    post_file_url_list = []
+
+    async with ldr.aioclient.get(POST_URL.format(event.args, op_id)) as response:
+        if response.status == 200:
+            post_response = await response.json()
+            post_info_list = [[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS]
+            shuffle(post_info_list)
+
+            for post_info in post_info_list[:3]:
+                post_file_url_list += [CONTENT_URL.format(event.args, post_info[0], post_info[1])]
+        else:
+            return None
+
+    if not response:
+        return None
+
+    return post_file_url_list
