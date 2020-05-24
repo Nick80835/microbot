@@ -14,6 +14,10 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 @ldr.add("4c(f|)")
 async def fourchan(event):
+    if not event.args:
+        await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>`")
+        return
+
     await event.edit(f"`Processing…`")
     as_file = bool(event.pattern_match.group(1))
 
