@@ -14,7 +14,7 @@ CAT_HEADERS = {"x-api-key": CAT_API_KEY}
 DOG_HEADERS = {"x-api-key": DOG_API_KEY}
 IMGPARAM = {"mime_types": "jpg,png"}
 GIFPARAM = {"mime_types": "gif"}
-TIMGPARAM = {"mime_types": "jpg,png", "limit": 3}
+MIMGPARAM = {"mime_types": "jpg,png", "limit": 6}
 
 
 async def neko_atsume(params):
@@ -147,11 +147,9 @@ async def doggif(event):
 
 @ldr.add_inline_photo("cat", default="cat")
 async def cat_inline(event):
-    cat_urls = [neko["url"] for neko in await neko_atsume(TIMGPARAM)]
-    return cat_urls
+    return [neko["url"] for neko in await neko_atsume(MIMGPARAM)]
 
 
 @ldr.add_inline_photo("dog", default="dog")
 async def dog_inline(event):
-    dog_urls = [inu["url"] for inu in await inu_atsume(TIMGPARAM)]
-    return dog_urls
+    return [inu["url"] for inu in await inu_atsume(MIMGPARAM)]
