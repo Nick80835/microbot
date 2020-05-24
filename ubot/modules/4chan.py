@@ -51,7 +51,7 @@ async def fourchan(event):
 
 
 @ldr.add_inline_photo("4c", default="4c")
-async def gelbooru_inline(event):
+async def fourchan_inline(event):
     if not event.args:
         return None
 
