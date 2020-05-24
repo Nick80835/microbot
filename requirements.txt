@@ -2,6 +2,7 @@ aiohttp
 cryptg
 gTTS
 hachoir
+howdoi
 pillow
 praw
 speedtest-cli
