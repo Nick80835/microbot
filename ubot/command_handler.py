@@ -76,7 +76,10 @@ class CommandHandler():
                     pass
 
         if not pattern_match:
-            await event.answer([await event.builder.article(title=key, text=f"{self.settings.get_config('cmd_prefix') or '.'}{value['default']}") for key, value in self.inline_photo_commands.items() if value["default"]])
+            try:
+                await event.answer([await event.builder.article(title=key, text=f"{self.settings.get_config('cmd_prefix') or '.'}{value['default']}") for key, value in self.inline_photo_commands.items() if value["default"]])
+            except:
+                pass
 
     async def try_coro(self, coro):
         try:
