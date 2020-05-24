@@ -10,4 +10,4 @@ ldr = micro_bot.loader
 @ldr.add("hdi")
 async def howdoi_cmd(event):
     response = howdoi.howdoi(vars(howdoi.get_parser().parse_args(event.args.split(' '))))
-    await event.reply(f"**Query:**\n`{event.args}`\n**Answer:**\n`{response}`")
+    await event.reply(f"**Query:**\n{event.args}\n**Answer:**\n{response}")
