@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import os
 import re
 
 from howdoi import howdoi
@@ -7,6 +8,7 @@ from howdoi import howdoi
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
+os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 
 
 @ldr.add("hdi")
