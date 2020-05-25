@@ -82,7 +82,7 @@ class CommandHandler():
             return
 
         try:
-            await event.answer([i for i in photos if i])
+            await event.answer([i for i in photos if i], gallery=True)
         except:
             pass
 
