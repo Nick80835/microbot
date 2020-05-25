@@ -35,6 +35,7 @@ class Loader():
     def reload_all_modules(self):
         self.command_handler.incoming_commands = {}
         self.command_handler.inline_photo_commands = {}
+        self.command_handler.inline_article_commands = {}
         self.help_dict = {}
 
         errors = ""
@@ -75,6 +76,19 @@ class Loader():
 
         def decorator(func):
             self.command_handler.inline_photo_commands[pattern] = {
+                "function": func,
+                "default": args.get("default", None)
+            }
+
+            return func
+
+        return decorator
+
+    def add_inline_article(self, pattern=None, **args):
+        pattern = args.get("pattern", pattern)
+
+        def decorator(func):
+            self.command_handler.inline_article_commands[pattern] = {
                 "function": func,
                 "default": args.get("default", None)
             }
