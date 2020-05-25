@@ -69,7 +69,7 @@ async def urban_dict_inline(event):
             return None
 
     if response['list']:
-        response_words = response['list'][:6]
+        response_words = response['list'][:10]
     else:
         return None
 
