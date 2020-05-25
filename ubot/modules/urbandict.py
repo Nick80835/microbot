@@ -34,10 +34,10 @@ async def urban_dict(event):
         await event.reply(f"`No results for query:` **{udquery}**")
         return
 
-    definition = f"**{response_word['word']}**: `{response_word['definition']}`"
+    definition = f"**{response_word['word']}**: {response_word['definition']}"
 
     if response_word['example']:
-        definition += f"\n\n**Example**: `{response_word['example']}`"
+        definition += f"\n\n**Example**: {response_word['example']}"
 
     definition = definition.replace("[", "").replace("]", "")
 
@@ -77,10 +77,10 @@ async def urban_dict_inline(event):
 
     for word in response_words:
         word['definition'] = word['definition'].replace("[", "").replace("]", "")
-        definition = {"title": word['word'], "description": word['definition'], "text": f"**{word['word']}**: `{word['definition']}`"}
+        definition = {"title": word['word'], "description": word['definition'], "text": f"**{word['word']}**: {word['definition']}"}
 
         if word['example']:
-            definition['text'] += f"\n\n**Example**: `{word['example']}`".replace("[", "").replace("]", "")
+            definition['text'] += f"\n\n**Example**: {word['example']}".replace("[", "").replace("]", "")
 
         definition_list += [definition]
 
