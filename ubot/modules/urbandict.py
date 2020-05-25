@@ -49,3 +49,39 @@ async def urban_dict(event):
         return
 
     await event.reply(definition)
+
+
+@ldr.add_inline_article("ud", default="ud")
+async def urban_dict_inline(event):
+    udquery = event.args
+
+    if udquery:
+        params = {'term': udquery}
+        url = UD_QUERY_URL
+    else:
+        params = None
+        url = UD_RANDOM_URL
+
+    async with ldr.aioclient.get(url, params=params) as response:
+        if response.status == 200:
+            response = await response.json()
+        else:
+            return None
+
+    if response['list']:
+        response_words = response['list'][:6]
+    else:
+        return None
+
+    definition_list = []
+
+    for word in response_words:
+        word['definition'] = word['definition'].replace("[", "").replace("]", "")
+        definition = {"title": word['word'], "description": word['definition'], "text": f"**{word['word']}**: `{word['definition']}`"}
+
+        if word['example']:
+            definition['text'] += f"\n\n**Example**: `{word['example']}`".replace("[", "").replace("]", "")
+
+        definition_list += [definition]
+
+    return definition_list
