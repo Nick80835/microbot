@@ -29,7 +29,8 @@ async def reload_modules(event):
 @ldr.add("del")
 async def delete_message(event):
     message_to_delete = await event.get_reply_message()
-    if message_to_delete.from_id == (await event.client.get_me()).id:
+
+    if message_to_delete and message_to_delete.from_id == (await event.client.get_me()).id:
         await message_to_delete.delete()
 
 
