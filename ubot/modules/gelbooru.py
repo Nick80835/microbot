@@ -32,11 +32,11 @@ async def gelbooru(event):
         if response.status == 200:
             response = await response.json()
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"`An error occurred, response code: `{response.status}")
             return
 
     if not response:
-        await event.reply(f"`No results for query: `**{event.args}**")
+        await event.reply(f"`No results for query: `{event.args}")
         return
 
     valid_urls = []
@@ -46,7 +46,7 @@ async def gelbooru(event):
             valid_urls.append(post['file_url'])
 
     if not valid_urls:
-        await event.reply(f"`Failed to find URLs for query: `**{event.args}**")
+        await event.reply(f"`Failed to find URLs for query: `{event.args}")
         return
 
     for image_url in valid_urls:
@@ -56,7 +56,7 @@ async def gelbooru(event):
         except:
             pass
 
-    await event.reply(f"`Failed to fetch media for query: `**{event.args}**")
+    await event.reply(f"`Failed to fetch media for query: `{event.args}")
 
 
 @ldr.add_inline_photo("gel(s|x|q|)", default="gel")
