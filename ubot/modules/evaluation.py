@@ -356,11 +356,13 @@ async def compressor(event):
     reply = await event.get_reply_message()
 
     try:
-        compress_count = int(event.args)
-        if compress_count < 1:
-            raise ValueError
+        compression_quality = int(event.args)
+        if compression_quality < 1:
+            compression_quality = 1
+        elif compression_quality > 100:
+            compression_quality = 100
     except ValueError:
-        compress_count = 3
+        compression_quality = 15
 
     if reply and reply.sticker:
         sticker_webp_data = reply.sticker
@@ -371,13 +373,16 @@ async def compressor(event):
     sticker_io = io.BytesIO()
     await event.client.download_media(sticker_webp_data, sticker_io)
 
-    for _ in range(compress_count):
-        sticker_image = Image.open(sticker_io)
-        sticker_io = io.BytesIO()
-        sticker_image.save(sticker_io, "WebP", quality=1)
-        sticker_io.seek(0)
-
+    sticker_image = Image.open(sticker_io)
+    sticker_image = sticker_image.convert("RGB")
+    sticker_io = io.BytesIO()
+    sticker_image.save(sticker_io, "JPEG", quality=compression_quality)
+    sticker_image = Image.open(sticker_io)
+    sticker_io = io.BytesIO()
+    sticker_image.save(sticker_io, "WebP", quality=99)
+    sticker_io.seek(0)
     sticker_io.name = "sticker.webp"
+
     await event.reply(file=sticker_io)
 
 
