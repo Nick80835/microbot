@@ -357,8 +357,8 @@ async def compressor(event):
 
     try:
         compression_quality = int(event.args)
-        if compression_quality < 1:
-            compression_quality = 1
+        if compression_quality < 0:
+            compression_quality = 0
         elif compression_quality > 100:
             compression_quality = 100
     except ValueError:
