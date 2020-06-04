@@ -383,7 +383,7 @@ async def compressor(event):
 
 @ldr.add("eiter")
 async def edit_iterator(event):
-    for i in range(100):
+    for i in range(45):
         await asyncio.sleep(0.08)
         try:
             await event.edit(f"`{i}`")
