@@ -1,5 +1,9 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+import io
+
+from PIL import Image
+
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
@@ -30,3 +34,31 @@ async def supernekoatsume(event):
         await event.client.send_file(event.chat_id, file=image_url, force_document=as_file, reply_to=reply_to)
     except:
         await event.reply(f"`Failed to fetch media for query: `**{nekotype}**")
+
+
+@ldr.add("8ball")
+async def eightball(event):
+    async with ldr.aioclient.get(NEKO_URL + "8ball") as response:
+        if response.status == 200:
+            image_url = (await response.json())["url"]
+        else:
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            return
+
+    async with ldr.aioclient.get(image_url) as response:
+        if response.status == 200:
+            image_data = await response.read()
+        else:
+            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            return
+
+    sticker_image = Image.open(io.BytesIO(image_data))
+    sticker_io = io.BytesIO()
+    sticker_image.save(sticker_io, "WebP", quality=99)
+    sticker_io.seek(0)
+    sticker_io.name = "sticker.webp"
+
+    try:
+        await event.reply(file=sticker_io)
+    except:
+        await event.reply(f"`Failed to send 8ball! :(`")
