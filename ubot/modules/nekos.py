@@ -9,8 +9,8 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES = "neko|lewd|smug|tits|trap|anal|cuddle|hug|goose|waifu|gasm|slap|spank|pat|feet|woof"
-REPLY_TYPES = "cuddle hug slap spank pat"
+NEKO_TYPES = "neko|lewd|smug|tits|trap|anal|cuddle|hug|goose|waifu|gasm|slap|spank|pat|feet|woof|baka"
+REPLY_TYPES = "cuddle hug slap spank pat baka"
 
 
 @ldr.add(f"({NEKO_TYPES})(f|)")
