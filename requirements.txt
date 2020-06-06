@@ -1,4 +1,6 @@
+aiodns
 aiohttp
+cchardet
 cryptg
 gtts
 hachoir
