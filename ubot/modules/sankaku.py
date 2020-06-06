@@ -5,6 +5,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
+SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
 
 
 @ldr.add("san(s|x|q|)(f|)")
@@ -39,15 +40,15 @@ async def sankaku(event):
 
     for post in response:
         if 'file_url' in post.keys():
-            valid_urls.append(post['file_url'])
+            valid_urls.append([post['file_url'], post['id']])
 
     if not valid_urls:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image_url in valid_urls:
+    for image in valid_urls:
         try:
-            await event.reply(file=image_url, force_document=as_file)
+            await event.reply(f"[sauce]({SAN_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass

@@ -5,6 +5,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 DAN_URL = "http://danbooru.donmai.us/posts.json"
+DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
 
 
 @ldr.add("dan(s|x|q|)(f|)")
@@ -39,15 +40,15 @@ async def danbooru(event):
 
     for post in response:
         if 'file_url' in post.keys():
-            valid_urls.append(post['file_url'])
+            valid_urls.append([post['file_url'], post['id']])
 
     if not valid_urls:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image_url in valid_urls:
+    for image in valid_urls:
         try:
-            await event.reply(file=image_url, force_document=as_file)
+            await event.reply(f"[sauce]({DAN_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
