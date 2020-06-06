@@ -29,3 +29,6 @@ async def stickcolor(event):
     image.save(image_stream, "WebP")
     image_stream.seek(0)
     await event.reply(file=image_stream)
+
+    if event.args == "black":
+        await event.client.send_message(event.chat_id, "Racism is no more!")
