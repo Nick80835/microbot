@@ -7,6 +7,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 GEL_URL = "https://gelbooru.com/index.php"
+GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
 
 
 @ldr.add("gel(s|x|q|)(f|)")
@@ -44,15 +45,15 @@ async def gelbooru(event):
 
     for post in response:
         if 'file_url' in post.keys():
-            valid_urls.append(post['file_url'])
+            valid_urls.append([post['file_url'], post['id']])
 
     if not valid_urls:
         await event.edit(f"`Failed to find URLs for query: `**{event.args}**")
         return
 
-    for image_url in valid_urls:
+    for image in valid_urls:
         try:
-            await event.client.send_file(event.chat_id, file=image_url, force_document=as_file)
+            await event.client.send_message(event.chat_id, f"[sauce]({GEL_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
             await event.delete()
             return
         except:
