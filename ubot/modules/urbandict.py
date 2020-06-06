@@ -25,13 +25,13 @@ async def urban_dict(event):
         if response.status == 200:
             response = await response.json()
         else:
-            await event.reply(f"`An error occurred, response code:` **{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     if response['list']:
         response_word = response['list'][0]
     else:
-        await event.reply(f"`No results for query:` **{udquery}**")
+        await event.reply(f"No results for query: **{udquery}**")
         return
 
     definition = f"**{response_word['word']}**: {response_word['definition']}"
@@ -45,7 +45,7 @@ async def urban_dict(event):
         file_io = io.BytesIO()
         file_io.write(bytes(definition.encode('utf-8')))
         file_io.name = f"definition of {response_word['word']}.txt"
-        await event.reply(file=file_io, caption="`Output was too large, sent it as a file.`")
+        await event.reply(file=file_io, caption="Output was too large, sent it as a file.")
         return
 
     await event.reply(definition)

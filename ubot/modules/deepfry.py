@@ -54,13 +54,13 @@ async def deepfryer(event):
         data = await ldr.get_image(reply_message)
 
         if not data:
-            await event.reply("`I can't deep fry that!`")
+            await event.reply("I can't deep fry that!")
             return
     else:
         data = await ldr.get_image(event)
 
         if not data:
-            await event.reply("`Reply to an image or sticker or caption an image to deep fry it!`")
+            await event.reply("Reply to an image or sticker or caption an image to deep fry it!")
             return
 
     # Download photo (highres) as byte array

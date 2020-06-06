@@ -54,10 +54,10 @@ async def imagefetcher(event, sub):
             post = REDDIT.subreddit(sub).random() or await imagefetcherfallback(sub)
             post.title
         except redex.Forbidden:
-            await event.reply(f"**r/{sub}**` is private!`")
+            await event.reply(f"**r/{sub}** is private!")
             return
         except (redex.NotFound, KeyError):
-            await event.reply(f"**r/{sub}**` doesn't exist!`")
+            await event.reply(f"**r/{sub}** doesn't exist!")
             return
         except AttributeError:
             continue
@@ -68,13 +68,13 @@ async def imagefetcher(event, sub):
             break
 
     if not image_url:
-        await event.reply(f"`Failed to find any valid content on `**r/{sub}**`!`")
+        await event.reply(f"Failed to find any valid content on **r/{sub}**!")
         return
 
     try:
         await event.reply(title, file=image_url)
     except:
-        await event.reply(f"`Failed to download content from `**r/{sub}**`!`\n`Title: `**{title}**\n`URL: `{image_url}")
+        await event.reply(f"Failed to download content from **r/{sub}**!\nTitle: **{title}**\nURL: {image_url}")
 
 
 async def titlefetcher(event, sub):
@@ -82,10 +82,10 @@ async def titlefetcher(event, sub):
         post = REDDIT.subreddit(sub).random() or await titlefetcherfallback(sub)
         post.title
     except redex.Forbidden:
-        await event.reply(f"**r/{sub}**` is private!`")
+        await event.reply(f"**r/{sub}** is private!")
         return
     except (redex.NotFound, KeyError):
-        await event.reply(f"**r/{sub}**` doesn't exist!`")
+        await event.reply(f"**r/{sub}** doesn't exist!")
         return
 
     await event.reply(post.title)
@@ -97,10 +97,10 @@ async def bodyfetcher(event, sub):
             post = REDDIT.subreddit(sub).random() or await bodyfetcherfallback(sub)
             post.title
         except redex.Forbidden:
-            await event.reply(f"**r/{sub}**` is private!`")
+            await event.reply(f"**r/{sub}** is private!")
             return
         except (redex.NotFound, KeyError):
-            await event.reply(f"**r/{sub}**` doesn't exist!`")
+            await event.reply(f"**r/{sub}** doesn't exist!")
             return
         except AttributeError:
             continue
@@ -117,7 +117,7 @@ async def bodyfetcher(event, sub):
         await event.reply(f"**{title}**\n\n{body}")
         return
     
-    await event.reply(f"`Failed to find any valid content on `**r/{sub}**`!`")
+    await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
 @ldr.add("red(i|t|b)")
@@ -126,7 +126,7 @@ async def redimg(event):
     fetch_type = event.pattern_match.group(1)
 
     if not sub:
-        await event.reply(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>`")
+        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>")
         return
 
     if fetch_type == "i":
