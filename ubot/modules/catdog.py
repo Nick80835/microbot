@@ -62,7 +62,7 @@ async def shibe(event):
     shibe_inu = await shibe_inu_atsume()
 
     if isinstance(shibe_inu, int):
-        await event.reply(f"`There was an error finding the shibes! :( -> {shibe_inu}`")
+        await event.reply(f"There was an error finding the shibes! :( -> **{shibe_inu}**")
         return
 
     await event.reply(file=shibe_inu[0])
@@ -73,7 +73,7 @@ async def bird(event):
     tori = await tori_atsume()
 
     if isinstance(tori, int):
-        await event.reply(f"`There was an error finding the birdies! :( -> {tori}`")
+        await event.reply(f"There was an error finding the birdies! :( -> **{tori}**")
         return
 
     await event.reply(file=tori[0])
@@ -84,7 +84,7 @@ async def cat(event):
     neko = await neko_atsume(IMGPARAM)
 
     if isinstance(neko, int):
-        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
     await event.reply(file=neko[0]["url"])
@@ -95,7 +95,7 @@ async def cathd(event):
     neko = await neko_atsume(IMGPARAM)
 
     if isinstance(neko, int):
-        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
     await event.reply(file=neko[0]["url"], force_document=True)
@@ -106,7 +106,7 @@ async def catgif(event):
     neko = await neko_atsume(GIFPARAM)
 
     if isinstance(neko, int):
-        await event.reply(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
     await event.reply(file=neko[0]["url"])
@@ -117,7 +117,7 @@ async def dog(event):
     inu = await inu_atsume(IMGPARAM)
 
     if isinstance(inu, int):
-        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
     await event.reply(file=inu[0]["url"])
@@ -128,7 +128,7 @@ async def doghd(event):
     inu = await inu_atsume(IMGPARAM)
 
     if isinstance(inu, int):
-        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
     await event.reply(file=inu[0]["url"], force_document=True).delete()
@@ -139,7 +139,7 @@ async def doggif(event):
     inu = await inu_atsume(GIFPARAM)
 
     if isinstance(inu, int):
-        await event.reply(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
     await event.reply(file=inu[0]["url"])

@@ -15,7 +15,7 @@ ldr = micro_bot.loader
 
 @ldr.add("speed", sudo=True)
 async def iamspeed(event):
-    speed_message = await event.reply("`Running speed test…`")
+    speed_message = await event.reply("Running speed test…")
     test = Speedtest()
 
     test.get_best_server()
@@ -25,11 +25,11 @@ async def iamspeed(event):
     result = test.results.dict()
 
     await speed_message.edit(
-        f"`Started at: {result['timestamp']}\n"
-        f"Download: {speed_convert(result['download'])}\n"
-        f"Upload: {speed_convert(result['upload'])}\n"
-        f"Ping: {result['ping']} milliseconds\n"
-        f"ISP: {result['client']['isp']}`"
+        f"**Started at:** {result['timestamp']}\n"
+        f"**Download:** {speed_convert(result['download'])}\n"
+        f"**Upload:** {speed_convert(result['upload'])}\n"
+        f"**Ping:** {result['ping']} milliseconds\n"
+        f"**ISP:** {result['client']['isp']}"
     )
 
 
@@ -48,7 +48,7 @@ async def text_to_speech(event):
     text, reply = await ldr.get_text(event, return_msg=True)
 
     if not text:
-        await event.reply("`Give me text or reply to text to use TTS.`")
+        await event.reply("Give me text or reply to text to use TTS.")
         return
 
     tts_bytesio = io.BytesIO()
@@ -59,12 +59,10 @@ async def text_to_speech(event):
         tts.write_to_fp(tts_bytesio)
         tts_bytesio.seek(0)
     except AssertionError:
-        await event.reply('`The text is empty.\n'
-                         'Nothing left to speak after pre-precessing, '
-                         'tokenizing and cleaning.`')
+        await event.reply('The text is empty.\nNothing left to speak after pre-precessing, tokenizing and cleaning.')
         return
     except RuntimeError:
-        await event.reply('`Error loading the languages dictionary.`')
+        await event.reply('Error loading the languages dictionary.')
         return
 
     await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
@@ -75,14 +73,14 @@ async def ip_lookup(event):
     ip = await ldr.get_text(event)
 
     if not ip:
-        await event.reply("`Provide an IP!`")
+        await event.reply("Provide an IP!")
         return
 
     async with ldr.aioclient.get(f"http://ip-api.com/json/{ip}") as response:
         if response.status == 200:
             lookup_json = await response.json()
         else:
-            await event.reply(f"`An error occurred when looking for `**{ip}**`: `**{response.status}**")
+            await event.reply(f"An error occurred when looking for **{ip}**: **{response.status}**")
             return
 
     fixed_lookup = {}
@@ -104,7 +102,7 @@ async def ip_lookup(event):
     text = ""
 
     for key, value in fixed_lookup.items():
-        text = text + f"**{key}:** `{value}`\n"
+        text = text + f"**{key}:** {value}\n"
 
     await event.reply(text)
 
@@ -114,13 +112,13 @@ async def chatidgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
         if reply.forward and reply.forward.channel_id:
-            await event.reply(f"**Channel ID:**` {reply.forward.channel_id}`")
+            await event.reply(f"**Channel ID:** {reply.forward.channel_id}")
             return
         chat_id = reply.chat_id
     else:
         chat_id = event.chat_id
 
-    await event.reply(f"**Chat ID:**` {chat_id}`")
+    await event.reply(f"**Chat ID:** {chat_id}")
 
 
 @ldr.add("userid")
@@ -131,7 +129,7 @@ async def useridgetter(event):
     else:
         user_id = event.from_id
 
-    await event.reply(f"**User ID:**` {user_id}`")
+    await event.reply(f"**User ID:** {user_id}")
 
 
 @ldr.add("profile")
@@ -140,7 +138,7 @@ async def userprofilegetter(event):
         try:
             user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
-            await event.reply("`The ID or username you provided was invalid!`")
+            await event.reply("The ID or username you provided was invalid!")
             return
     elif event.is_reply:
         reply = await event.get_reply_message()
@@ -149,13 +147,13 @@ async def userprofilegetter(event):
             try:
                 user_entity = await event.client.get_entity(reply_id)
             except (ValueError, TypeError):
-                await event.reply("`There was an error getting the user!`")
+                await event.reply("There was an error getting the user!")
                 return
         else:
-            await event.reply("`The user may have super sneaky privacy settings enabled!`")
+            await event.reply("The user may have super sneaky privacy settings enabled!")
             return
     else:
-        await event.reply("`Give me a user ID, username or reply!`")
+        await event.reply("Give me a user ID, username or reply!")
         return
 
     userid = user_entity.id
@@ -172,7 +170,7 @@ async def stickertopng(event):
     if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
-        await event.reply("`Reply to a sticker to get it as a PNG file!`")
+        await event.reply("Reply to a sticker to get it as a PNG file!")
         return
 
     sticker_webp_io = io.BytesIO()
@@ -193,7 +191,7 @@ async def flipsticker(event):
     if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
-        await event.reply("`Reply to a sticker to flip that bitch!`")
+        await event.reply("Reply to a sticker to flip that bitch!")
         return
 
     sticker_webp_io = io.BytesIO()
@@ -215,13 +213,13 @@ async def createsticker(event):
         data = await ldr.get_image(reply_message)
 
         if not data:
-            await event.reply("`Reply to or caption an image to make it sticker-sized!`")
+            await event.reply("Reply to or caption an image to make it sticker-sized!")
             return
     else:
         data = await ldr.get_image(event)
 
         if not data:
-            await event.reply("`Reply to or caption an image to make it sticker-sized!`")
+            await event.reply("Reply to or caption an image to make it sticker-sized!")
             return
 
     image_io = io.BytesIO()
@@ -262,7 +260,7 @@ async def compressor(event):
     if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
-        await event.reply("`Reply to a sticker to compress that bitch!`")
+        await event.reply("Reply to a sticker to compress that bitch!")
         return
 
     sticker_io = io.BytesIO()

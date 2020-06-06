@@ -14,7 +14,7 @@ async def youtube_cmd(event):
     try:
         await event.reply(file=video_stream.url)
     except:
-        await event.reply(f"`Download failed: `[URL]({video_stream.url})")
+        await event.reply(f"Download failed: [URL]({video_stream.url})")
 
 
 @ldr.add("yta")
@@ -24,4 +24,4 @@ async def youtube_audio_cmd(event):
     try:
         await event.reply(file=video_stream.url)
     except:
-        await event.reply(f"`Download failed: `[URL]({video_stream.url})")
+        await event.reply(f"Download failed: [URL]({video_stream.url})")

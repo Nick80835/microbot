@@ -27,13 +27,13 @@ async def supernekoatsume(event):
         if response.status == 200:
             image_url = (await response.json())["url"]
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     try:
         await event.client.send_file(event.chat_id, file=image_url, force_document=as_file, reply_to=reply_to)
     except:
-        await event.reply(f"`Failed to fetch media for query: `**{nekotype}**")
+        await event.reply(f"Failed to fetch media for query: **{nekotype}**")
 
 
 @ldr.add("8ball")
@@ -42,14 +42,14 @@ async def eightball(event):
         if response.status == 200:
             image_url = (await response.json())["url"]
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     async with ldr.aioclient.get(image_url) as response:
         if response.status == 200:
             image_data = await response.read()
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     sticker_image = Image.open(io.BytesIO(image_data))
@@ -61,4 +61,4 @@ async def eightball(event):
     try:
         await event.reply(file=sticker_io)
     except:
-        await event.reply(f"`Failed to send 8ball! :(`")
+        await event.reply(f"Failed to send 8ball! :(")

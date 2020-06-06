@@ -24,7 +24,6 @@ class Loader():
         self.help_dict = {}
         self.aioclient = ClientSession()
         self.thread_pool = ThreadPoolExecutor()
-        self.botversion = "0.1.3"
 
     def load_all_modules(self):
         self._find_all_modules()

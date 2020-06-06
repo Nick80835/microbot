@@ -15,7 +15,7 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 @ldr.add("4c(f|)")
 async def fourchan(event):
     if not event.args:
-        await event.reply(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>`")
+        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>")
         return
 
     as_file = bool(event.pattern_match.group(1))
@@ -25,7 +25,7 @@ async def fourchan(event):
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     async with ldr.aioclient.get(POST_URL.format(event.args, op_id)) as response:
@@ -34,11 +34,11 @@ async def fourchan(event):
             post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS])
             post_file_url = CONTENT_URL.format(event.args, post_info[0], post_info[1])
         else:
-            await event.reply(f"`An error occurred, response code: `**{response.status}**")
+            await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     if not response:
-        await event.reply(f"`No results for board: `**{event.args}**")
+        await event.reply(f"No results for board: **{event.args}**")
         return
 
     try:
@@ -47,7 +47,7 @@ async def fourchan(event):
     except:
         pass
 
-    await event.reply(f"`Failed to fetch media for board: `**{event.args}**")
+    await event.reply(f"Failed to fetch media for board: **{event.args}**")
 
 
 @ldr.add_inline_photo("4c", default="4c")
