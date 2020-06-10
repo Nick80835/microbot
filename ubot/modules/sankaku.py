@@ -1,11 +1,26 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from time import time_ns
+
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
 
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
+
+
+@ldr.add("sanping", sudo=True)
+async def sankaku_ping(event):
+    params = {"page": 1,
+              "limit": 5,
+              "tags": f"order:random"}
+
+    start = time_ns()
+
+    async with ldr.aioclient.get(SAN_URL, params=params) as _:
+        time_taken_ms = int((time_ns() - start) / 1000000)
+        await event.reply(f"Sankaku response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add("san(s|x|q|)(f|)", nsfw=True)

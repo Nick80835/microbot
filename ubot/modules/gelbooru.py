@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 from random import choice
+from time import time_ns
 
 from ubot.micro_bot import micro_bot
 
@@ -8,6 +9,21 @@ ldr = micro_bot.loader
 
 GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
+
+
+@ldr.add("gelping", sudo=True)
+async def danbooru_ping(event):
+    params = {"page": "dapi",
+              "s": "post",
+              "q": "index",
+              "json": 1,
+              "tags": f"sort:random"}
+
+    start = time_ns()
+
+    async with ldr.aioclient.get(GEL_URL, params=params) as _:
+        time_taken_ms = int((time_ns() - start) / 1000000)
+        await event.reply(f"Gelbooru response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add("gel(s|x|q|)(f|)", nsfw=True)
