@@ -105,7 +105,7 @@ async def nsfw_toggle(event):
 
     if event.args == "on":
         ldr.settings.remove_from_list("nsfw_blacklist", event.chat.id)
-        await event.reply("NSFW commands disabled for this chat!")
+        await event.reply("NSFW commands enabled for this chat!")
     elif event.args == "off":
         ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
-        await event.reply("NSFW commands enabled for this chat!")
+        await event.reply("NSFW commands disabled for this chat!")
