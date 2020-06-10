@@ -1,11 +1,25 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from time import time_ns
+
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
 
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
+
+
+@ldr.add("danping", sudo=True)
+async def danbooru_ping(event):
+    params = {"limit": 1,
+              "random": "true"}
+
+    start = time_ns()
+
+    async with ldr.aioclient.get(DAN_URL, params=params) as _:
+        time_taken_ms = int((time_ns() - start) / 1000000)
+        await event.reply(f"Danbooru response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add("dan(s|x|q|)(f|)", nsfw=True)
