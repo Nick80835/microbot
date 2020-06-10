@@ -26,10 +26,10 @@ class CommandHandler():
             pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key, self.username), event.text)
 
             if pattern_match:
-                if value["sudo"] and str(event.from_id) not in self.settings.get_config("owner_id").split(","):
+                if value["sudo"] and str(event.from_id) not in self.settings.get_list("owner_id"):
                     print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
                     continue
-                elif value["admin"] and str(event.from_id) not in self.settings.get_config("owner_id").split(",") and not await self.check_admin(event):
+                elif value["admin"] and str(event.from_id) not in self.settings.get_list("owner_id") and not await self.check_admin(event):
                     print(f"Attempted admin command ({event.text}) from ID {event.from_id}")
                     continue
 
