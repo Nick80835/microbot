@@ -90,3 +90,22 @@ async def ping(event):
 @ldr.add("repo")
 async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot")
+
+
+@ldr.add("nsfw", admin=True)
+async def nsfw_toggle(event):
+    if not event.args or event.args not in ("on", "off"):
+        if str(event.chat.id) not in ldr.settings.get_list("nsfw_blacklist"):
+            current_config = 'On'
+        else:
+            current_config = 'Off'
+
+        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}nsfw (on|off)\nCurrent config for this chat: {current_config}")
+        return
+
+    if event.args == "on":
+        ldr.settings.remove_from_list("nsfw_blacklist", event.chat.id)
+        await event.reply("NSFW commands disabled for this chat!")
+    elif event.args == "off":
+        ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
+        await event.reply("NSFW commands enabled for this chat!")

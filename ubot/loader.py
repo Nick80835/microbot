@@ -63,7 +63,9 @@ class Loader():
                 "function": func,
                 "noprefix": args.get('noprefix', False),
                 "sudo": args.get('sudo', False),
-                "extras": args.get('extras', None)
+                "extras": args.get('extras', None),
+                "nsfw": args.get('nsfw', False),
+                "admin": args.get('admin', False)
             }
 
             return func

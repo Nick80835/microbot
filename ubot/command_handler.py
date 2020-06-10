@@ -3,7 +3,7 @@
 import asyncio
 from re import escape, search
 
-from telethon import events
+from telethon import events, types
 
 
 class CommandHandler():
@@ -28,6 +28,9 @@ class CommandHandler():
             if pattern_match:
                 if value["sudo"] and str(event.from_id) not in self.settings.get_config("owner_id").split(","):
                     print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
+                    continue
+                elif value["admin"] and str(event.from_id) not in self.settings.get_config("owner_id").split(",") and not await self.check_admin(event):
+                    print(f"Attempted admin command ({event.text}) from ID {event.from_id}")
                     continue
 
                 event.pattern_match = pattern_match
@@ -122,3 +125,10 @@ class CommandHandler():
             return await coro
         except:
             return
+
+    async def check_admin(self, event):
+        async for user in event.client.iter_participants(event.chat, limit=10000, filter=types.ChannelParticipantsAdmins):
+            if user.id == event.from_id:
+                return True
+
+        return False
