@@ -33,7 +33,8 @@ class Settings():
         else:
             config_list = []
 
-        config_list.append(value)
+        if value not in config_list:
+            config_list.append(value)
 
         self.config.set("DEFAULT", key, "|".join(config_list))
         self.write_changes()
