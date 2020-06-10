@@ -8,7 +8,7 @@ DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
 
 
-@ldr.add("dan(s|x|q|)(f|)")
+@ldr.add("dan(s|x|q|)(f|)", nsfw=True)
 async def danbooru(event):
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))

@@ -10,7 +10,7 @@ GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
 
 
-@ldr.add("gel(s|x|q|)(f|)")
+@ldr.add("gel(s|x|q|)(f|)", nsfw=True)
 async def gelbooru(event):
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))

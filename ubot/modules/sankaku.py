@@ -8,7 +8,7 @@ SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
 
 
-@ldr.add("san(s|x|q|)(f|)")
+@ldr.add("san(s|x|q|)(f|)", nsfw=True)
 async def sankaku(event):
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
