@@ -13,7 +13,7 @@ NEKO_TYPES = "neko|lewd|smug|tits|trap|anal|cuddle|hug|goose|waifu|gasm|slap|spa
 REPLY_TYPES = "cuddle hug slap spank pat baka"
 
 
-@ldr.add(f"({NEKO_TYPES})(f|)")
+@ldr.add(f"({NEKO_TYPES})(f|)", nsfw=True)
 async def supernekoatsume(event):
     nekotype = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
