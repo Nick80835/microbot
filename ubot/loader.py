@@ -65,7 +65,8 @@ class Loader():
                 "sudo": args.get('sudo', False),
                 "extras": args.get('extras', None),
                 "nsfw": args.get('nsfw', False),
-                "admin": args.get('admin', False)
+                "admin": args.get('admin', False),
+                "owner": args.get('owner', False)
             }
 
             return func

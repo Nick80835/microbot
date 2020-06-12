@@ -20,20 +20,23 @@ class CommandHandler():
         client.add_event_handler(self.handle_inline, events.InlineQuery())
 
     async def handle_incoming(self, event):
-        if self.is_blacklisted(event):
-            print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
-            return
-
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.incoming_commands.items():
             pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key, self.username), event.text)
 
             if pattern_match:
-                if value["sudo"] and str(event.from_id) not in self.settings.get_list("owner_id"):
+                if self.is_blacklisted(event):
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    return
+
+                if value["owner"] and not self.is_owner(event):
+                    print(f"Attempted owner command ({event.text}) from ID {event.from_id}")
+                    continue
+                elif value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
                     print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
                     continue
-                elif value["admin"] and str(event.from_id) not in self.settings.get_list("owner_id") and not await self.is_admin(event):
+                elif value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
                     print(f"Attempted admin command ({event.text}) from ID {event.from_id}")
                     continue
 
@@ -53,14 +56,14 @@ class CommandHandler():
                     raise exception
 
     async def handle_inline(self, event):
-        if self.is_blacklisted(event):
-            print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
-            return
-
         for key, value in self.inline_photo_commands.items():
             pattern_match = search(self.inline_pattern_template.format(key), event.text)
 
             if pattern_match:
+                if self.is_blacklisted(event):
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    return
+
                 await self.handle_inline_photo(event, pattern_match, value)
                 return
 
@@ -68,6 +71,10 @@ class CommandHandler():
             pattern_match = search(self.inline_pattern_template.format(key), event.text)
 
             if pattern_match:
+                if self.is_blacklisted(event):
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    return
+
                 await self.handle_inline_article(event, pattern_match, value)
                 return
 
@@ -137,6 +144,18 @@ class CommandHandler():
             return await coro
         except:
             return
+
+    def is_owner(self, event):
+        if str(event.from_id) in self.settings.get_list("owner_id"):
+            return True
+        else:
+            return False
+
+    def is_sudo(self, event):
+        if str(event.from_id) in self.settings.get_list("sudo_users"):
+            return True
+        else:
+            return False
 
     async def is_admin(self, event):
         async for user in event.client.iter_participants(event.chat, limit=10000, filter=types.ChannelParticipantsAdmins):
