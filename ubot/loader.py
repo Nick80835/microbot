@@ -145,5 +145,5 @@ class Loader():
             if isfile(f) and f.endswith(".py")
         ]
 
-        system_index = self.all_modules.index("system")
+        system_index = self.all_modules.index("sudo")
         self.all_modules.insert(0, self.all_modules.pop(system_index))
