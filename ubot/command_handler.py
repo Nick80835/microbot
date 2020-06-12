@@ -33,7 +33,7 @@ class CommandHandler():
                 if value["sudo"] and str(event.from_id) not in self.settings.get_list("owner_id"):
                     print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
                     continue
-                elif value["admin"] and str(event.from_id) not in self.settings.get_list("owner_id") and not await self.check_admin(event):
+                elif value["admin"] and str(event.from_id) not in self.settings.get_list("owner_id") and not await self.is_admin(event):
                     print(f"Attempted admin command ({event.text}) from ID {event.from_id}")
                     continue
 
@@ -138,7 +138,7 @@ class CommandHandler():
         except:
             return
 
-    async def check_admin(self, event):
+    async def is_admin(self, event):
         async for user in event.client.iter_participants(event.chat, limit=10000, filter=types.ChannelParticipantsAdmins):
             if user.id == event.from_id:
                 return True
