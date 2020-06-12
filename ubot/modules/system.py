@@ -11,21 +11,6 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add("reload", sudo=True)
-async def reload_modules(event):
-    reload_msg = await event.reply("Reloading modules…")
-
-    errors = ldr.reload_all_modules()
-
-    if errors:
-        await reload_msg.edit(errors)
-    else:
-        try:
-            await reload_msg.edit("Successfully reloaded.")
-        except:
-            pass
-
-
 @ldr.add("del")
 async def delete_message(event):
     message_to_delete = await event.get_reply_message()
@@ -45,38 +30,6 @@ async def help_cmd(event):
         help_string = help_string.rstrip(", ")
 
     await event.reply(f"**Available commands:**\n{help_string}")
-
-
-@ldr.add("sysd", sudo=True)
-async def sysd(event):
-    try:
-        neo = "neofetch --stdout"
-
-        fetch = await asyncio.create_subprocess_shell(
-            neo,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-
-        stdout, stderr = await fetch.communicate()
-
-        await event.reply(f"`{stdout.decode().strip()}{stderr.decode().strip()}`")
-    except FileNotFoundError:
-        await event.reply("Neofetch not found!")
-
-
-@ldr.add("alive", sudo=True)
-async def alive(event):
-    alive_format = "**Telethon version:** {0}\n" \
-                   "**Python version:** {1}"
-
-    await event.reply(alive_format.format(version.__version__, python_version()))
-
-
-@ldr.add("shutdown", sudo=True)
-async def shutdown(event):
-    await event.reply("Goodbye…")
-    await micro_bot.stop_client()
 
 
 @ldr.add("ping")
@@ -109,77 +62,3 @@ async def nsfw_toggle(event):
     elif event.args == "off":
         ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
         await event.reply("NSFW commands disabled for this chat!")
-
-
-@ldr.add("blacklist", sudo=True)
-async def add_blacklist(event):
-    if event.args:
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Blacklisting failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
-        return
-
-    userid = user_entity.id
-    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
-
-    ldr.settings.add_to_list("blacklisted_users", userid)
-    await event.reply(f"Successfully blacklisted **{userfullname}** `({userid})`")
-
-
-@ldr.add("unblacklist", sudo=True)
-async def rem_blacklist(event):
-    if event.args:
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Blacklisting failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
-        return
-
-    userid = user_entity.id
-    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
-
-    ldr.settings.remove_from_list("blacklisted_users", userid)
-    await event.reply(f"Successfully unblacklisted **{userfullname}** `({userid})`")
-
-
-@ldr.add("showblacklist", sudo=True)
-async def show_blacklist(event):
-    blacklist_string = ""
-
-    for i in ldr.settings.get_list('blacklisted_users'):
-        blacklist_string += f"\n{i}"
-    
-    await event.reply(f"**Blacklisted users:**\n{blacklist_string}")
