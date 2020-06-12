@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import asyncio
-from platform import python_version
 from time import time_ns
 
 from telethon import version
