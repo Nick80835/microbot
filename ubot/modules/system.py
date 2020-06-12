@@ -173,3 +173,13 @@ async def rem_blacklist(event):
 
     ldr.settings.remove_from_list("blacklisted_users", userid)
     await event.reply(f"Successfully unblacklisted **{userfullname}** `({userid})`")
+
+
+@ldr.add("showblacklist", sudo=True)
+async def show_blacklist(event):
+    blacklist_string = ""
+
+    for i in ldr.settings.get_list('blacklisted_users'):
+        blacklist_string += f"\n{i}"
+    
+    await event.reply(f"**Blacklisted users:**\n{blacklist_string}")
