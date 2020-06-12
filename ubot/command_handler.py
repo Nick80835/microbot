@@ -20,6 +20,10 @@ class CommandHandler():
         client.add_event_handler(self.handle_inline, events.InlineQuery())
 
     async def handle_incoming(self, event):
+        if self.is_blacklisted(event):
+            print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+            return
+
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
         for key, value in self.incoming_commands.items():
@@ -49,6 +53,10 @@ class CommandHandler():
                     raise exception
 
     async def handle_inline(self, event):
+        if self.is_blacklisted(event):
+            print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+            return
+
         for key, value in self.inline_photo_commands.items():
             pattern_match = search(self.inline_pattern_template.format(key), event.text)
 
@@ -136,3 +144,9 @@ class CommandHandler():
                 return True
 
         return False
+
+    def is_blacklisted(self, event):
+        if str(event.from_id) in self.settings.get_list("blacklisted_users"):
+            return True
+        else:
+            return False

@@ -109,3 +109,67 @@ async def nsfw_toggle(event):
     elif event.args == "off":
         ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
         await event.reply("NSFW commands disabled for this chat!")
+
+
+@ldr.add("blacklist", sudo=True)
+async def add_blacklist(event):
+    if event.args:
+        try:
+            user_entity = await event.client.get_entity(event.args)
+        except (ValueError, TypeError):
+            await event.reply("The ID or username you provided was invalid!")
+            return
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        reply_id = reply.from_id
+
+        if reply_id:
+            try:
+                user_entity = await event.client.get_entity(reply_id)
+            except (ValueError, TypeError):
+                await event.reply("There was an error getting the user's ID!")
+                return
+        else:
+            await event.reply("Blacklisting failed!")
+            return
+    else:
+        await event.reply("Give me a user ID, username or reply!")
+        return
+
+    userid = user_entity.id
+    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
+
+    ldr.settings.add_to_list("blacklisted_users", userid)
+    await event.reply(f"Successfully blacklisted **{userfullname}** `({userid})`")
+
+
+@ldr.add("unblacklist", sudo=True)
+async def rem_blacklist(event):
+    if event.args:
+        try:
+            user_entity = await event.client.get_entity(event.args)
+        except (ValueError, TypeError):
+            await event.reply("The ID or username you provided was invalid!")
+            return
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        reply_id = reply.from_id
+
+        if reply_id:
+            try:
+                user_entity = await event.client.get_entity(reply_id)
+            except (ValueError, TypeError):
+                await event.reply("There was an error getting the user's ID!")
+                return
+        else:
+            await event.reply("Blacklisting failed!")
+            return
+    else:
+        await event.reply("Give me a user ID, username or reply!")
+        return
+
+    userid = user_entity.id
+    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
+
+    ldr.settings.remove_from_list("blacklisted_users", userid)
+    await event.reply(f"Successfully unblacklisted **{userfullname}** `({userid})`")
