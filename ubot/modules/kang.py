@@ -27,11 +27,11 @@ async def kang(event):
         if kang_image_data and not reply.document:
             from_image = True
             kang_emojis = event.args or "🤔"
-        elif DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in reply.media.document.attributes:
+        elif reply.document and DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in reply.media.document.attributes:
             static_sticker = False
             kang_image_data = reply.document
             kang_emojis =  reply.file.emoji or "🤔"
-        elif reply.sticker and DocumentAttributeFilename(file_name='sticker.webp') in reply.media.document.attributes:
+        elif reply.sticker and reply.document and DocumentAttributeFilename(file_name='sticker.webp') in reply.media.document.attributes:
             kang_emojis = reply.file.emoji or "🤔"
         elif kang_image_data:
             from_image = True
