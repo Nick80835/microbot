@@ -43,7 +43,7 @@ async def sticklet(event):
 
     await event.delete()
 
-    sticktext = textwrap.wrap(sticktext, width=20)
+    sticktext = textwrap.wrap(sticktext, width=int(40 % len(sticktext)) or 20)
     sticktext = '\n'.join(sticktext)
 
     image = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
