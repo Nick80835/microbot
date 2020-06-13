@@ -59,32 +59,9 @@ async def shutdown(event):
 
 @ldr.add("blacklist", sudo=True)
 async def add_blacklist(event):
-    if event.args:
-        try:
-            event.args = int(event.args)
-        except:
-            pass
+    user_entity = await get_user(event)
 
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Blacklisting failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
+    if not user_entity:
         return
 
     userid = user_entity.id
@@ -96,32 +73,9 @@ async def add_blacklist(event):
 
 @ldr.add("unblacklist", sudo=True)
 async def rem_blacklist(event):
-    if event.args:
-        try:
-            event.args = int(event.args)
-        except:
-            pass
+    user_entity = await get_user(event)
 
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Blacklisting failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
+    if not user_entity:
         return
 
     userid = user_entity.id
@@ -143,32 +97,9 @@ async def show_blacklist(event):
 
 @ldr.add("sudo", owner=True)
 async def add_sudo(event):
-    if event.args:
-        try:
-            event.args = int(event.args)
-        except:
-            pass
+    user_entity = await get_user(event)
 
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Sudoing failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
+    if not user_entity:
         return
 
     userid = user_entity.id
@@ -180,32 +111,9 @@ async def add_sudo(event):
 
 @ldr.add("unsudo", owner=True)
 async def rem_sudo(event):
-    if event.args:
-        try:
-            event.args = int(event.args)
-        except:
-            pass
+    user_entity = await get_user(event)
 
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.from_id
-
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Sudoing failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
+    if not user_entity:
         return
 
     userid = user_entity.id
@@ -223,3 +131,33 @@ async def show_sudo(event):
         sudo_string += f"\n{i}"
     
     await event.reply(f"**Sudo users:**\n{sudo_string}")
+
+
+async def get_user(event):
+    if event.args:
+        try:
+            event.args = int(event.args)
+        except:
+            pass
+
+        try:
+            return await event.client.get_entity(event.args)
+        except (ValueError, TypeError):
+            await event.reply("The ID or username you provided was invalid!")
+            return
+    elif event.is_reply:
+        reply = await event.get_reply_message()
+        reply_id = reply.from_id
+
+        if reply_id:
+            try:
+                return await event.client.get_entity(reply_id)
+            except (ValueError, TypeError):
+                await event.reply("There was an error getting the user's ID!")
+                return
+        else:
+            await event.reply("Sudoing failed!")
+            return
+    else:
+        await event.reply("Give me a user ID, username or reply!")
+        return
