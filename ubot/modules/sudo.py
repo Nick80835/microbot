@@ -61,6 +61,11 @@ async def shutdown(event):
 async def add_blacklist(event):
     if event.args:
         try:
+            event.args = int(event.args)
+        except:
+            pass
+
+        try:
             user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
             await event.reply("The ID or username you provided was invalid!")
@@ -92,6 +97,11 @@ async def add_blacklist(event):
 @ldr.add("unblacklist", sudo=True)
 async def rem_blacklist(event):
     if event.args:
+        try:
+            event.args = int(event.args)
+        except:
+            pass
+
         try:
             user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
@@ -135,6 +145,11 @@ async def show_blacklist(event):
 async def add_sudo(event):
     if event.args:
         try:
+            event.args = int(event.args)
+        except:
+            pass
+
+        try:
             user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
             await event.reply("The ID or username you provided was invalid!")
@@ -166,6 +181,11 @@ async def add_sudo(event):
 @ldr.add("unsudo", owner=True)
 async def rem_sudo(event):
     if event.args:
+        try:
+            event.args = int(event.args)
+        except:
+            pass
+
         try:
             user_entity = await event.client.get_entity(event.args)
         except (ValueError, TypeError):
