@@ -170,7 +170,7 @@ class CommandHandler():
         else:
             user_id = event.from_id
 
-        if user_id in self.settings.get_list("blacklisted_users"):
+        if str(user_id) in self.settings.get_list("blacklisted_users"):
             return True
         else:
             return False
