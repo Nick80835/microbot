@@ -60,7 +60,7 @@ class CommandHandler():
             pattern_match = search(self.inline_pattern_template.format(key), event.text)
 
             if pattern_match:
-                if self.is_blacklisted(event):
+                if self.is_blacklisted(event, True):
                     print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
@@ -71,7 +71,7 @@ class CommandHandler():
             pattern_match = search(self.inline_pattern_template.format(key), event.text)
 
             if pattern_match:
-                if self.is_blacklisted(event):
+                if self.is_blacklisted(event, True):
                     print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
@@ -164,8 +164,13 @@ class CommandHandler():
 
         return False
 
-    def is_blacklisted(self, event):
-        if str(event.from_id) in self.settings.get_list("blacklisted_users"):
+    def is_blacklisted(self, event, inline=False):
+        if inline:
+            user_id = event.query.user_id
+        else:
+            user_id = event.from_id
+
+        if user_id in self.settings.get_list("blacklisted_users"):
             return True
         else:
             return False
