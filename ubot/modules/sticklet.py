@@ -43,7 +43,7 @@ async def sticklet(event):
 
     await event.delete()
 
-    sticktext = textwrap.wrap(sticktext, width=int(40 % len(sticktext)) or 20)
+    sticktext = find_optimal_wrap(sticktext)
     sticktext = '\n'.join(sticktext)
 
     image = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
@@ -73,3 +73,14 @@ async def sticklet(event):
     image_stream.seek(0)
 
     await event.client.send_file(event.chat_id, image_stream)
+
+
+def find_optimal_wrap(text):
+    chicken_wrap = int(len(text) / 18) or 20
+    wrapped_text = textwrap.wrap(text, width=chicken_wrap)
+
+    while len(wrapped_text)*3 > chicken_wrap:
+        chicken_wrap += 1
+        wrapped_text = textwrap.wrap(text, width=chicken_wrap)
+
+    return wrapped_text
