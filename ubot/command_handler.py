@@ -16,10 +16,12 @@ class CommandHandler():
         self.incoming_commands = {}
         self.inline_photo_commands = {}
         self.inline_article_commands = {}
+        self.callback_queries = {}
         self.logger = logger
         self.settings = settings
         client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
+        client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
 
     async def handle_incoming(self, event):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
@@ -135,6 +137,23 @@ class CommandHandler():
             await event.answer([i for i in articles if i])
         except:
             pass
+
+    async def handle_callback_query(self, event):
+        data_str = event.data.decode("utf-8")
+        data_id = data_str.split("*")[0]
+        data_data = data_str.lstrip(data_id + "*")
+
+        for key, value in self.callback_queries.items():
+            if key == data_id:
+                event.args = data_data
+                event.extras = value["extras"]
+
+                try:
+                    await value["function"](event)
+                except Exception as exception:
+                    self.logger.warn(f"{value['function'].__name__} - {exception}")
+                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
+                    raise exception
 
     async def fallback_inline(self, event):
         defaults_dict = {**self.inline_photo_commands, **self.inline_article_commands}

@@ -35,6 +35,7 @@ class Loader():
         self.command_handler.incoming_commands = {}
         self.command_handler.inline_photo_commands = {}
         self.command_handler.inline_article_commands = {}
+        self.command_handler.callback_queries = {}
         self.help_dict = {}
 
         errors = ""
@@ -93,6 +94,19 @@ class Loader():
             self.command_handler.inline_article_commands[pattern] = {
                 "function": func,
                 "default": args.get("default", None)
+            }
+
+            return func
+
+        return decorator
+
+    def add_callback_query(self, data_id=None, **args):
+        data_id = args.get("data_id", data_id)
+
+        def decorator(func):
+            self.command_handler.callback_queries[data_id] = {
+                "function": func,
+                "extras": args.get('extras', None)
             }
 
             return func
