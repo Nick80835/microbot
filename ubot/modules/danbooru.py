@@ -99,7 +99,7 @@ async def danbooru_inline(event):
 
     for post in response:
         if 'file_url' in post.keys():
-            valid_urls.append(post['file_url'])
+            valid_urls.append([post['file_url'], f"[sauce]({DAN_SAUCE_URL}{post['id']})"])
 
     if not valid_urls:
         return None
