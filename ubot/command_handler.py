@@ -5,6 +5,8 @@ from re import escape, search
 
 from telethon import events, types
 
+from .fixes import inline_photos
+
 
 class CommandHandler():
     def __init__(self, client, logger, settings):
@@ -85,16 +87,19 @@ class CommandHandler():
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
 
-        url_list = await value["function"](event)
+        photo_list = await value["function"](event)
 
-        if not url_list:
+        if not photo_list:
             return
 
         photo_coros = []
 
-        for url in url_list:
+        for photo in photo_list:
             try:
-                photo_coros += [self.try_coro(builder.photo(url))]
+                if isinstance(photo, list):
+                    photo_coros += [self.try_coro(inline_photos.photo(event.client, photo[0], text=photo[1]))]
+                else:
+                    photo_coros += [self.try_coro(builder.photo(photo))]
             except:
                 pass
 
