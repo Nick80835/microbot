@@ -67,7 +67,9 @@ class Loader():
                 "extras": args.get('extras', None),
                 "nsfw": args.get('nsfw', False),
                 "admin": args.get('admin', False),
-                "owner": args.get('owner', False)
+                "owner": args.get('owner', False),
+                "locking": args.get('locking', False),
+                "locked": False
             }
 
             return func
