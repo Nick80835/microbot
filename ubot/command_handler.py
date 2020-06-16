@@ -61,10 +61,22 @@ class CommandHandler():
                             value["lockreason"] = f"In use by **{event.from_id}** (`{event.text}`)"
                             await value["function"](event)
                             value["lockreason"] = None
+                    elif value["userlocking"]:
+                        if event.from_id in value["lockedusers"]:
+                            await event.reply(f"Please don't spam that command.")
+                            continue
+                        else:
+                            value["lockedusers"].append(event.from_id)
+                            await value["function"](event)
+                            value["lockedusers"].remove(event.from_id)
                     else:
                         await value["function"](event)
                 except Exception as exception:
                     value["lockreason"] = None
+
+                    if event.from_id in value["lockedusers"]:
+                        value["lockedusers"].remove(event.from_id)
+
                     self.logger.warn(f"{value['function'].__name__} - {exception}")
                     await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
                     raise exception
