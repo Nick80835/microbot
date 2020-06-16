@@ -9,14 +9,14 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES = "neko|lewd|smug|tits|trap|anal|cuddle|hug|goose|waifu|gasm|slap|spank|pat|feet|woof|baka"
-REPLY_TYPES = "cuddle hug slap spank pat baka"
+NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'goose', 'waifu', 'gasm', 'slap', 'spank', 'pat', 'feet', 'woof', 'baka']
+REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka']
 
 
-@ldr.add(f"({NEKO_TYPES})(f|)", nsfw=True)
+@ldr.add_list(NEKO_TYPES, nsfw=True, pattern_extra="(f|)")
 async def supernekoatsume(event):
-    nekotype = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    nekotype = event.extras
+    as_file = bool(event.pattern_match.group(1))
 
     if nekotype in REPLY_TYPES:
         reply_to = await event.get_reply_message() or event
