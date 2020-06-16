@@ -79,6 +79,36 @@ class Loader():
 
         return decorator
 
+    def add_list(self, pattern=None, **args):
+        pattern_list = args.get("pattern", pattern)
+        pattern_extra = args.get("pattern_extra", "")
+
+        def decorator(func):
+            for pattern in pattern_list:
+                if func.__module__.split(".")[-1] in self.help_dict:
+                    self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                else:
+                    self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+
+                self.command_handler.incoming_commands.append({
+                    "pattern": pattern + pattern_extra,
+                    "function": func,
+                    "noprefix": args.get('noprefix', False),
+                    "sudo": args.get('sudo', False),
+                    "extras": args.get('extras', pattern),
+                    "nsfw": args.get('nsfw', False),
+                    "admin": args.get('admin', False),
+                    "owner": args.get('owner', False),
+                    "locking": args.get('locking', False),
+                    "lockreason": None,
+                    "userlocking": args.get('userlocking', False),
+                    "lockedusers": []
+                })
+
+            return func
+
+        return decorator
+
     def add_inline_photo(self, pattern=None, **args):
         pattern = args.get("pattern", pattern)
 
