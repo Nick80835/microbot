@@ -53,8 +53,18 @@ class CommandHandler():
                 event.extras = value["extras"]
 
                 try:
-                    await value["function"](event)
+                    if value["locking"]:
+                        if value["locked"]:
+                            await event.reply(f"That command is currently locked, try again later!")
+                            continue
+                        else:
+                            value["locked"] = True
+                            await value["function"](event)
+                            value["locked"] = False
+                    else:
+                        await value["function"](event)
                 except Exception as exception:
+                    value["locked"] = False
                     self.logger.warn(f"{value['function'].__name__} - {exception}")
                     await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
                     raise exception
