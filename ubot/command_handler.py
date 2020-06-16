@@ -13,10 +13,10 @@ class CommandHandler():
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2}(?: |$|_))(.*)"
         self.inline_pattern_template = "(?is)^{0}(?: |$|_)(.*)"
-        self.incoming_commands = {}
-        self.inline_photo_commands = {}
-        self.inline_article_commands = {}
-        self.callback_queries = {}
+        self.incoming_commands = []
+        self.inline_photo_commands = []
+        self.inline_article_commands = []
+        self.callback_queries = []
         self.logger = logger
         self.settings = settings
         client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
@@ -26,8 +26,8 @@ class CommandHandler():
     async def handle_incoming(self, event):
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
-        for key, value in self.incoming_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key, self.username), event.text)
+        for value in self.incoming_commands:
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, value["pattern"], self.username), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event):
@@ -82,8 +82,8 @@ class CommandHandler():
                     raise exception
 
     async def handle_inline(self, event):
-        for key, value in self.inline_photo_commands.items():
-            pattern_match = search(self.inline_pattern_template.format(key), event.text)
+        for value in self.inline_photo_commands:
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
@@ -93,8 +93,8 @@ class CommandHandler():
                 await self.handle_inline_photo(event, pattern_match, value)
                 return
 
-        for key, value in self.inline_article_commands.items():
-            pattern_match = search(self.inline_pattern_template.format(key), event.text)
+        for value in self.inline_article_commands:
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
@@ -165,8 +165,8 @@ class CommandHandler():
         data_id = data_str.split("*")[0]
         data_data = data_str.lstrip(data_id + "*")
 
-        for key, value in self.callback_queries.items():
-            if key == data_id:
+        for value in self.callback_queries:
+            if value["pattern"] == data_id:
                 event.args = data_data
                 event.extras = value["extras"]
 
@@ -178,10 +178,10 @@ class CommandHandler():
                     raise exception
 
     async def fallback_inline(self, event):
-        defaults_dict = {**self.inline_photo_commands, **self.inline_article_commands}
+        defaults_list = self.inline_photo_commands + self.inline_article_commands
 
         try:
-            await event.answer([await event.builder.article(title=key, text=f"{self.settings.get_config('cmd_prefix') or '.'}{value['default']}") for key, value in defaults_dict.items() if value["default"]])
+            await event.answer([await event.builder.article(title=value["pattern"], text=f"{self.settings.get_config('cmd_prefix') or '.'}{value['default']}") for value in defaults_list if value["default"]])
         except:
             pass
 
