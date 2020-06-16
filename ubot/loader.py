@@ -32,10 +32,10 @@ class Loader():
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
     def reload_all_modules(self):
-        self.command_handler.incoming_commands = {}
-        self.command_handler.inline_photo_commands = {}
-        self.command_handler.inline_article_commands = {}
-        self.command_handler.callback_queries = {}
+        self.command_handler.incoming_commands = []
+        self.command_handler.inline_photo_commands = []
+        self.command_handler.inline_article_commands = []
+        self.command_handler.callback_queries = []
         self.help_dict = {}
 
         errors = ""
@@ -60,7 +60,8 @@ class Loader():
             else:
                 self.help_dict[func.__module__.split(".")[-1]] = [pattern]
 
-            self.command_handler.incoming_commands[pattern] = {
+            self.command_handler.incoming_commands.append({
+                "pattern": pattern,
                 "function": func,
                 "noprefix": args.get('noprefix', False),
                 "sudo": args.get('sudo', False),
@@ -72,7 +73,7 @@ class Loader():
                 "lockreason": None,
                 "userlocking": args.get('userlocking', False),
                 "lockedusers": []
-            }
+            })
 
             return func
 
@@ -82,10 +83,11 @@ class Loader():
         pattern = args.get("pattern", pattern)
 
         def decorator(func):
-            self.command_handler.inline_photo_commands[pattern] = {
+            self.command_handler.inline_photo_commands.append({
+                "pattern": pattern,
                 "function": func,
                 "default": args.get("default", None)
-            }
+            })
 
             return func
 
@@ -95,10 +97,11 @@ class Loader():
         pattern = args.get("pattern", pattern)
 
         def decorator(func):
-            self.command_handler.inline_article_commands[pattern] = {
+            self.command_handler.inline_article_commands.append({
+                "pattern": pattern,
                 "function": func,
                 "default": args.get("default", None)
-            }
+            })
 
             return func
 
@@ -108,10 +111,11 @@ class Loader():
         data_id = args.get("data_id", data_id)
 
         def decorator(func):
-            self.command_handler.callback_queries[data_id] = {
+            self.command_handler.callback_queries.append({
+                "data_id": data_id,
                 "function": func,
                 "extras": args.get('extras', None)
-            }
+            })
 
             return func
 
