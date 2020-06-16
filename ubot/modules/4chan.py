@@ -12,7 +12,7 @@ CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
 VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 
-@ldr.add("4c(f|)")
+@ldr.add("4c(f|)", userlocking=True)
 async def fourchan(event):
     if not event.args:
         await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>")

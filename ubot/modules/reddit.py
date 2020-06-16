@@ -120,7 +120,7 @@ async def bodyfetcher(event, sub):
     await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
-@ldr.add("red(i|t|b)")
+@ldr.add("red(i|t|b)", userlocking=True)
 async def redimg(event):
     sub = event.args.replace(" ", "_")
     fetch_type = event.pattern_match.group(1)
@@ -137,27 +137,27 @@ async def redimg(event):
         await bodyfetcher(event, sub)
 
 
-@ldr.add("suffer")
+@ldr.add("suffer", userlocking=True)
 async def makemesuffer(event):
     await imagefetcher(event, "MakeMeSuffer")
 
 
-@ldr.add("snafu")
+@ldr.add("snafu", userlocking=True)
 async def coaxedintoasnafu(event):
     await imagefetcher(event, "CoaxedIntoASnafu")
 
 
-@ldr.add("aita")
+@ldr.add("aita", userlocking=True)
 async def amitheasshole(event):
     await bodyfetcher(event, "AmITheAsshole")
 
 
-@ldr.add("tifu")
+@ldr.add("tifu", userlocking=True)
 async def todayifuckedup(event):
     await bodyfetcher(event, "TIFU")
 
 
-@ldr.add("jon(x|)")
+@ldr.add("jon(x|)", userlocking=True)
 async def imsorryjon(event):
     if "x" in event.pattern_match.group(0):
         sub = "ImReallySorryJon"
@@ -167,11 +167,11 @@ async def imsorryjon(event):
     await imagefetcher(event, sub)
 
 
-@ldr.add("tihi")
+@ldr.add("tihi", userlocking=True)
 async def thanksihateit(event):
     await imagefetcher(event, "TIHI")
 
 
-@ldr.add("gab")
+@ldr.add("gab", userlocking=True)
 async def tenma(event):
     await imagefetcher(event, "tenma")

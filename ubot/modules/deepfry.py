@@ -36,7 +36,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add("deepfry(f|)")
+@ldr.add("deepfry(f|)", userlocking=True)
 async def deepfryer(event):
     as_file = bool(event.pattern_match.group(1))
 

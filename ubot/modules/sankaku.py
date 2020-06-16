@@ -23,7 +23,7 @@ async def sankaku_ping(event):
         await event.reply(f"Sankaku response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add("san(s|x|q|)(f|)", nsfw=True)
+@ldr.add("san(s|x|q|)(f|)", nsfw=True, userlocking=True)
 async def sankaku(event):
     safety_arg = event.pattern_match.group(1)
     as_file = bool(event.pattern_match.group(2))
