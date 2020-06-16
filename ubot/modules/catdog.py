@@ -79,70 +79,26 @@ async def bird(event):
     await event.reply(file=tori[0])
 
 
-@ldr.add("(cat|pussy)")
+@ldr.add_list(["cat", "pussy"], pattern_extra="(gif|)(f|)")
 async def cat(event):
-    neko = await neko_atsume(IMGPARAM)
+    neko = await neko_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
 
     if isinstance(neko, int):
         await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
-    await event.reply(file=neko[0]["url"])
+    await event.reply(file=neko[0]["url"], force_document=bool(event.pattern_match.group(2)))
 
 
-@ldr.add("(cathd|pussyhd)")
-async def cathd(event):
-    neko = await neko_atsume(IMGPARAM)
-
-    if isinstance(neko, int):
-        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
-        return
-
-    await event.reply(file=neko[0]["url"], force_document=True)
-
-
-@ldr.add("(catgif|pussygif)")
-async def catgif(event):
-    neko = await neko_atsume(GIFPARAM)
-
-    if isinstance(neko, int):
-        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
-        return
-
-    await event.reply(file=neko[0]["url"])
-
-
-@ldr.add("(dog|bitch)")
+@ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)")
 async def dog(event):
-    inu = await inu_atsume(IMGPARAM)
+    inu = await inu_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
 
     if isinstance(inu, int):
         await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
-    await event.reply(file=inu[0]["url"])
-
-
-@ldr.add("(doghd|bitchhd)")
-async def doghd(event):
-    inu = await inu_atsume(IMGPARAM)
-
-    if isinstance(inu, int):
-        await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
-        return
-
-    await event.reply(file=inu[0]["url"], force_document=True).delete()
-
-
-@ldr.add("(doggif|bitchgif)")
-async def doggif(event):
-    inu = await inu_atsume(GIFPARAM)
-
-    if isinstance(inu, int):
-        await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
-        return
-
-    await event.reply(file=inu[0]["url"])
+    await event.reply(file=inu[0]["url"], force_document=bool(event.pattern_match.group(2)))
 
 
 @ldr.add_inline_photo("cat", default="cat")
