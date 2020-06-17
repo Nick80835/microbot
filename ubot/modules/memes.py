@@ -107,6 +107,23 @@ async def owo(event):
         await event.reply(owo_text)
 
 
+@ldr.add("yoda")
+async def yodafy(event):
+    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+
+    async with ldr.aioclient.get("http://yoda-api.appspot.com/api/v1/yodish", params={"text": text_arg}) as response:
+        if response.status == 200:
+            yoda_text = (await response.json())["yodish"]
+        else:
+            await event.reply(f"An error occured: **{response.status}**")
+            return
+
+    if reply:
+        await reply.reply(yoda_text)
+    else:
+        await event.reply(yoda_text)
+
+
 async def shitpostify(text):
     text = text.replace("dick", "peepee")
     text = text.replace("ck", "cc")
