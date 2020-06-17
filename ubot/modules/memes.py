@@ -115,7 +115,7 @@ async def yodafy(event):
         if response.status == 200:
             yoda_text = (await response.json())["yodish"]
         else:
-            await event.reply(f"An error occured: **{response.status}**")
+            await event.reply(f"An error occurred: **{response.status}**")
             return
 
     if reply:
