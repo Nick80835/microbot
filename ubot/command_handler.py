@@ -8,8 +8,8 @@ from telethon import events
 class CommandHandler():
     def __init__(self, client, logger, settings):
         self.pattern_template = "(?is)^{0}{1}(?: |$)(.*)"
-        self.outgoing_commands = {}
-        self.incoming_commands = {}
+        self.outgoing_commands = []
+        self.incoming_commands = []
         self.logger = logger
         self.settings = settings
         client.add_event_handler(self.handle_outgoing, events.NewMessage(outgoing=True))
@@ -21,8 +21,8 @@ class CommandHandler():
 
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
-        for key, value in self.outgoing_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
+        for value in self.outgoing_commands:
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, value["pattern"]), event.text)
 
             if pattern_match:
                 event.pattern_match = pattern_match
@@ -42,8 +42,8 @@ class CommandHandler():
 
         prefix = escape(self.settings.get_config("cmd_prefix") or '.')
 
-        for key, value in self.incoming_commands.items():
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, key), event.text)
+        for value in self.incoming_commands:
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, value["pattern"]), event.text)
 
             if pattern_match:
                 event.pattern_match = pattern_match

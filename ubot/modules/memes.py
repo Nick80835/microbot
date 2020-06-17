@@ -101,6 +101,20 @@ async def owo(event):
     await event.edit(owo_text)
 
 
+@ldr.add("yoda")
+async def yodafy(event):
+    text_arg = await ldr.get_text(event, default=filler)
+
+    async with ldr.aioclient.get("http://yoda-api.appspot.com/api/v1/yodish", params={"text": text_arg}) as response:
+        if response.status == 200:
+            yoda_text = (await response.json())["yodish"]
+        else:
+            await event.edit(f"An error occurred: **{response.status}**")
+            return
+
+    await event.edit(yoda_text)
+
+
 @ldr.add("vibecheck")
 async def vibecheck(event):
     if event.is_reply:

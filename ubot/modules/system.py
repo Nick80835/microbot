@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import asyncio
-from platform import python_version, uname
+from platform import python_version
 from time import time_ns
 
 from telethon import version
@@ -36,7 +36,7 @@ async def help_cmd(event):
             help_string += f"`{info}`, "
         help_string = help_string.rstrip(", ")
 
-    await event.edit(f"`Available commands:`\n{help_string}")
+    await event.edit(f"**Available commands:**\n{help_string}")
 
 
 @ldr.add("sysd")
@@ -59,12 +59,11 @@ async def sysd(event):
 
 @ldr.add("alive")
 async def alive(event):
-    alive_format = "`μBot is running under {0}.\n\n" \
-                   "Version: {1}\n" \
-                   "Telethon: {2}\n" \
-                   "Python: {3}`"
+    alive_format = "μBot is running!\n" \
+                   "**Telethon version:** {0}\n" \
+                   "**Python version:** {1}"
 
-    await event.edit(alive_format.format(uname().node, ldr.botversion, version.__version__, python_version()))
+    await event.edit(alive_format.format(version.__version__, python_version()))
 
 
 @ldr.add("shutdown")

@@ -24,7 +24,6 @@ class Loader():
         self.help_dict = {}
         self.aioclient = ClientSession()
         self.thread_pool = ThreadPoolExecutor()
-        self.botversion = "0.1.3"
 
     def load_all_modules(self):
         self._find_all_modules()
@@ -33,8 +32,8 @@ class Loader():
             self.loaded_modules.append(import_module("ubot.modules." + module_name))
 
     def reload_all_modules(self):
-        self.command_handler.outgoing_commands = {}
-        self.command_handler.incoming_commands = {}
+        self.command_handler.outgoing_commands = []
+        self.command_handler.incoming_commands = []
         self.help_dict = {}
 
         errors = ""
@@ -62,17 +61,41 @@ class Loader():
                 self.help_dict[func.__module__.split(".")[-1]] = [pattern]
 
             if incoming:
-                self.command_handler.incoming_commands[pattern] = {
+                self.command_handler.incoming_commands.append({
+                    "pattern": pattern,
                     "function": func,
                     "noprefix": args.get('noprefix', False),
                     "extras": args.get('extras', None)
-                }
+                })
             elif outgoing:
-                self.command_handler.outgoing_commands[pattern] = {
+                self.command_handler.outgoing_commands.append({
+                    "pattern": pattern,
                     "function": func,
                     "noprefix": args.get('noprefix', False),
                     "extras": args.get('extras', None)
-                }
+                })
+
+            return func
+
+        return decorator
+
+    def add_list(self, pattern=None, **args):
+        pattern_list = args.get("pattern", pattern)
+        pattern_extra = args.get("pattern_extra", "")
+
+        def decorator(func):
+            for pattern in pattern_list:
+                if func.__module__.split(".")[-1] in self.help_dict:
+                    self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                else:
+                    self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+
+                self.command_handler.outgoing_commands.append({
+                    "pattern": pattern + pattern_extra,
+                    "function": func,
+                    "noprefix": args.get('noprefix', False),
+                    "extras": args.get('extras', pattern)
+                })
 
             return func
 

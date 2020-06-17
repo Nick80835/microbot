@@ -3,17 +3,13 @@
 import asyncio
 import inspect
 import io
-from re import sub
 
-import wikipedia
-from gtts import gTTS
 from PIL import Image, ImageOps
 from speedtest import Speedtest
 
 from ubot.micro_bot import micro_bot
 
 ldr = micro_bot.loader
-tts_lang = "EN"
 
 
 @ldr.add("speed")
@@ -44,107 +40,6 @@ def speed_convert(size):
         size /= power
         zero += 1
     return f"{round(size, 2)} {units[zero]}"
-
-
-@ldr.add("lang")
-async def set_lang(event):
-    global tts_lang
-    tts_lang = event.args
-    await event.edit(f"`Default language changed to `**{event.args}**")
-
-
-@ldr.add("tts")
-async def text_to_speech(event):
-    await event.edit("`Processing…`")
-    text, reply = await ldr.get_text(event, return_msg=True)
-
-    if not text:
-        await event.edit("`Give me text or reply to text to use TTS.`")
-        return
-
-    tts_bytesio = io.BytesIO()
-    tts_bytesio.name = "tts.mp3"
-
-    try:
-        tts = gTTS(text, lang=tts_lang)
-        tts.write_to_fp(tts_bytesio)
-        tts_bytesio.seek(0)
-    except AssertionError:
-        await event.edit('`The text is empty.\n'
-                         'Nothing left to speak after pre-precessing, '
-                         'tokenizing and cleaning.`')
-        return
-    except ValueError:
-        await event.edit('`Language is not supported.`')
-        return
-    except RuntimeError:
-        await event.edit('`Error loading the languages dictionary.`')
-        return
-
-    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
-    await event.delete()
-
-
-@ldr.add("ip")
-async def ip_lookup(event):
-    ip = await ldr.get_text(event)
-
-    if not ip:
-        await event.edit("`Provide an IP!`")
-        return
-
-    async with ldr.aioclient.get(f"http://ip-api.com/json/{ip}") as response:
-        if response.status == 200:
-            lookup_json = await response.json()
-        else:
-            await event.edit(f"`An error occurred when looking for `**{ip}**`: `**{response.status}**")
-            return
-
-    fixed_lookup = {}
-
-    for key, value in lookup_json.items():
-        special = {"lat": "Latitude", "lon": "Longitude", "isp": "ISP", "as": "AS", "asname": "AS name"}
-        if key in special:
-            fixed_lookup[special[key]] = str(value)
-            continue
-
-        key = sub(r"([a-z])([A-Z])", r"\g<1> \g<2>", key)
-        key = key.capitalize()
-
-        if not value:
-            value = "None"
-
-        fixed_lookup[key] = str(value)
-
-    text = ""
-
-    for key, value in fixed_lookup.items():
-        text = text + f"**{key}:** `{value}`\n"
-
-    await event.edit(text)
-
-
-@ldr.add("wiki")
-async def wiki_cmd(event):
-    query = await ldr.get_text(event)
-
-    if not query:
-        await event.edit("`You didn't specify what to search for!`")
-        return
-    
-    await event.edit("`Processing…`")
-
-    wiki_results = wikipedia.search(query)
-
-    text = f"**Results for:**` {query}`\n\n"
-
-    for result in wiki_results:
-        try:
-            text +=  f"`> `[{result}]({wikipedia.page(result).url})\n"
-        except:
-            pass
-
-    await event.edit(text)
 
 
 @ldr.add("b2d")

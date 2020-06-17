@@ -80,73 +80,25 @@ async def bird(event):
     await event.delete()
 
 
-@ldr.add("(cat|pussy)")
+@ldr.add_list(["cat", "pussy"], pattern_extra="(gif|)(f|)")
 async def cat(event):
-    neko = await neko_atsume(IMGPARAM)
+    neko = await neko_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
 
     if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
+        await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"])
+    await event.client.send_file(event.chat, neko[0]["url"], force_document=bool(event.pattern_match.group(2)))
     await event.delete()
 
 
-@ldr.add("(cathd|pussyhd)")
-async def cathd(event):
-    neko = await neko_atsume(IMGPARAM)
-
-    if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
-        return
-
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"], force_document=True)
-    await event.delete()
-
-
-@ldr.add("(catgif|pussygif)")
-async def catgif(event):
-    neko = await neko_atsume(GIFPARAM)
-
-    if isinstance(neko, int):
-        await event.edit(f"`There was an error finding the cats! :( -> {neko}`")
-        return
-
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), neko[0]["url"])
-    await event.delete()
-
-
-@ldr.add("(dog|bitch)")
+@ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)")
 async def dog(event):
-    inu = await inu_atsume(IMGPARAM)
+    inu = await inu_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
 
     if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
+        await event.edit(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"])
-    await event.delete()
-
-
-@ldr.add("(doghd|bitchhd)")
-async def doghd(event):
-    inu = await inu_atsume(IMGPARAM)
-
-    if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
-        return
-
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"], force_document=True)
-    await event.delete()
-
-
-@ldr.add("(doggif|bitchgif)")
-async def doggif(event):
-    inu = await inu_atsume(GIFPARAM)
-
-    if isinstance(inu, int):
-        await event.edit(f"`There was an error finding the dogs! :( -> {inu}`")
-        return
-
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), inu[0]["url"])
+    await event.client.send_file(event.chat, inu[0]["url"], force_document=bool(event.pattern_match.group(2)))
     await event.delete()
