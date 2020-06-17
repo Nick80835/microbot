@@ -21,7 +21,7 @@ async def dadjoke(event):
         if response.status == 200:
             dad_joke = (await response.json())["joke"]
         else:
-            await event.reply(f"An error occured: **{response.status}**")
+            await event.reply(f"An error occurred: **{response.status}**")
             return
 
     await event.reply(dad_joke)
@@ -33,7 +33,7 @@ async def randomfact(event):
         if response.status == 200:
             random_fact = (await response.json())["text"].replace("`", "'")
         else:
-            await event.reply(f"An error occured: **{response.status}**")
+            await event.reply(f"An error occurred: **{response.status}**")
             return
 
     await event.reply(random_fact)
@@ -49,14 +49,14 @@ async def pokemon_image(event):
         if response.status == 200:
             sprite_url = (await response.json())["sprites"]["front_default"]
         else:
-            await event.reply(f"An error occured: **{response.status}**")
+            await event.reply(f"An error occurred: **{response.status}**")
             return
     
     async with ldr.aioclient.get(sprite_url) as response:
         if response.status == 200:
             sprite_io = await response.read()
         else:
-            await event.reply(f"An error occured: **{response.status}**")
+            await event.reply(f"An error occurred: **{response.status}**")
             return
 
     sticker_image = Image.open(io.BytesIO(sprite_io))
