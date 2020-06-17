@@ -2,9 +2,7 @@
 
 import inspect
 import io
-from re import sub
 
-from gtts import gTTS
 from PIL import Image, ImageOps
 from speedtest import Speedtest
 
@@ -41,70 +39,6 @@ def speed_convert(size):
         size /= power
         zero += 1
     return f"{round(size, 2)} {units[zero]}"
-
-
-@ldr.add("tts")
-async def text_to_speech(event):
-    text, reply = await ldr.get_text(event, return_msg=True)
-
-    if not text:
-        await event.reply("Give me text or reply to text to use TTS.")
-        return
-
-    tts_bytesio = io.BytesIO()
-    tts_bytesio.name = "tts.mp3"
-
-    try:
-        tts = gTTS(text, lang="EN")
-        tts.write_to_fp(tts_bytesio)
-        tts_bytesio.seek(0)
-    except AssertionError:
-        await event.reply('The text is empty.\nNothing left to speak after pre-precessing, tokenizing and cleaning.')
-        return
-    except RuntimeError:
-        await event.reply('Error loading the languages dictionary.')
-        return
-
-    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
-
-
-@ldr.add("ip")
-async def ip_lookup(event):
-    ip = await ldr.get_text(event)
-
-    if not ip:
-        await event.reply("Provide an IP!")
-        return
-
-    async with ldr.aioclient.get(f"http://ip-api.com/json/{ip}") as response:
-        if response.status == 200:
-            lookup_json = await response.json()
-        else:
-            await event.reply(f"An error occurred when looking for **{ip}**: **{response.status}**")
-            return
-
-    fixed_lookup = {}
-
-    for key, value in lookup_json.items():
-        special = {"lat": "Latitude", "lon": "Longitude", "isp": "ISP", "as": "AS", "asname": "AS name"}
-        if key in special:
-            fixed_lookup[special[key]] = str(value)
-            continue
-
-        key = sub(r"([a-z])([A-Z])", r"\g<1> \g<2>", key)
-        key = key.capitalize()
-
-        if not value:
-            value = "None"
-
-        fixed_lookup[key] = str(value)
-
-    text = ""
-
-    for key, value in fixed_lookup.items():
-        text = text + f"**{key}:** {value}\n"
-
-    await event.reply(text)
 
 
 @ldr.add("chatid")
