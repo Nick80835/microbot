@@ -166,7 +166,7 @@ class CommandHandler():
         data_data = data_str.lstrip(data_id + "*")
 
         for value in self.callback_queries:
-            if value["pattern"] == data_id:
+            if value["data_id"] == data_id:
                 event.args = data_data
                 event.extras = value["extras"]
 
