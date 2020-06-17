@@ -60,6 +60,8 @@ async def pokemon_image(event):
             return
 
     sticker_image = Image.open(io.BytesIO(sprite_io))
+    sticker_image = sticker_image.crop(sticker_image.getbbox())
+    sticker_image = sticker_image.resize((sticker_image.size[0]*4, sticker_image.size[1]*4), Image.NEAREST)
     sticker_io = io.BytesIO()
     sticker_image.save(sticker_io, "WebP", quality=99)
     sticker_io.seek(0)
