@@ -33,7 +33,6 @@ class Loader():
 
     def reload_all_modules(self):
         self.command_handler.outgoing_commands = []
-        self.command_handler.incoming_commands = []
         self.help_dict = {}
 
         errors = ""
@@ -50,8 +49,6 @@ class Loader():
         return errors or None
 
     def add(self, pattern=None, **args):
-        outgoing = args.get('outgoing', True)
-        incoming = args.get('incoming', False)
         pattern = args.get("pattern", pattern)
 
         def decorator(func):
@@ -60,20 +57,12 @@ class Loader():
             else:
                 self.help_dict[func.__module__.split(".")[-1]] = [pattern]
 
-            if incoming:
-                self.command_handler.incoming_commands.append({
-                    "pattern": pattern,
-                    "function": func,
-                    "noprefix": args.get('noprefix', False),
-                    "extras": args.get('extras', None)
-                })
-            elif outgoing:
-                self.command_handler.outgoing_commands.append({
-                    "pattern": pattern,
-                    "function": func,
-                    "noprefix": args.get('noprefix', False),
-                    "extras": args.get('extras', None)
-                })
+            self.command_handler.outgoing_commands.append({
+                "pattern": pattern,
+                "function": func,
+                "noprefix": args.get('noprefix', False),
+                "extras": args.get('extras', None)
+            })
 
             return func
 
