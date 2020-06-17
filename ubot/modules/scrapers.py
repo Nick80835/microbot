@@ -7,6 +7,7 @@ import re
 import pafy
 from gtts import gTTS
 from howdoi import howdoi
+from PIL import Image
 
 from ubot.micro_bot import micro_bot
 
@@ -36,6 +37,35 @@ async def randomfact(event):
             return
 
     await event.reply(random_fact)
+
+
+@ldr.add("pokemon")
+async def pokemon_image(event):
+    if not event.args:
+        await event.reply("Specify a Pokémon name!")
+        return
+
+    async with ldr.aioclient.get("https://pokeapi.co/api/v2/pokemon/" + event.args) as response:
+        if response.status == 200:
+            sprite_url = (await response.json())["sprites"]["front_default"]
+        else:
+            await event.reply(f"An error occured: **{response.status}**")
+            return
+    
+    async with ldr.aioclient.get(sprite_url) as response:
+        if response.status == 200:
+            sprite_io = await response.read()
+        else:
+            await event.reply(f"An error occured: **{response.status}**")
+            return
+
+    sticker_image = Image.open(io.BytesIO(sprite_io))
+    sticker_io = io.BytesIO()
+    sticker_image.save(sticker_io, "WebP", quality=99)
+    sticker_io.seek(0)
+    sticker_io.name = "sticker.webp"
+
+    await event.reply(file=sticker_io)
 
 
 @ldr.add("hdi")
