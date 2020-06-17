@@ -10,7 +10,7 @@ DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
 
 
-@ldr.add("danping", sudo=True)
+@ldr.add("danping", sudo=True, hide_help=True)
 async def danbooru_ping(event):
     params = {"limit": 1,
               "random": "true"}

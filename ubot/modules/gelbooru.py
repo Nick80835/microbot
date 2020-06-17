@@ -11,7 +11,7 @@ GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
 
 
-@ldr.add("gelping", sudo=True)
+@ldr.add("gelping", sudo=True, hide_help=True)
 async def danbooru_ping(event):
     params = {"page": "dapi",
               "s": "post",

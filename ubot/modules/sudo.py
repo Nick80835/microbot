@@ -10,7 +10,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add("reload", sudo=True)
+@ldr.add("reload", sudo=True, hide_help=True)
 async def reload_modules(event):
     reload_msg = await event.reply("Reloading modules…")
 
@@ -25,7 +25,7 @@ async def reload_modules(event):
             pass
 
 
-@ldr.add("sysd", sudo=True)
+@ldr.add("sysd", sudo=True, hide_help=True)
 async def sysd(event):
     try:
         neo = "neofetch --stdout"
@@ -43,7 +43,7 @@ async def sysd(event):
         await event.reply("Neofetch not found!")
 
 
-@ldr.add("alive", sudo=True)
+@ldr.add("alive", sudo=True, hide_help=True)
 async def alive(event):
     alive_format = "**Telethon version:** {0}\n" \
                    "**Python version:** {1}"
@@ -51,13 +51,13 @@ async def alive(event):
     await event.reply(alive_format.format(version.__version__, python_version()))
 
 
-@ldr.add("shutdown", owner=True)
+@ldr.add("shutdown", owner=True, hide_help=True)
 async def shutdown(event):
     await event.reply("Goodbye…")
     await micro_bot.stop_client()
 
 
-@ldr.add("blacklist", sudo=True)
+@ldr.add("blacklist", sudo=True, hide_help=True)
 async def add_blacklist(event):
     user_entity = await get_user(event)
 
@@ -71,7 +71,7 @@ async def add_blacklist(event):
     await event.reply(f"Successfully blacklisted **{userfullname}** (`{userid}`)")
 
 
-@ldr.add("unblacklist", sudo=True)
+@ldr.add("unblacklist", sudo=True, hide_help=True)
 async def rem_blacklist(event):
     user_entity = await get_user(event)
 
@@ -85,7 +85,7 @@ async def rem_blacklist(event):
     await event.reply(f"Successfully unblacklisted **{userfullname}** (`{userid}`)")
 
 
-@ldr.add("showblacklist", sudo=True)
+@ldr.add("showblacklist", sudo=True, hide_help=True)
 async def show_blacklist(event):
     blacklist_string = ""
 
@@ -95,7 +95,7 @@ async def show_blacklist(event):
     await event.reply(f"**Blacklisted users:**\n{blacklist_string}")
 
 
-@ldr.add("sudo", owner=True)
+@ldr.add("sudo", owner=True, hide_help=True)
 async def add_sudo(event):
     user_entity = await get_user(event)
 
@@ -109,7 +109,7 @@ async def add_sudo(event):
     await event.reply(f"Successfully sudo'd **{userfullname}** (`{userid}`)")
 
 
-@ldr.add("unsudo", owner=True)
+@ldr.add("unsudo", owner=True, hide_help=True)
 async def rem_sudo(event):
     user_entity = await get_user(event)
 
@@ -123,7 +123,7 @@ async def rem_sudo(event):
     await event.reply(f"Successfully unsudo'd **{userfullname}** (`{userid}`)")
 
 
-@ldr.add("showsudo", sudo=True)
+@ldr.add("showsudo", sudo=True, hide_help=True)
 async def show_sudo(event):
     sudo_string = ""
 
