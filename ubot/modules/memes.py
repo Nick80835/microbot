@@ -124,6 +124,18 @@ async def yodafy(event):
         await event.reply(yoda_text)
 
 
+@ldr.add("dadjoke")
+async def dadjoke(event):
+    async with ldr.aioclient.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
+        if response.status == 200:
+            dad_joke = (await response.json())["joke"]
+        else:
+            await event.reply(f"An error occured: **{response.status}**")
+            return
+
+    await event.reply(dad_joke)
+
+
 async def shitpostify(text):
     text = text.replace("dick", "peepee")
     text = text.replace("ck", "cc")
