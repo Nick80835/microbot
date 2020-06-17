@@ -84,5 +84,5 @@ micro_bot = MicroBot()
 
 try:
     micro_bot.start_microbot()
-except KeyboardInterrupt:
+except:
     micro_bot.client.loop.run_until_complete(micro_bot.stop_client())
