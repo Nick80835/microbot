@@ -10,7 +10,7 @@ SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
 
 
-@ldr.add("sanping", sudo=True)
+@ldr.add("sanping", sudo=True, hide_help=True)
 async def sankaku_ping(event):
     params = {"page": 1,
               "limit": 5,

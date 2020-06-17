@@ -30,7 +30,20 @@ async def help_cmd(event):
     await event.reply(f"**Available commands:**\n{help_string}")
 
 
-@ldr.add("ping")
+@ldr.add("sudohelp", sudo=True)
+async def sudohelp(event):
+    help_string = ""
+
+    for key, value in ldr.help_hidden_dict.items():
+        help_string += f"\n**{key}**: "
+        for info in value:
+            help_string += f"`{info}`, "
+        help_string = help_string.rstrip(", ")
+
+    await event.reply(f"**Available (hidden) commands:**\n{help_string}")
+
+
+@ldr.add("ping", hide_help=True)
 async def ping(event):
     start = time_ns()
     ping_msg = await event.reply("Ping…")
