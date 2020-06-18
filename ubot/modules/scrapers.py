@@ -39,7 +39,7 @@ async def randomfact(event):
     await event.reply(random_fact)
 
 
-@ldr.add("pokemon")
+@ldr.add("pokemon(s|)")
 async def pokemon_image(event):
     if not event.args:
         await event.reply("Specify a Pokémon name!")
@@ -47,7 +47,7 @@ async def pokemon_image(event):
 
     async with ldr.aioclient.get("https://pokeapi.co/api/v2/pokemon/" + event.args) as response:
         if response.status == 200:
-            sprite_url = (await response.json())["sprites"]["front_default"]
+            sprite_url = (await response.json())["sprites"]["front_shiny" if event.pattern_match.group(1) else "front_default"]
         else:
             await event.reply(f"An error occurred: **{response.status}**")
             return
