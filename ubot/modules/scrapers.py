@@ -51,7 +51,11 @@ async def pokemon_image(event):
         else:
             await event.reply(f"An error occurred: **{response.status}**")
             return
-    
+
+    if not sprite_url:
+        await event.reply("That Pokémon config doesnt have an available sprite!")
+        return
+
     async with ldr.aioclient.get(sprite_url) as response:
         if response.status == 200:
             sprite_io = await response.read()
