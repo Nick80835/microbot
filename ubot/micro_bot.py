@@ -27,6 +27,8 @@ class MicroBot():
         self.start_logger()
         self.start_client()
         self.start_loader()
+
+    def run_until_done(self):
         self.loader.load_all_modules()
         self.logger.info("Client successfully started.")
         self.client.run_until_disconnected()
@@ -81,8 +83,10 @@ class MicroBot():
 
 
 micro_bot = MicroBot()
+micro_bot.start_microbot()
+ldr = micro_bot.loader
 
 try:
-    micro_bot.start_microbot()
+    micro_bot.run_until_done()
 except:
     micro_bot.client.loop.run_until_complete(micro_bot.stop_client())

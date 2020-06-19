@@ -5,9 +5,7 @@ import textwrap
 
 from PIL import Image, ImageColor, ImageDraw, ImageFont
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 
 @ldr.add("color")

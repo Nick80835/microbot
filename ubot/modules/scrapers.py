@@ -10,9 +10,8 @@ from gtts import gTTS
 from howdoi import howdoi
 from PIL import Image
 
-from ubot.micro_bot import micro_bot
+from ubot.micro_bot import ldr
 
-ldr = micro_bot.loader
 os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 tts_lang = "EN"
 

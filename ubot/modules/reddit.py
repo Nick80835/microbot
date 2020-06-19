@@ -6,9 +6,7 @@ from random import choice, shuffle
 import praw
 from prawcore import exceptions as redex
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 REDDIT = praw.Reddit(client_id='-fmzwojFG6JkGg',
                      client_secret=None,

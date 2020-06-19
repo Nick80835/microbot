@@ -2,9 +2,7 @@
 
 from random import choice
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
 POST_URL = "https://a.4cdn.org/{0}/thread/{1}.json"

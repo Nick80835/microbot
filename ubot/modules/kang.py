@@ -7,9 +7,8 @@ from PIL import Image, ImageOps
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeSticker)
 
-from ubot.micro_bot import micro_bot
+from ubot.micro_bot import ldr
 
-ldr = micro_bot.loader
 pack_full = "Whoa! That's probably enough stickers for one pack, give it a break. \
 A pack can't have more than 120 stickers at the moment."
 
