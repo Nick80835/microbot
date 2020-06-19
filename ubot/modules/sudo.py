@@ -5,9 +5,7 @@ from platform import python_version
 
 from telethon import version
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr, micro_bot
 
 
 @ldr.add("reload", sudo=True, hide_help=True)

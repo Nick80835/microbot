@@ -4,9 +4,7 @@ import io
 
 from PIL import Image, ImageColor
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 
 @ldr.add("color")
