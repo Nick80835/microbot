@@ -11,7 +11,7 @@ from ubot.micro_bot import micro_bot
 ldr = micro_bot.loader
 
 
-@ldr.add("speed", sudo=True)
+@ldr.add("speed", owner=True, hide_help=True)
 async def iamspeed(event):
     speed_message = await event.reply("Running speed test…")
     test = Speedtest()
