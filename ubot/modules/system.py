@@ -4,9 +4,7 @@ from time import time_ns
 
 from telethon import version
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 
 @ldr.add("del")

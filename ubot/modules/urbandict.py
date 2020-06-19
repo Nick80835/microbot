@@ -2,9 +2,7 @@
 
 import io
 
-from ubot.micro_bot import micro_bot
-
-ldr = micro_bot.loader
+from ubot.micro_bot import ldr
 
 UD_QUERY_URL = 'http://api.urbandictionary.com/v0/define'
 UD_RANDOM_URL = 'http://api.urbandictionary.com/v0/random'
