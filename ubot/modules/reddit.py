@@ -179,3 +179,8 @@ async def thanksihateit(event):
 @ldr.add("gab")
 async def tenma(event):
     await imagefetcher(event, "tenma")
+
+
+@ldr.add("pourn")
+async def pourn(event):
+    await imagefetcher(event, "PourPainting")
