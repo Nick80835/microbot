@@ -204,7 +204,9 @@ class CommandHandler():
             return False
 
     async def is_admin(self, event):
-        async for user in event.client.iter_participants(event.chat, limit=10000, filter=types.ChannelParticipantsAdmins):
+        admin_list = await event.client.get_participants(event.chat, filter=types.ChannelParticipantsAdmins)
+
+        for user in admin_list:
             if user.id == event.from_id:
                 return True
 
