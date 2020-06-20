@@ -3,7 +3,7 @@
 import asyncio
 from re import escape, search
 
-from telethon import events, types
+from telethon import events, functions, types
 
 from .fixes import inline_photos
 
@@ -204,13 +204,12 @@ class CommandHandler():
             return False
 
     async def is_admin(self, event):
-        admin_list = await event.client.get_participants(event.chat, filter=types.ChannelParticipantsAdmins)
+        channel_participant = await event.client(functions.channels.GetParticipantRequest(event.chat, event.from_id))
 
-        for user in admin_list:
-            if user.id == event.from_id:
-                return True
-
-        return False
+        if isinstance(channel_participant.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)):
+            return True
+        else:
+            return False
 
     def is_blacklisted(self, event, inline=False):
         if inline:
