@@ -47,7 +47,7 @@ async def sysd(event):
 async def alive(event):
     alive_format = "**Telethon version:** {0}\n" \
                    "**Python version:** {1}\n" \
-                   "**Memory usage:** {2}MB"
+                   "**Memory usage:** {2}MiB"
 
     mem_usage = int(psutil.Process(os.getpid()).memory_info().rss / 1048576)
 
