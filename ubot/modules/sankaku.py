@@ -2,10 +2,13 @@
 
 from time import time_ns
 
+from telethon import Button
+
 from ubot.micro_bot import ldr
 
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
+san_button_dict = {}
 
 
 @ldr.add("sanping", sudo=True, hide_help=True)
@@ -104,3 +107,87 @@ async def sankaku_inline(event):
         return None
 
     return valid_urls[:3]
+
+
+@ldr.add("sanb", nsfw=True, userlocking=True)
+async def sankaku_buttons(event):
+    params = {"page": 1,
+              "limit": 30,
+              "tags": f"order:random {event.args}".strip()}
+
+    async with ldr.aioclient.get(SAN_URL, params=params) as response:
+        if response.status == 200:
+            response = await response.json()
+        else:
+            await event.reply(f"An error occurred, response code: **{response.status}**")
+            return
+
+    if not response:
+        await event.reply(f"No results for query: {event.args}")
+        return
+
+    valid_urls = []
+
+    for post in response:
+        if 'file_url' in post.keys():
+            valid_urls.append([post['file_url'], post['id']])
+
+    if not valid_urls:
+        await event.reply(f"Failed to find URLs for query: {event.args}")
+        return
+
+    button_msg = await event.reply(
+        f"[sauce]({SAN_SAUCE_URL}{valid_urls[0][1]})",
+        file=valid_urls[0][0]
+    )
+
+    san_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
+
+    await button_msg.edit(
+        buttons=[Button.inline('➡️', f'san*{event.chat.id}_{button_msg.id}*r')]
+    )
+
+
+@ldr.add_callback_query("san")
+async def sankaku_buttons_callback(event):
+    args_split = event.args.split("*")
+
+    dict_id = args_split[0]
+    direction = args_split[1]
+
+    if dict_id in san_button_dict:
+        this_dict = san_button_dict[dict_id]
+    else:
+        return
+
+    if direction == "r":
+        this_dict[0] += 1
+
+        if this_dict[0] + 1 > len(this_dict[1]):
+            this_dict[0] = len(this_dict[1]) - 1
+
+        this_image = this_dict[1][this_dict[0]]
+    elif direction == "l":
+        this_dict[0] -= 1
+
+        if this_dict[0] < 0:
+            this_dict[0] = 0
+
+        this_image = this_dict[1][this_dict[0]]
+
+    buttons = []
+
+    if this_dict[0] > 0:
+        buttons += [Button.inline('⬅️', f'dan*{dict_id}*l')]
+
+    if len(this_dict[1]) - 1 > this_dict[0]:
+        buttons += [Button.inline('➡️', f'dan*{dict_id}*r')]
+
+    try:
+        await event.edit(
+            f"[sauce]({SAN_SAUCE_URL}{this_image[1]})",
+            file=this_image[0],
+            buttons=buttons
+        )
+    except:
+        pass

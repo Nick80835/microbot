@@ -3,10 +3,13 @@
 from random import choice
 from time import time_ns
 
+from telethon import Button
+
 from ubot.micro_bot import ldr
 
 GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
+gel_button_dict = {}
 
 
 @ldr.add("gelping", sudo=True, hide_help=True)
@@ -111,3 +114,89 @@ async def gelbooru_inline(event):
         return None
 
     return valid_urls[:3]
+
+
+@ldr.add("gelb", nsfw=True, userlocking=True)
+async def gelbooru_buttons(event):
+    params = {"page": "dapi",
+              "s": "post",
+              "q": "index",
+              "json": 1,
+              "tags": f"{event.args} sort:random"}
+
+    async with ldr.aioclient.get(GEL_URL, params=params) as response:
+        if response.status == 200:
+            response = await response.json()
+        else:
+            await event.reply(f"An error occurred, response code: **{response.status}**")
+            return
+
+    if not response:
+        await event.reply(f"No results for query: {event.args}")
+        return
+
+    valid_urls = []
+
+    for post in response:
+        if 'file_url' in post.keys():
+            valid_urls.append([post['file_url'], post['id']])
+
+    if not valid_urls:
+        await event.reply(f"Failed to find URLs for query: {event.args}")
+        return
+
+    button_msg = await event.reply(
+        f"[sauce]({GEL_SAUCE_URL}{valid_urls[0][1]})",
+        file=valid_urls[0][0]
+    )
+
+    gel_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
+
+    await button_msg.edit(
+        buttons=[Button.inline('➡️', f'gel*{event.chat.id}_{button_msg.id}*r')]
+    )
+
+
+@ldr.add_callback_query("gel")
+async def gelbooru_buttons_callback(event):
+    args_split = event.args.split("*")
+
+    dict_id = args_split[0]
+    direction = args_split[1]
+
+    if dict_id in gel_button_dict:
+        this_dict = gel_button_dict[dict_id]
+    else:
+        return
+
+    if direction == "r":
+        this_dict[0] += 1
+
+        if this_dict[0] + 1 > len(this_dict[1]):
+            this_dict[0] = len(this_dict[1]) - 1
+
+        this_image = this_dict[1][this_dict[0]]
+    elif direction == "l":
+        this_dict[0] -= 1
+
+        if this_dict[0] < 0:
+            this_dict[0] = 0
+
+        this_image = this_dict[1][this_dict[0]]
+
+    buttons = []
+
+    if this_dict[0] > 0:
+        buttons += [Button.inline('⬅️', f'dan*{dict_id}*l')]
+
+    if len(this_dict[1]) - 1 > this_dict[0]:
+        buttons += [Button.inline('➡️', f'dan*{dict_id}*r')]
+
+    try:
+        await event.edit(
+            f"[sauce]({GEL_SAUCE_URL}{this_image[1]})",
+            file=this_image[0],
+            buttons=buttons
+        )
+    except:
+        pass
