@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from asyncio import sleep
 from random import choice
 from time import time_ns
 
@@ -151,6 +152,8 @@ async def gelbooru_buttons(event):
     )
 
     gel_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
+
+    await sleep(1)
 
     await button_msg.edit(
         buttons=[Button.inline('➡️', f'gel*{event.chat.id}_{button_msg.id}*r')]
