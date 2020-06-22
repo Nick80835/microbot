@@ -24,10 +24,10 @@ class CommandHandler():
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
 
     async def handle_incoming(self, event):
-        prefix = escape(self.settings.get_config("cmd_prefix") or '.')
+        prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
 
         for value in self.incoming_commands:
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else prefix, value["pattern"], self.username), event.text)
+            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else f"({prefix})", value["pattern"], self.username), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event):
