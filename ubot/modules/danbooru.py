@@ -1,5 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
+from asyncio import sleep
 from time import time_ns
 
 from telethon import Button
@@ -141,6 +142,8 @@ async def danbooru_buttons(event):
     )
 
     dan_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
+
+    await sleep(1)
 
     await button_msg.edit(
         buttons=[Button.inline('➡️', f'dan*{event.chat.id}_{button_msg.id}*r')]
