@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from asyncio import sleep
 from random import choice
 from time import time_ns
 
@@ -146,17 +145,12 @@ async def gelbooru_buttons(event):
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    button_msg = await event.reply(
+    gel_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+
+    await event.reply(
         f"[sauce]({GEL_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0]
-    )
-
-    gel_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
-
-    await sleep(1)
-
-    await button_msg.edit(
-        buttons=[Button.inline('➡️', f'gel*{event.chat.id}_{button_msg.id}*r')]
+        file=valid_urls[0][0],
+        buttons=[Button.inline('➡️', f'gel*{event.chat.id}_{event.id}*r')]
     )
 
 
