@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from asyncio import sleep
 from time import time_ns
 
 from telethon import Button
@@ -136,17 +135,12 @@ async def danbooru_buttons(event):
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    button_msg = await event.reply(
+    dan_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+
+    await event.reply(
         f"[sauce]({DAN_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0]
-    )
-
-    dan_button_dict[f"{event.chat.id}_{button_msg.id}"] = [0, valid_urls]
-
-    await sleep(1)
-
-    await button_msg.edit(
-        buttons=[Button.inline('➡️', f'dan*{event.chat.id}_{button_msg.id}*r')]
+        file=valid_urls[0][0],
+        buttons=[Button.inline('➡️', f'dan*{event.chat.id}_{event.id}*r')]
     )
 
 
