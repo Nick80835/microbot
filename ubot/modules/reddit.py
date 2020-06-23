@@ -124,7 +124,7 @@ async def redimg(event):
     fetch_type = event.other_args[0]
 
     if not sub:
-        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>")
+        await event.reply(f"Syntax: {ldr.prefix()}red(i|t|b) <subreddit name>")
         return
 
     if fetch_type == "i":

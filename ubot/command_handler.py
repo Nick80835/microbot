@@ -9,7 +9,7 @@ from .fixes import inline_photos
 
 
 class CommandHandler():
-    def __init__(self, client, logger, settings):
+    def __init__(self, client, logger, settings, loader):
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2}(?: |$|_))(.*)"
         self.inline_pattern_template = "(?is)^{0}(?: |$|_)(.*)"
@@ -19,6 +19,7 @@ class CommandHandler():
         self.callback_queries = []
         self.logger = logger
         self.settings = settings
+        self.loader = loader
         client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
@@ -184,7 +185,7 @@ class CommandHandler():
         defaults_list = self.inline_photo_commands + self.inline_article_commands
 
         try:
-            await event.answer([await event.builder.article(title=value["pattern"], text=f"{self.settings.get_config('cmd_prefix') or '.'}{value['default']}") for value in defaults_list if value["default"]])
+            await event.answer([await event.builder.article(title=value["pattern"], text=f"{self.loader.prefix()}{value['default']}") for value in defaults_list if value["default"]])
         except:
             pass
 

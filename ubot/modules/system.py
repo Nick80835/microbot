@@ -62,7 +62,7 @@ async def nsfw_toggle(event):
         else:
             current_config = 'Off'
 
-        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}nsfw (on|off)\nCurrent config for this chat: {current_config}")
+        await event.reply(f"Syntax: {ldr.prefix()}nsfw (on|off)\nCurrent config for this chat: {current_config}")
         return
 
     if event.args == "on":
