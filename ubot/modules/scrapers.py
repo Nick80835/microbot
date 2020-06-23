@@ -76,7 +76,7 @@ async def pokemon_image(event):
 @ldr.add("hdi")
 async def howdoi_cmd(event):
     if not event.args:
-        await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}hdi <question>")
+        await event.reply(f"Syntax: {ldr.prefix()}hdi <question>")
         return
 
     response = howdoi.howdoi(vars(howdoi.get_parser().parse_args(event.args.split(' '))))

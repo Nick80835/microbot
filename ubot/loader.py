@@ -20,7 +20,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, logger, settings)
+        self.command_handler = CommandHandler(client, logger, settings, self)
         self.help_dict = {}
         self.help_hidden_dict = {}
         self.aioclient = ClientSession()
@@ -202,6 +202,9 @@ class Loader():
                 return None
         else:
             return None
+
+    def prefix(self):
+        return (self.settings.get_list('cmd_prefix') or ['.'])[0]
 
     def _find_all_modules(self):
         mod_paths = glob.glob(dirname(__file__) + "/modules/*.py")
