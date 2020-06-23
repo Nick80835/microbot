@@ -25,8 +25,8 @@ async def danbooru_ping(event):
 
 @ldr.add("dan(s|x|q|)(f|)", nsfw=True, userlocking=True)
 async def danbooru(event):
-    safety_arg = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    safety_arg = event.other_args[0]
+    as_file = bool(event.other_args[1])
     rating = ""
 
     if safety_arg == "x":
@@ -73,7 +73,7 @@ async def danbooru(event):
 
 @ldr.add_inline_photo("dan(s|x|q|)", default="dan")
 async def danbooru_inline(event):
-    safety_arg = event.pattern_match.group(1)
+    safety_arg = event.other_args[0]
     rating = ""
 
     if safety_arg == "x":

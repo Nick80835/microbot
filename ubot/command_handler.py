@@ -50,6 +50,7 @@ class CommandHandler():
 
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1]
+                event.other_args = pattern_match.groups()[1:-1]
                 event.extras = value["extras"]
 
                 try:
@@ -110,6 +111,7 @@ class CommandHandler():
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
+        event.other_args = pattern_match.groups()[1:-1]
 
         photo_list = await value["function"](event)
 
@@ -141,6 +143,7 @@ class CommandHandler():
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
+        event.other_args = pattern_match.groups()[1:-1]
 
         result_list = await value["function"](event)
 
