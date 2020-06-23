@@ -175,10 +175,10 @@ async def sankaku_buttons_callback(event):
     buttons = []
 
     if this_dict[0] > 0:
-        buttons += [Button.inline('⬅️', f'dan*{dict_id}*l')]
+        buttons += [Button.inline('⬅️', f'san*{dict_id}*l')]
 
     if len(this_dict[1]) - 1 > this_dict[0]:
-        buttons += [Button.inline('➡️', f'dan*{dict_id}*r')]
+        buttons += [Button.inline('➡️', f'san*{dict_id}*r')]
 
     try:
         await event.edit(
