@@ -18,6 +18,7 @@ async def danbooru_ping(event):
               "s": "post",
               "q": "index",
               "json": 1,
+              "limit": 3,
               "tags": f"sort:random"}
 
     start = time_ns()
@@ -44,6 +45,7 @@ async def gelbooru(event):
               "s": "post",
               "q": "index",
               "json": 1,
+              "limit": 3,
               "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(GEL_URL, params=params) as response:
@@ -93,6 +95,7 @@ async def gelbooru_inline(event):
               "s": "post",
               "q": "index",
               "json": 1,
+              "limit": 3,
               "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(GEL_URL, params=params) as response:
@@ -122,6 +125,7 @@ async def gelbooru_buttons(event):
               "s": "post",
               "q": "index",
               "json": 1,
+              "limit": 30,
               "tags": f"{event.args} sort:random"}
 
     async with ldr.aioclient.get(GEL_URL, params=params) as response:
