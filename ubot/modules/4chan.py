@@ -16,7 +16,7 @@ async def fourchan(event):
         await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>")
         return
 
-    as_file = bool(event.pattern_match.group(1))
+    as_file = bool(event.other_args[0])
 
     async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
         if response.status == 200:

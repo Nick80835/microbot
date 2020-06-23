@@ -26,8 +26,8 @@ async def sankaku_ping(event):
 
 @ldr.add("san(s|x|q|)(f|)", nsfw=True, userlocking=True)
 async def sankaku(event):
-    safety_arg = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    safety_arg = event.other_args[0]
+    as_file = bool(event.other_args[1])
     rating = ""
 
     if safety_arg == "x":
@@ -74,7 +74,7 @@ async def sankaku(event):
 
 @ldr.add_inline_photo("san(s|x|q|)", default="san")
 async def sankaku_inline(event):
-    safety_arg = event.pattern_match.group(1)
+    safety_arg = event.other_args[0]
     rating = ""
 
     if safety_arg == "x":

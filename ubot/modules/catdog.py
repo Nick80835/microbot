@@ -79,24 +79,24 @@ async def bird(event):
 
 @ldr.add_list(["cat", "pussy"], pattern_extra="(gif|)(f|)")
 async def cat(event):
-    neko = await neko_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
+    neko = await neko_atsume(GIFPARAM if event.other_args[0] else IMGPARAM)
 
     if isinstance(neko, int):
         await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
-    await event.reply(file=neko[0]["url"], force_document=bool(event.pattern_match.group(2)))
+    await event.reply(file=neko[0]["url"], force_document=bool(event.other_args[1]))
 
 
 @ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)")
 async def dog(event):
-    inu = await inu_atsume(GIFPARAM if event.pattern_match.group(1) else IMGPARAM)
+    inu = await inu_atsume(GIFPARAM if event.event.other_args[0] else IMGPARAM)
 
     if isinstance(inu, int):
         await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
-    await event.reply(file=inu[0]["url"], force_document=bool(event.pattern_match.group(2)))
+    await event.reply(file=inu[0]["url"], force_document=bool(event.other_args[1]))
 
 
 @ldr.add_inline_photo("cat", default="cat")

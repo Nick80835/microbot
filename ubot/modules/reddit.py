@@ -114,14 +114,14 @@ async def bodyfetcher(event, sub):
 
         await event.reply(f"**{title}**\n\n{body}")
         return
-    
+
     await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
 @ldr.add("red(i|t|b)", userlocking=True)
 async def redimg(event):
     sub = event.args.replace(" ", "_")
-    fetch_type = event.pattern_match.group(1)
+    fetch_type = event.other_args[0]
 
     if not sub:
         await event.reply(f"Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>")
@@ -157,7 +157,7 @@ async def todayifuckedup(event):
 
 @ldr.add("jon(x|)", userlocking=True)
 async def imsorryjon(event):
-    if "x" in event.pattern_match.group(0):
+    if "x" in event.other_args[0]:
         sub = "ImReallySorryJon"
     else:
         sub = "ImSorryJon"
