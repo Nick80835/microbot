@@ -36,7 +36,7 @@ async def danbooru(event):
     elif safety_arg == "q":
         rating = "Rating:questionable"
 
-    params = {"limit": 1,
+    params = {"limit": 3,
               "random": "true",
               "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
 

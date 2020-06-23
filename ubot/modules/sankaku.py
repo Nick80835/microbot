@@ -14,7 +14,7 @@ san_button_dict = {}
 @ldr.add("sanping", sudo=True, hide_help=True)
 async def sankaku_ping(event):
     params = {"page": 1,
-              "limit": 5,
+              "limit": 3,
               "tags": f"order:random"}
 
     start = time_ns()
@@ -38,7 +38,7 @@ async def sankaku(event):
         rating = "rating:questionable"
 
     params = {"page": 1,
-              "limit": 5,
+              "limit": 3,
               "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
 
     async with ldr.aioclient.get(SAN_URL, params=params) as response:
