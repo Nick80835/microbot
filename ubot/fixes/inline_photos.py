@@ -1,6 +1,6 @@
 import hashlib
 
-from telethon import Button, utils
+from telethon import utils
 from telethon.tl import functions, types
 
 

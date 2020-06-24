@@ -28,8 +28,7 @@ import io
 from functools import partial
 from random import randint, uniform
 
-from PIL import Image, ImageEnhance, ImageOps
-from telethon.tl.types import DocumentAttributeFilename
+from PIL import Image, ImageEnhance
 
 from ubot.micro_bot import ldr
 

@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from random import choice
 from time import time_ns
 
 from telethon import Button

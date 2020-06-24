@@ -2,8 +2,6 @@
 
 from time import time_ns
 
-from telethon import version
-
 from ubot.micro_bot import ldr
 
 

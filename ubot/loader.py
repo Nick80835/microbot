@@ -4,10 +4,8 @@ import glob
 from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
-from re import escape
 
 from aiohttp import ClientSession
-from telethon import events
 from telethon.tl.types import DocumentAttributeFilename
 
 from .command_handler import CommandHandler
