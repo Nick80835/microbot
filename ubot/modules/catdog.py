@@ -100,10 +100,10 @@ async def dog(event):
 
 
 @ldr.add_inline_photo("cat", default="cat")
-async def cat_inline(event):
+async def cat_inline(_):
     return [neko["url"] for neko in await neko_atsume(MIMGPARAM)]
 
 
 @ldr.add_inline_photo("dog", default="dog")
-async def dog_inline(event):
+async def dog_inline(_):
     return [inu["url"] for inu in await inu_atsume(MIMGPARAM)]

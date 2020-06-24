@@ -2,7 +2,7 @@
 
 import io
 
-from PIL import Image, ImageColor
+from PIL import Image
 
 from ubot.micro_bot import ldr
 

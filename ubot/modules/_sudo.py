@@ -94,7 +94,7 @@ async def show_blacklist(event):
 
     for i in ldr.settings.get_list('blacklisted_users'):
         blacklist_string += f"\n{i}"
-    
+
     await event.reply(f"**Blacklisted users:**\n{blacklist_string}")
 
 
@@ -132,7 +132,7 @@ async def show_sudo(event):
 
     for i in ldr.settings.get_list("sudo_users"):
         sudo_string += f"\n{i}"
-    
+
     await event.reply(f"**Sudo users:**\n{sudo_string}")
 
 

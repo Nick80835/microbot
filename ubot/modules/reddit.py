@@ -1,8 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import io
-from random import choice, shuffle
-
 import praw
 from prawcore import exceptions as redex
 
