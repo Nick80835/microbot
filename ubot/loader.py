@@ -207,12 +207,9 @@ class Loader():
         return (self.settings.get_list('cmd_prefix') or ['.'])[0]
 
     def _find_all_modules(self):
-        mod_paths = glob.glob(dirname(__file__) + "/modules/*.py")
+        module_paths = glob.glob(dirname(__file__) + "/modules/*.py")
 
-        self.all_modules = [
-            basename(f)[:-3] for f in mod_paths
+        self.all_modules = sorted([
+            basename(f)[:-3] for f in module_paths
             if isfile(f) and f.endswith(".py")
-        ]
-
-        system_index = self.all_modules.index("sudo")
-        self.all_modules.insert(0, self.all_modules.pop(system_index))
+        ])
