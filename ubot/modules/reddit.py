@@ -16,11 +16,9 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 
 async def imagefetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    hot_list = list(hot.__iter__())
-    shuffle(hot_list)
+    random_rising = REDDIT.subreddit(sub).random_rising(limit=10)
 
-    for post in hot_list:
+    for post in random_rising.__iter__():
         if post.url and post.url.endswith(VALID_ENDS):
             return post
 
@@ -28,16 +26,14 @@ async def imagefetcherfallback(sub):
 
 
 async def titlefetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    return choice(list(hot.__iter__()))
+    random_rising = REDDIT.subreddit(sub).random_rising(limit=1)
+    return list(random_rising.__iter__())[0]
 
 
 async def bodyfetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    hot_list = list(hot.__iter__())
-    shuffle(hot_list)
+    random_rising = REDDIT.subreddit(sub).random_rising(limit=10)
 
-    for post in hot_list:
+    for post in random_rising.__iter__():
         if post.selftext and not post.permalink in post.url:
             return post
 
