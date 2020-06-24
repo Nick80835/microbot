@@ -30,7 +30,10 @@ class Loader():
         self._find_all_modules()
 
         for module_name in self.all_modules:
-            self.loaded_modules.append(import_module("ubot.modules." + module_name))
+            try:
+                self.loaded_modules.append(import_module("ubot.modules." + module_name))
+            except Exception as exception:
+                self.logger.error(f"Error while loading {module_name}: {exception}")
 
     def reload_all_modules(self):
         self.command_handler.incoming_commands = []
