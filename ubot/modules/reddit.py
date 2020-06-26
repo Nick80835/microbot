@@ -44,6 +44,9 @@ async def imagefetcher(event, sub):
         try:
             post = REDDIT.subreddit(sub).random() or await imagefetcherfallback(sub)
             post.title
+
+            if event.nsfw_disabled and post.over_18:
+                continue
         except redex.Forbidden:
             await event.reply(f"**r/{sub}** is private!")
             return
@@ -111,7 +114,7 @@ async def bodyfetcher(event, sub):
     await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
-@ldr.add("red(i|t|b)", userlocking=True)
+@ldr.add("red(i|t|b)", userlocking=True, pass_nsfw=True)
 async def redimg(event):
     sub = event.args.replace(" ", "_")
     fetch_type = event.other_args[0]
@@ -128,27 +131,27 @@ async def redimg(event):
         await bodyfetcher(event, sub)
 
 
-@ldr.add("suffer", userlocking=True)
+@ldr.add("suffer", userlocking=True, pass_nsfw=True)
 async def makemesuffer(event):
     await imagefetcher(event, "MakeMeSuffer")
 
 
-@ldr.add("snafu", userlocking=True)
+@ldr.add("snafu", userlocking=True, pass_nsfw=True)
 async def coaxedintoasnafu(event):
     await imagefetcher(event, "CoaxedIntoASnafu")
 
 
-@ldr.add("aita", userlocking=True)
+@ldr.add("aita", userlocking=True, pass_nsfw=True)
 async def amitheasshole(event):
     await bodyfetcher(event, "AmITheAsshole")
 
 
-@ldr.add("tifu", userlocking=True)
+@ldr.add("tifu", userlocking=True, pass_nsfw=True)
 async def todayifuckedup(event):
     await bodyfetcher(event, "TIFU")
 
 
-@ldr.add("jon(x|)", userlocking=True)
+@ldr.add("jon(x|)", userlocking=True, pass_nsfw=True)
 async def imsorryjon(event):
     if "x" in event.other_args[0]:
         sub = "ImReallySorryJon"
@@ -158,16 +161,16 @@ async def imsorryjon(event):
     await imagefetcher(event, sub)
 
 
-@ldr.add("tihi", userlocking=True)
+@ldr.add("tihi", userlocking=True, pass_nsfw=True)
 async def thanksihateit(event):
     await imagefetcher(event, "TIHI")
 
 
-@ldr.add("gab", userlocking=True)
+@ldr.add("gab", userlocking=True, pass_nsfw=True)
 async def tenma(event):
     await imagefetcher(event, "tenma")
 
 
-@ldr.add("pourn", userlocking=True)
+@ldr.add("pourn", userlocking=True, pass_nsfw=True)
 async def pourn(event):
     await imagefetcher(event, "PourPainting")

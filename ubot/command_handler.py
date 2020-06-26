@@ -48,6 +48,8 @@ class CommandHandler():
                 if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
                     print(f"Attempted NSFW command ({event.text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
                     continue
+                elif value["pass_nsfw"]:
+                    event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
 
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1]
