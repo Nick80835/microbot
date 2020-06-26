@@ -8,12 +8,17 @@ BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
 POST_URL = "https://a.4cdn.org/{0}/thread/{1}.json"
 CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
 VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
+NSFW_BOARDS = ['aco', 'b', 'bant', 'd', 'e', 'f', 'gif', 'h', 'hc', 'hm', 'hr', 'i', 'ic', 'pol', 'r', 'r9k', 's', 's4s', 'soc', 't', 'trash', 'u', 'wg', 'y']
 
 
-@ldr.add("4c(f|)", userlocking=True)
+@ldr.add("4c(f|)", userlocking=True, pass_nsfw=True)
 async def fourchan(event):
     if not event.args:
         await event.reply(f"Syntax: {ldr.prefix()}4c(f|) <board name>")
+        return
+
+    if event.nsfw_disabled and event.args in NSFW_BOARDS:
+        await event.reply(f"Sorry, that board is NSFW and NSFW commands are disabled!")
         return
 
     as_file = bool(event.other_args[0])
