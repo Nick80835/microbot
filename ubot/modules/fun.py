@@ -20,7 +20,8 @@ yesno_answers = [
 moo_answers = [
     "moo", "moo moo", "moooooo", "milk me", "moo!",
     "moomoo", "am cow", "me is cow", "*cow noise*",
-    "am make milk", "MOO", "MOOOOOOOOO", "moo?"
+    "am make milk", "MOO", "MOOOOOOOOO", "moo?",
+    "oink", "moo?", "I am a cow", "milk time"
 ]
 
 
@@ -36,7 +37,6 @@ async def floor(event):
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add(f"moo", simple_pattern=True, hide_help=True)
+@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True)
 async def moo(event):
-    if not event.args:
-        await event.reply(choice(moo_answers))
+    await event.reply(choice(moo_answers))
