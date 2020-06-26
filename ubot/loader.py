@@ -76,6 +76,7 @@ class Loader():
                 "sudo": args.get('sudo', False),
                 "extras": args.get('extras', None),
                 "nsfw": args.get('nsfw', False),
+                "pass_nsfw": args.get('pass_nsfw', False),
                 "admin": args.get('admin', False),
                 "owner": args.get('owner', False),
                 "locking": args.get('locking', False),
