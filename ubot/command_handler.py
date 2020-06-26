@@ -13,6 +13,7 @@ class CommandHandler():
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2}(?: |$|_))(.*)"
         self.inline_pattern_template = "(?is)^{0}(?: |$|_)(.*)"
+        self.raw_pattern_template = "(?is){0}"
         self.incoming_commands = []
         self.inline_photo_commands = []
         self.inline_article_commands = []
@@ -30,6 +31,8 @@ class CommandHandler():
         for value in self.incoming_commands:
             if value["simple_pattern"]:
                 pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+            elif value["raw_pattern"]:
+                pattern_match = search(self.raw_pattern_template.format(value["pattern"]), event.text)
             else:
                 pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"], self.username), event.text)
 
