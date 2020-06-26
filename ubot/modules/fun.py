@@ -22,3 +22,9 @@ yesno_answers = [
 async def ask_bot(event):
     if event.args:
         await event.reply(choice(yesno_answers))
+
+
+@ldr.add(f"let the bodies hit the", simple_pattern=True)
+async def floor(event):
+    if not event.args:
+        await event.reply("FLOOOOOOOOOOOOOOOOOOR")
