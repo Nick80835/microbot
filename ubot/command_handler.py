@@ -52,7 +52,7 @@ class CommandHandler():
                     event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
 
                 event.pattern_match = pattern_match
-                event.args = pattern_match.groups()[-1]
+                event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[1:-1]
                 event.extras = value["extras"]
 
