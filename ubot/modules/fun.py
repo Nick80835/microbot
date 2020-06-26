@@ -17,6 +17,12 @@ yesno_answers = [
     "Sure, I guess", "Why not"
 ]
 
+moo_answers = [
+    "moo", "moo moo", "moooooo", "milk me", "moo!",
+    "moomoo", "am cow", "me is cow", "*cow noise*",
+    "am make milk", "MOO", "MOOOOOOOOO", "moo?"
+]
+
 
 @ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True)
 async def ask_bot(event):
@@ -28,3 +34,9 @@ async def ask_bot(event):
 async def floor(event):
     if not event.args:
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
+
+
+@ldr.add(f"moo", simple_pattern=True)
+async def moo(event):
+    if not event.args:
+        await event.reply(choice(moo_answers))
