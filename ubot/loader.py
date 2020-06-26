@@ -72,7 +72,7 @@ class Loader():
             self.command_handler.incoming_commands.append({
                 "pattern": pattern,
                 "function": func,
-                "noprefix": args.get('noprefix', False),
+                "simple_pattern": args.get('simple_pattern', False),
                 "sudo": args.get('sudo', False),
                 "extras": args.get('extras', None),
                 "nsfw": args.get('nsfw', False),
@@ -109,7 +109,7 @@ class Loader():
                 self.command_handler.incoming_commands.append({
                     "pattern": pattern + pattern_extra,
                     "function": func,
-                    "noprefix": args.get('noprefix', False),
+                    "simple_pattern": args.get('simple_pattern', False),
                     "sudo": args.get('sudo', False),
                     "extras": args.get('extras', pattern),
                     "nsfw": args.get('nsfw', False),
