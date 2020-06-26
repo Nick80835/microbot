@@ -24,19 +24,19 @@ moo_answers = [
 ]
 
 
-@ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True)
+@ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
 async def ask_bot(event):
     if event.args:
         await event.reply(choice(yesno_answers))
 
 
-@ldr.add(f"let the bodies hit the", simple_pattern=True)
+@ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
 async def floor(event):
     if not event.args:
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add(f"moo", simple_pattern=True)
+@ldr.add(f"moo", simple_pattern=True, hide_help=True)
 async def moo(event):
     if not event.args:
         await event.reply(choice(moo_answers))
