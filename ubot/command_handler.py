@@ -28,7 +28,10 @@ class CommandHandler():
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
 
         for value in self.incoming_commands:
-            pattern_match = search(self.pattern_template.format("" if value["noprefix"] else f"({prefix})", value["pattern"], self.username), event.text)
+            if value["simple_pattern"]:
+                pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+            else:
+                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"], self.username), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event):
