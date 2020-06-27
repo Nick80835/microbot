@@ -90,7 +90,7 @@ async def cat(event):
 
 @ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)")
 async def dog(event):
-    inu = await inu_atsume(GIFPARAM if event.event.other_args[0] else IMGPARAM)
+    inu = await inu_atsume(GIFPARAM if event.other_args[0] else IMGPARAM)
 
     if isinstance(inu, int):
         await event.reply(f"There was an error finding the dogs! :( -> **{inu}**")
