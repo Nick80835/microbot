@@ -7,8 +7,8 @@ from PIL import Image
 from ubot.micro_bot import ldr
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'goose', 'waifu', 'gasm', 'slap', 'spank', 'pat', 'feet', 'woof', 'baka']
-REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka']
+NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'goose', 'waifu', 'gasm', 'slap', 'spank', 'pat', 'feet', 'woof', 'baka', 'kiss']
+REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'kiss']
 
 
 @ldr.add_list(NEKO_TYPES, nsfw=True, pattern_extra="(f|)", userlocking=True)
