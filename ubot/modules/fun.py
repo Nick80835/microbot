@@ -29,6 +29,11 @@ hi_answers = [
     "Hey"
 ]
 
+bye_answers = [
+    "Bye", "Bai", "Byebye!", "BYYYEEE", "Baibai",
+    "Goodbye"
+]
+
 
 @ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
 async def ask_bot(event):
@@ -44,6 +49,16 @@ async def say_hi(event):
         await reply.reply(choice(hi_answers))
     else:
         await event.reply(choice(hi_answers))
+
+
+@ldr.add(f"{bot_name}(,|) say bye", simple_pattern=True, hide_help=True)
+@ldr.add(f"say bye(,|) {bot_name}", simple_pattern=True, hide_help=True)
+async def say_bye(event):
+    if event.is_reply:
+        reply = await event.get_reply_message()
+        await reply.reply(choice(bye_answers))
+    else:
+        await event.reply(choice(bye_answers))
 
 
 @ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
