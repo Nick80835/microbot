@@ -40,6 +40,11 @@ async def say_something(event):
         else:
             await event.client.send_message(event.chat, event.args)
 
+        try:
+            await event.delete()
+        except:
+            pass
+
 
 @ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
 async def floor(event):
