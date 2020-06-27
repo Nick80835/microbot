@@ -24,11 +24,26 @@ moo_answers = [
     "oink", "moo?", "I am a cow", "milk time"
 ]
 
+hi_answers = [
+    "Hi", "Hai", "Hi there!", "HIIII", "Hewwo",
+    "Hey"
+]
+
 
 @ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
 async def ask_bot(event):
     if event.args:
         await event.reply(choice(yesno_answers))
+
+
+@ldr.add(f"{bot_name}(,|) say hi", simple_pattern=True, hide_help=True)
+@ldr.add(f"say hi(,|) {bot_name}", simple_pattern=True, hide_help=True)
+async def say_hi(event):
+    if event.is_reply:
+        reply = await event.get_reply_message()
+        await reply.reply(choice(hi_answers))
+    else:
+        await event.reply(choice(hi_answers))
 
 
 @ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
