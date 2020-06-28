@@ -46,6 +46,19 @@ async def say_something(event):
             pass
 
 
+@ldr.add(f"{bot_name}(,|) edit to", simple_pattern=True, hide_help=True, sudo=True)
+async def edit_message(event):
+    if event.args:
+        if event.is_reply:
+            reply = await event.get_reply_message()
+
+            try:
+                await reply.edit(event.args)
+                await event.delete()
+            except:
+                pass
+
+
 @ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
 async def floor(event):
     if not event.args:
