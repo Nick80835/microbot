@@ -30,29 +30,29 @@ class CommandHandler():
 
         for value in self.incoming_commands:
             if value["simple_pattern"]:
-                pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+                pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
             elif value["raw_pattern"]:
-                pattern_match = search(self.raw_pattern_template.format(value["pattern"]), event.text)
+                pattern_match = search(self.raw_pattern_template.format(value["pattern"]), event.raw_text)
             else:
-                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"], self.username), event.text)
+                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"], self.username), event.raw_text)
 
             if pattern_match:
                 if self.is_blacklisted(event):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
                     return
 
                 if value["owner"] and not self.is_owner(event):
-                    print(f"Attempted owner command ({event.text}) from ID {event.from_id}")
+                    print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
                     continue
                 elif value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
-                    print(f"Attempted sudo command ({event.text}) from ID {event.from_id}")
+                    print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
                     continue
                 elif value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
-                    print(f"Attempted admin command ({event.text}) from ID {event.from_id}")
+                    print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
                     continue
 
                 if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
-                    print(f"Attempted NSFW command ({event.text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
+                    print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
                     continue
                 elif value["pass_nsfw"]:
                     event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
@@ -68,7 +68,7 @@ class CommandHandler():
                             await event.reply(f"That command is currently locked: {value['lockreason']}")
                             continue
                         else:
-                            value["lockreason"] = f"In use by **{event.from_id}** (`{event.text}`)"
+                            value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
                             await value["function"](event)
                             value["lockreason"] = None
                     elif value["userlocking"]:
@@ -93,22 +93,22 @@ class CommandHandler():
 
     async def handle_inline(self, event):
         for value in self.inline_photo_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
                     return
 
                 await self.handle_inline_photo(event, pattern_match, value)
                 return
 
         for value in self.inline_article_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
                     return
 
                 await self.handle_inline_article(event, pattern_match, value)
