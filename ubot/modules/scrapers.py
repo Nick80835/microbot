@@ -38,6 +38,34 @@ async def randomfact(event):
     await event.reply(random_fact)
 
 
+@ldr.add("tgen")
+async def text_generator(event):
+    if not event.args or not ldr.settings.get_config("deep_ai_key"):
+        return
+
+    async with ldr.aioclient.post("https://api.deepai.org/api/text-generator", data={"text": event.args}, headers={"api-key": ldr.settings.get_config("deep_ai_key")}) as response:
+        if response.status == 200:
+            generated_text = (await response.json())["output"].split("<|endoftext|>")[0]
+            await event.reply(generated_text)
+        else:
+            await event.reply(f"An error occurred: **{response.status}**")
+            return
+
+
+@ldr.add("igen")
+async def image_generator(event):
+    if not event.args or not ldr.settings.get_config("deep_ai_key"):
+        return
+
+    async with ldr.aioclient.post("https://api.deepai.org/api/text2img", data={"text": event.args}, headers={"api-key": ldr.settings.get_config("deep_ai_key")}) as response:
+        if response.status == 200:
+            image_url = (await response.json())["output_url"]
+            await event.reply(file=image_url)
+        else:
+            await event.reply(f"An error occurred: **{response.status}**")
+            return
+
+
 @ldr.add("pokemon(s|)")
 async def pokemon_image(event):
     if not event.args:
