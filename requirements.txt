@@ -1,7 +1,6 @@
 aiodns
 aiohttp
 cchardet
-coffeehouse
 cryptg
 gTTS
 hachoir
