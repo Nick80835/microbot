@@ -65,12 +65,12 @@ async def floor(event):
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add(f"bruh", simple_pattern=True, hide_help=True)
+@ldr.add(f"bruh", simple_pattern=True, hide_help=True, chance=50)
 async def bruh_moment(event):
     if not event.args:
         await event.reply("moment")
 
 
-@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True)
+@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=50)
 async def moo(event):
     await event.reply(choice(moo_answers))

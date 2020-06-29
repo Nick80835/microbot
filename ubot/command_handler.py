@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import asyncio
+from random import randint
 from re import escape, search
 
 from telethon import events, functions, types
@@ -68,19 +69,35 @@ class CommandHandler():
                             await event.reply(f"That command is currently locked: {value['lockreason']}")
                             continue
                         else:
-                            value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
-                            await value["function"](event)
-                            value["lockreason"] = None
+                            if value["chance"]:
+                                if randint(0, 100) <= value["chance"]:
+                                    value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
+                                    await value["function"](event)
+                                    value["lockreason"] = None
+                            else:
+                                value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
+                                await value["function"](event)
+                                value["lockreason"] = None
                     elif value["userlocking"]:
                         if event.from_id in value["lockedusers"]:
                             await event.reply(f"Please don't spam that command.")
                             continue
                         else:
-                            value["lockedusers"].append(event.from_id)
-                            await value["function"](event)
-                            value["lockedusers"].remove(event.from_id)
+                            if value["chance"]:
+                                if randint(0, 100) <= value["chance"]:
+                                    value["lockedusers"].append(event.from_id)
+                                    await value["function"](event)
+                                    value["lockedusers"].remove(event.from_id)
+                            else:
+                                value["lockedusers"].append(event.from_id)
+                                await value["function"](event)
+                                value["lockedusers"].remove(event.from_id)
                     else:
-                        await value["function"](event)
+                        if value["chance"]:
+                            if randint(0, 100) <= value["chance"]:
+                                await value["function"](event)
+                        else:
+                            await value["function"](event)
                 except Exception as exception:
                     value["lockreason"] = None
 
