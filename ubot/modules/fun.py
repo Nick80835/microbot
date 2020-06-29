@@ -25,39 +25,38 @@ moo_answers = [
 ]
 
 
-if not ldr.settings.get_config("lydia_key"):
-    @ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
-    async def ask_bot(event):
-        if event.args:
-            await event.reply(choice(yesno_answers))
+@ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
+async def ask_bot(event):
+    if event.args:
+        await event.reply(choice(yesno_answers))
 
 
-    @ldr.add(f"{bot_name}(,|) say", simple_pattern=True, hide_help=True)
-    async def say_something(event):
-        if event.args:
-            if event.is_reply:
-                reply = await event.get_reply_message()
-                await reply.reply(event.args)
-            else:
-                await event.client.send_message(event.chat, event.args)
+@ldr.add(f"{bot_name}(,|) say", simple_pattern=True, hide_help=True)
+async def say_something(event):
+    if event.args:
+        if event.is_reply:
+            reply = await event.get_reply_message()
+            await reply.reply(event.args)
+        else:
+            await event.client.send_message(event.chat, event.args)
+
+        try:
+            await event.delete()
+        except:
+            pass
+
+
+@ldr.add(f"{bot_name}(,|) edit to", simple_pattern=True, hide_help=True, sudo=True)
+async def edit_message(event):
+    if event.args:
+        if event.is_reply:
+            reply = await event.get_reply_message()
 
             try:
+                await reply.edit(event.args)
                 await event.delete()
             except:
                 pass
-
-
-    @ldr.add(f"{bot_name}(,|) edit to", simple_pattern=True, hide_help=True, sudo=True)
-    async def edit_message(event):
-        if event.args:
-            if event.is_reply:
-                reply = await event.get_reply_message()
-
-                try:
-                    await reply.edit(event.args)
-                    await event.delete()
-                except:
-                    pass
 
 
 @ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
