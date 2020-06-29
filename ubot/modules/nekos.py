@@ -7,11 +7,13 @@ from PIL import Image
 from ubot.micro_bot import ldr
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'goose', 'waifu', 'gasm', 'slap', 'spank', 'pat', 'feet', 'woof', 'baka', 'kiss']
+NEKO_TYPES_NSFW = ['lewd', 'tits', 'trap', 'anal', 'gasm', 'spank', 'feet']
+NEKO_TYPES = ['neko', 'smug', 'cuddle', 'hug', 'goose', 'waifu', 'slap', 'pat', 'woof', 'baka', 'kiss']
 REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'kiss']
 
 
-@ldr.add_list(NEKO_TYPES, nsfw=True, pattern_extra="(f|)", userlocking=True)
+@ldr.add_list(NEKO_TYPES_NSFW, nsfw=True, pattern_extra="(f|)", userlocking=True)
+@ldr.add_list(NEKO_TYPES, pattern_extra="(f|)", userlocking=True)
 async def supernekoatsume(event):
     nekotype = event.extras
     as_file = bool(event.other_args[0])
