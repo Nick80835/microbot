@@ -122,7 +122,8 @@ class Loader():
                     "locking": args.get('locking', False),
                     "lockreason": None,
                     "userlocking": args.get('userlocking', False),
-                    "lockedusers": []
+                    "lockedusers": [],
+                    "chance": args.get('chance', None)
                 })
 
             return func
