@@ -110,22 +110,22 @@ class CommandHandler():
 
     async def handle_inline(self, event):
         for value in self.inline_photo_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
-                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
                 await self.handle_inline_photo(event, pattern_match, value)
                 return
 
         for value in self.inline_article_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
+            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
-                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
                 await self.handle_inline_article(event, pattern_match, value)
