@@ -23,10 +23,11 @@ async def danbooru_ping(event):
         await event.reply(f"Danbooru response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add("dan(s|x|q|)(f|)", nsfw=True, userlocking=True)
+@ldr.add_list(["dan", "danx", "danq"], pattern_extra="(f|)", nsfw=True, userlocking=True)
+@ldr.add("dans", pattern_extra="(f|)", userlocking=True)
 async def danbooru(event):
-    safety_arg = event.other_args[0]
-    as_file = bool(event.other_args[1])
+    safety_arg = event.command[-1]
+    as_file = bool(event.other_args[0])
     rating = ""
 
     if safety_arg == "x":

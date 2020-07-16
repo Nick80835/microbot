@@ -27,10 +27,11 @@ async def danbooru_ping(event):
         await event.reply(f"Gelbooru response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add("gel(s|x|q|)(f|)", nsfw=True, userlocking=True)
+@ldr.add_list(["gel", "gelx", "gelq"], pattern_extra="(f|)", nsfw=True, userlocking=True)
+@ldr.add("gels", pattern_extra="(f|)", userlocking=True)
 async def gelbooru(event):
-    safety_arg = event.other_args[0]
-    as_file = bool(event.other_args[1])
+    safety_arg = event.command[-1]
+    as_file = bool(event.other_args[0])
     rating = ""
 
     if safety_arg == "x":

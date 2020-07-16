@@ -15,12 +15,13 @@ async def delete_message(event):
 
 @ldr.add("help")
 async def help_cmd(event):
+    prefix = ldr.prefix()
     help_string = ""
 
     for key, value in ldr.help_dict.items():
         help_string += f"\n**{key}**: "
         for info in value:
-            help_string += f"`{info}`, "
+            help_string += f"{prefix}{info}, "
         help_string = help_string.rstrip(", ")
 
     await event.reply(f"**Available commands:**\n{help_string}")

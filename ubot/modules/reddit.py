@@ -114,10 +114,10 @@ async def bodyfetcher(event, sub):
     await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
-@ldr.add("red(i|t|b)", userlocking=True, pass_nsfw=True)
+@ldr.add_list(["redi", "redb", "redt"], userlocking=True, pass_nsfw=True)
 async def redimg(event):
     sub = event.args.replace(" ", "_")
-    fetch_type = event.other_args[0]
+    fetch_type = event.command[-1]
 
     if not sub:
         await event.reply(f"Syntax: {ldr.prefix()}red(i|t|b) <subreddit name>")
@@ -151,14 +151,12 @@ async def todayifuckedup(event):
     await bodyfetcher(event, "TIFU")
 
 
-@ldr.add("jon(x|)", userlocking=True, pass_nsfw=True)
+@ldr.add_list(["jon", "jonx"], userlocking=True, pass_nsfw=True)
 async def imsorryjon(event):
-    if "x" in event.other_args[0]:
-        sub = "ImReallySorryJon"
+    if event.command[-1] == "x":
+        await imagefetcher(event, "ImReallySorryJon")
     else:
-        sub = "ImSorryJon"
-
-    await imagefetcher(event, sub)
+        await imagefetcher(event, "ImSorryJon")
 
 
 @ldr.add("tihi", userlocking=True, pass_nsfw=True)

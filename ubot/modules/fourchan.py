@@ -11,7 +11,7 @@ VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 NSFW_BOARDS = ['aco', 'b', 'bant', 'd', 'e', 'f', 'gif', 'h', 'hc', 'hm', 'hr', 'i', 'ic', 'pol', 'r', 'r9k', 's', 's4s', 'soc', 't', 'trash', 'u', 'wg', 'y']
 
 
-@ldr.add("4c(f|)", userlocking=True, pass_nsfw=True)
+@ldr.add("4c", pattern_extra="(f|)", userlocking=True, pass_nsfw=True)
 async def fourchan(event):
     if not event.args:
         await event.reply(f"Syntax: {ldr.prefix()}4c(f|) <board name>")
