@@ -66,7 +66,7 @@ async def image_generator(event):
             return
 
 
-@ldr.add("pokemon(s|)")
+@ldr.add("pokemon", pattern_extra="(s|)")
 async def pokemon_image(event):
     if not event.args:
         await event.reply("Specify a Pokémon name!")

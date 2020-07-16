@@ -56,6 +56,7 @@ class Loader():
 
     def add(self, pattern=None, **args):
         pattern = args.get("pattern", pattern)
+        pattern_extra = args.get("pattern_extra", "")
 
         def decorator(func):
             if args.get("hide_help", False):
@@ -71,6 +72,7 @@ class Loader():
 
             self.command_handler.incoming_commands.append({
                 "pattern": pattern,
+                "pattern_extra": pattern_extra,
                 "function": func,
                 "simple_pattern": args.get('simple_pattern', False),
                 "raw_pattern": args.get('raw_pattern', False),
@@ -109,7 +111,8 @@ class Loader():
                         self.help_dict[func.__module__.split(".")[-1]] = [pattern]
 
                 self.command_handler.incoming_commands.append({
-                    "pattern": pattern + pattern_extra,
+                    "pattern": pattern,
+                    "pattern_extra": pattern_extra,
                     "function": func,
                     "simple_pattern": args.get('simple_pattern', False),
                     "raw_pattern": args.get('raw_pattern', False),

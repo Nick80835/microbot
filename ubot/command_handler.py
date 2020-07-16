@@ -12,8 +12,8 @@ from .fixes import inline_photos
 class CommandHandler():
     def __init__(self, client, logger, settings, loader):
         self.username = client.loop.run_until_complete(client.get_me()).username
-        self.pattern_template = "(?is)^{0}{1}(?: |$|_|@{2}(?: |$|_))(.*)"
-        self.inline_pattern_template = "(?is)^{0}(?: |$|_)(.*)"
+        self.pattern_template = "(?is)^{0}({1})(?: |$|_|@{2}(?: |$|_))(.*)"
+        self.inline_pattern_template = "(?is)^({0})(?: |$|_)(.*)"
         self.raw_pattern_template = "(?is){0}"
         self.incoming_commands = []
         self.inline_photo_commands = []
@@ -31,11 +31,11 @@ class CommandHandler():
 
         for value in self.incoming_commands:
             if value["simple_pattern"]:
-                pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.raw_text)
+                pattern_match = search(self.inline_pattern_template.format(value["pattern"] + value["pattern_extra"]), event.raw_text)
             elif value["raw_pattern"]:
-                pattern_match = search(self.raw_pattern_template.format(value["pattern"]), event.raw_text)
+                pattern_match = search(self.raw_pattern_template.format(value["pattern"] + value["pattern_extra"]), event.raw_text)
             else:
-                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"], self.username), event.raw_text)
+                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"] + value["pattern_extra"], self.username), event.raw_text)
 
             if pattern_match:
                 if self.is_blacklisted(event):
@@ -60,7 +60,8 @@ class CommandHandler():
 
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1].strip()
-                event.other_args = pattern_match.groups()[1:-1]
+                event.other_args = pattern_match.groups()[2:-1]
+                event.command = pattern_match.groups()[1]
                 event.extras = value["extras"]
 
                 try:
@@ -137,7 +138,8 @@ class CommandHandler():
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
-        event.other_args = pattern_match.groups()[:-1]
+        event.other_args = pattern_match.groups()[1:-1]
+        event.command = pattern_match.groups()[0]
 
         photo_list = await value["function"](event)
 
