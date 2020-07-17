@@ -6,7 +6,7 @@ gTTS
 hachoir
 howdoi
 pillow
-praw
+asyncpraw
 psutil
 speedtest-cli
 telethon
