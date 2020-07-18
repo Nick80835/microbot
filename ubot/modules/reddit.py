@@ -9,29 +9,25 @@ REDDIT = asyncpraw.Reddit(client_id='-fmzwojFG6JkGg',
                           client_secret=None,
                           user_agent='TG_Userbot')
 
-VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
+VALID_ENDS = (".mp4", ".jpg", ".jpeg", "jpe", ".png", ".gif")
 
 
-async def imagefetcherfallback(sub):
-    random_rising = await (await REDDIT.subreddit(sub)).random_rising(limit=10)
-
-    for post in random_rising.__iter__():
+async def imagefetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=10):
         if post.url and post.url.endswith(VALID_ENDS):
             return post
 
     return None
 
 
-async def titlefetcherfallback(sub):
-    random_rising = await (await REDDIT.subreddit(sub)).random_rising(limit=1)
-    return list(random_rising.__iter__())[0]
+async def titlefetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=1):
+        return post
 
 
-async def bodyfetcherfallback(sub):
-    random_rising = await (await REDDIT.subreddit(sub)).random_rising(limit=10)
-
-    for post in random_rising.__iter__():
-        if post.selftext and not post.permalink in post.url:
+async def bodyfetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=10):
+        if post.selftext and not post.permalink is post.url:
             return post
 
     return None
@@ -40,19 +36,22 @@ async def bodyfetcherfallback(sub):
 async def imagefetcher(event, sub):
     image_url = False
 
+    try:
+        subreddit = await REDDIT.subreddit(sub)
+    except redex.Forbidden:
+        await event.reply(f"**r/{sub}** is private!")
+        return
+    except (redex.NotFound, KeyError):
+        await event.reply(f"**r/{sub}** doesn't exist!")
+        return
+
     for _ in range(10):
         try:
-            post = await (await REDDIT.subreddit(sub)).random() or await imagefetcherfallback(sub)
+            post = await subreddit.random() or await imagefetcherfallback(subreddit)
             post.title
 
             if event.nsfw_disabled and post.over_18:
                 continue
-        except redex.Forbidden:
-            await event.reply(f"**r/{sub}** is private!")
-            return
-        except (redex.NotFound, KeyError):
-            await event.reply(f"**r/{sub}** doesn't exist!")
-            return
         except AttributeError:
             continue
 
@@ -73,8 +72,7 @@ async def imagefetcher(event, sub):
 
 async def titlefetcher(event, sub):
     try:
-        post = await (await REDDIT.subreddit(sub)).random() or await titlefetcherfallback(sub)
-        post.title
+        subreddit = await REDDIT.subreddit(sub)
     except redex.Forbidden:
         await event.reply(f"**r/{sub}** is private!")
         return
@@ -82,20 +80,25 @@ async def titlefetcher(event, sub):
         await event.reply(f"**r/{sub}** doesn't exist!")
         return
 
+    post = await subreddit.random() or await titlefetcherfallback(subreddit)
+
     await event.reply(post.title)
 
 
 async def bodyfetcher(event, sub):
+    try:
+        subreddit = await REDDIT.subreddit(sub)
+    except redex.Forbidden:
+        await event.reply(f"**r/{sub}** is private!")
+        return
+    except (redex.NotFound, KeyError):
+        await event.reply(f"**r/{sub}** doesn't exist!")
+        return
+
     for _ in range(10):
         try:
-            post = await (await REDDIT.subreddit(sub)).random() or await bodyfetcherfallback(sub)
+            post = await subreddit.random() or await bodyfetcherfallback(subreddit)
             post.title
-        except redex.Forbidden:
-            await event.reply(f"**r/{sub}** is private!")
-            return
-        except (redex.NotFound, KeyError):
-            await event.reply(f"**r/{sub}** doesn't exist!")
-            return
         except AttributeError:
             continue
 
