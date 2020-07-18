@@ -35,15 +35,7 @@ async def bodyfetcherfallback(subreddit):
 
 async def imagefetcher(event, sub):
     image_url = False
-
-    try:
-        subreddit = await REDDIT.subreddit(sub)
-    except redex.Forbidden:
-        await event.reply(f"**r/{sub}** is private!")
-        return
-    except (redex.NotFound, KeyError):
-        await event.reply(f"**r/{sub}** doesn't exist!")
-        return
+    subreddit = await REDDIT.subreddit(sub)
 
     for _ in range(10):
         try:
@@ -52,6 +44,12 @@ async def imagefetcher(event, sub):
 
             if event.nsfw_disabled and post.over_18:
                 continue
+        except redex.Forbidden:
+            await event.reply(f"**r/{sub}** is private!")
+            return
+        except (redex.NotFound, KeyError):
+            await event.reply(f"**r/{sub}** doesn't exist!")
+            return
         except AttributeError:
             continue
 
@@ -71,34 +69,33 @@ async def imagefetcher(event, sub):
 
 
 async def titlefetcher(event, sub):
+    subreddit = await REDDIT.subreddit(sub)
+
     try:
-        subreddit = await REDDIT.subreddit(sub)
+        post = await subreddit.random() or await titlefetcherfallback(subreddit)
     except redex.Forbidden:
         await event.reply(f"**r/{sub}** is private!")
         return
     except (redex.NotFound, KeyError):
         await event.reply(f"**r/{sub}** doesn't exist!")
         return
-
-    post = await subreddit.random() or await titlefetcherfallback(subreddit)
 
     await event.reply(post.title)
 
 
 async def bodyfetcher(event, sub):
-    try:
-        subreddit = await REDDIT.subreddit(sub)
-    except redex.Forbidden:
-        await event.reply(f"**r/{sub}** is private!")
-        return
-    except (redex.NotFound, KeyError):
-        await event.reply(f"**r/{sub}** doesn't exist!")
-        return
+    subreddit = await REDDIT.subreddit(sub)
 
     for _ in range(10):
         try:
             post = await subreddit.random() or await bodyfetcherfallback(subreddit)
             post.title
+        except redex.Forbidden:
+            await event.reply(f"**r/{sub}** is private!")
+            return
+        except (redex.NotFound, KeyError):
+            await event.reply(f"**r/{sub}** doesn't exist!")
+            return
         except AttributeError:
             continue
 
