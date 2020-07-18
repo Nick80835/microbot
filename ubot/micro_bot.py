@@ -11,7 +11,7 @@ from telethon.network.connection.tcpabridged import \
 from .loader import Loader
 from .settings import Settings
 
-if sys.version_info[0] < 3 or sys.version_info[1] < 6:
+if sys.version_info.major < 3 or sys.version_info.minor < 6:
     print("This program requires at least Python 3.6.0 to work correctly, exiting.")
     sys.exit(1)
 
