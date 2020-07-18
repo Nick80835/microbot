@@ -12,17 +12,19 @@ from .command_handler import CommandHandler
 
 
 class Loader():
+    aioclient = ClientSession()
+    thread_pool = ThreadPoolExecutor()
+
+    help_dict = {}
+    help_hidden_dict = {}
+    loaded_modules = []
+    all_modules = []
+
     def __init__(self, client, logger, settings):
-        self.loaded_modules = []
-        self.all_modules = []
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, logger, settings, self)
-        self.help_dict = {}
-        self.help_hidden_dict = {}
-        self.aioclient = ClientSession()
-        self.thread_pool = ThreadPoolExecutor()
+        self.command_handler = CommandHandler(client, settings, self)
 
     def load_all_modules(self):
         self._find_all_modules()

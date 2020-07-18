@@ -10,16 +10,17 @@ from .fixes import inline_photos
 
 
 class CommandHandler():
-    def __init__(self, client, logger, settings, loader):
+    pattern_template = "(?is)^{0}({1})(?: |$|_|@{2}(?: |$|_))(.*)"
+    inline_pattern_template = "(?is)^({0})(?: |$|_)(.*)"
+    raw_pattern_template = "(?is){0}"
+
+    incoming_commands = []
+    inline_photo_commands = []
+    inline_article_commands = []
+    callback_queries = []
+
+    def __init__(self, client, settings, loader):
         self.username = client.loop.run_until_complete(client.get_me()).username
-        self.pattern_template = "(?is)^{0}({1})(?: |$|_|@{2}(?: |$|_))(.*)"
-        self.inline_pattern_template = "(?is)^({0})(?: |$|_)(.*)"
-        self.raw_pattern_template = "(?is){0}"
-        self.incoming_commands = []
-        self.inline_photo_commands = []
-        self.inline_article_commands = []
-        self.callback_queries = []
-        self.logger = logger
         self.settings = settings
         self.loader = loader
         client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
@@ -42,20 +43,10 @@ class CommandHandler():
                     print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
                     return
 
-                if value["owner"] and not self.is_owner(event):
-                    print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
-                    continue
-                elif value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
-                    print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
-                    continue
-                elif value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
-                    print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
-                    continue
+                if not await self.check_privs(event, value):
+                    return
 
-                if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
-                    print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
-                    continue
-                elif value["pass_nsfw"]:
+                if value["pass_nsfw"]:
                     event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
 
                 event.pattern_match = pattern_match
@@ -64,50 +55,7 @@ class CommandHandler():
                 event.command = pattern_match.groups()[1]
                 event.extras = value["extras"]
 
-                try:
-                    if value["locking"]:
-                        if value["lockreason"]:
-                            await event.reply(f"That command is currently locked: {value['lockreason']}")
-                            continue
-                        else:
-                            if value["chance"]:
-                                if randint(0, 100) <= value["chance"]:
-                                    value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
-                                    await value["function"](event)
-                                    value["lockreason"] = None
-                            else:
-                                value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
-                                await value["function"](event)
-                                value["lockreason"] = None
-                    elif value["userlocking"]:
-                        if event.from_id in value["lockedusers"]:
-                            await event.reply(f"Please don't spam that command.")
-                            continue
-                        else:
-                            if value["chance"]:
-                                if randint(0, 100) <= value["chance"]:
-                                    value["lockedusers"].append(event.from_id)
-                                    await value["function"](event)
-                                    value["lockedusers"].remove(event.from_id)
-                            else:
-                                value["lockedusers"].append(event.from_id)
-                                await value["function"](event)
-                                value["lockedusers"].remove(event.from_id)
-                    else:
-                        if value["chance"]:
-                            if randint(0, 100) <= value["chance"]:
-                                await value["function"](event)
-                        else:
-                            await value["function"](event)
-                except Exception as exception:
-                    value["lockreason"] = None
-
-                    if event.from_id in value["lockedusers"]:
-                        value["lockedusers"].remove(event.from_id)
-
-                    self.logger.warn(f"{value['function'].__name__} - {exception}")
-                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
-                    raise exception
+                await self.execute_command(event, value)
 
     async def handle_inline(self, event):
         for value in self.inline_photo_commands:
@@ -204,7 +152,6 @@ class CommandHandler():
                 try:
                     await value["function"](event)
                 except Exception as exception:
-                    self.logger.warn(f"{value['function'].__name__} - {exception}")
                     await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
                     raise exception
 
@@ -222,25 +169,66 @@ class CommandHandler():
         except:
             return
 
-    def is_owner(self, event):
-        if str(event.from_id) in self.settings.get_list("owner_id"):
-            return True
-        else:
+    async def execute_command(self, event, value):
+        try:
+            if value["locking"]:
+                if value["lockreason"]:
+                    await event.reply(f"That command is currently locked: {value['lockreason']}")
+                    return
+
+                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
+                    value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
+                    await value["function"](event)
+                    value["lockreason"] = None
+            elif value["userlocking"]:
+                if event.from_id in value["lockedusers"]:
+                    await event.reply(f"Please don't spam that command.")
+                    return
+
+                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
+                    value["lockedusers"].append(event.from_id)
+                    await value["function"](event)
+                    value["lockedusers"].remove(event.from_id)
+            else:
+                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
+                    await value["function"](event)
+        except Exception as exception:
+            value["lockreason"] = None
+
+            if event.from_id in value["lockedusers"]:
+                value["lockedusers"].remove(event.from_id)
+
+            await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
+            raise exception
+
+    async def check_privs(self, event, value):
+        if value["owner"] and not self.is_owner(event):
+            print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
             return False
 
-    def is_sudo(self, event):
-        if str(event.from_id) in self.settings.get_list("sudo_users"):
-            return True
-        else:
+        if value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
+            print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
             return False
+
+        if value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
+            print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
+            return False
+
+        if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
+            print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
+            return False
+
+        return True
+
+    def is_owner(self, event):
+        return bool(str(event.from_id) in self.settings.get_list("owner_id"))
+
+    def is_sudo(self, event):
+        return bool(str(event.from_id) in self.settings.get_list("sudo_users"))
 
     async def is_admin(self, event):
         channel_participant = await event.client(functions.channels.GetParticipantRequest(event.chat, event.from_id))
-
-        if isinstance(channel_participant.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)):
-            return True
-        else:
-            return False
+        return bool(isinstance(channel_participant.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)))
 
     def is_blacklisted(self, event, inline=False):
         if inline:
@@ -248,7 +236,4 @@ class CommandHandler():
         else:
             user_id = event.from_id
 
-        if str(user_id) in self.settings.get_list("blacklisted_users"):
-            return True
-        else:
-            return False
+        return bool(str(user_id) in self.settings.get_list("blacklisted_users"))

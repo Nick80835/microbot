@@ -4,9 +4,8 @@ from configparser import SafeConfigParser
 
 
 class Settings():
-    def __init__(self):
-        self.config = SafeConfigParser()
-        self.config.read("settings.ini")
+    config = SafeConfigParser()
+    config.read("settings.ini")
 
     def write_changes(self):
         with open('settings.ini', 'w') as config_file:
