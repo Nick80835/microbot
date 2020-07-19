@@ -1,6 +1,8 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import asyncio
+import inspect
+import io
 import os
 from platform import python_version
 
@@ -8,6 +10,36 @@ import psutil
 from telethon import version
 
 from ubot.micro_bot import ldr, micro_bot
+
+
+@ldr.add("eval", owner=True, hide_help=True)
+async def evaluate(event):
+    if not event.args:
+        await event.reply("Give me code to run!")
+        return
+
+    eval_msg = await event.reply("Processing…")
+    reply = await event.get_reply_message()
+
+    try:
+        eval_ret = eval(event.args)
+    except Exception as exception:
+        eval_ret = exception
+
+    if inspect.isawaitable(eval_ret):
+        isawait = " (awaited)"
+        eval_ret = await eval_ret
+    else:
+        isawait = ""
+
+    if len(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}") > 4096:
+        text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
+        text_io.name = "return.txt"
+        await eval_msg.edit("Output too large for a message, sending as a file…")
+        await eval_msg.reply(file=text_io)
+        return
+
+    await eval_msg.edit(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}")
 
 
 @ldr.add("reload", sudo=True, hide_help=True)
