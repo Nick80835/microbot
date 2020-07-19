@@ -38,6 +38,21 @@ async def randomfact(event):
     await event.reply(random_fact)
 
 
+@ldr.add("fakeword")
+async def fakeword(event):
+    async with ldr.aioclient.get("https://www.thisworddoesnotexist.com/api/random_word.json") as response:
+        if response.status == 200:
+            random_word_json = (await response.json())["word"]
+            word = random_word_json["word"]
+            definition = random_word_json["definition"]
+            example = random_word_json["example"]
+        else:
+            await event.reply(f"An error occurred: **{response.status}**")
+            return
+
+    await event.reply(f"**{word}:** __{definition}__\n\n**Example:** __{example}__")
+
+
 @ldr.add("pokemon", pattern_extra="(s|)")
 async def pokemon_image(event):
     if not event.args:
