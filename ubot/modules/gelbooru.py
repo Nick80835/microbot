@@ -9,10 +9,11 @@ from ubot.micro_bot import ldr
 GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
 gel_button_dict = {}
+help_string = "Fetches images from Gelbooru, takes tags as arguments."
 
 
 @ldr.add("gelping", sudo=True, hide_help=True)
-async def danbooru_ping(event):
+async def gelbooru_ping(event):
     params = {"page": "dapi",
               "s": "post",
               "q": "index",
@@ -27,8 +28,8 @@ async def danbooru_ping(event):
         await event.reply(f"Gelbooru response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add_list(["gel", "gelx", "gelq"], pattern_extra="(f|)", nsfw=True, userlocking=True)
-@ldr.add("gels", pattern_extra="(f|)", userlocking=True)
+@ldr.add_list(["gel", "gelx", "gelq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
+@ldr.add("gels", pattern_extra="(f|)", userlocking=True, help=help_string)
 async def gelbooru(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])

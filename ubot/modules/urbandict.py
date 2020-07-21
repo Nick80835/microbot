@@ -8,7 +8,7 @@ UD_QUERY_URL = 'http://api.urbandictionary.com/v0/define'
 UD_RANDOM_URL = 'http://api.urbandictionary.com/v0/random'
 
 
-@ldr.add("ud")
+@ldr.add("ud", help="Fetches words from Urban Dictionary, takes an optional word as an argument.")
 async def urban_dict(event):
     udquery = event.args
 

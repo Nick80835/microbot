@@ -114,7 +114,9 @@ async def bodyfetcher(event, sub):
     await event.reply(f"Failed to find any valid content on **r/{sub}**!")
 
 
-@ldr.add_list(["redi", "redb", "redt"], userlocking=True, pass_nsfw=True)
+@ldr.add("redi", userlocking=True, pass_nsfw=True, help="Fetches images from Reddit, requires a subreddit name as an argument.")
+@ldr.add("redb", userlocking=True, pass_nsfw=True, help="Fetches text from Reddit, requires a subreddit name as an argument.")
+@ldr.add("redt", userlocking=True, pass_nsfw=True, help="Fetches titles from Reddit, requires a subreddit name as an argument.")
 async def redimg(event):
     sub = event.args.replace(" ", "_")
     fetch_type = event.command[-1]

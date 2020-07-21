@@ -55,7 +55,7 @@ async def tori_atsume():
     return tori
 
 
-@ldr.add("shibe")
+@ldr.add("shibe", help="Fetches an image of a shibe.")
 async def shibe(event):
     shibe_inu = await shibe_inu_atsume()
 
@@ -66,7 +66,7 @@ async def shibe(event):
     await event.reply(file=shibe_inu[0])
 
 
-@ldr.add("bird")
+@ldr.add("bird", help="Fetches an image of a bird.")
 async def bird(event):
     tori = await tori_atsume()
 
@@ -77,7 +77,7 @@ async def bird(event):
     await event.reply(file=tori[0])
 
 
-@ldr.add_list(["cat", "pussy"], pattern_extra="(gif|)(f|)")
+@ldr.add_list(["cat", "pussy"], pattern_extra="(gif|)(f|)", help="Fetches an image of a cat.")
 async def cat(event):
     neko = await neko_atsume(GIFPARAM if event.other_args[0] else IMGPARAM)
 
@@ -88,7 +88,7 @@ async def cat(event):
     await event.reply(file=neko[0]["url"], force_document=bool(event.other_args[1]))
 
 
-@ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)")
+@ldr.add_list(["dog", "bitch"], pattern_extra="(gif|)(f|)", help="Fetches an image of a dog.")
 async def dog(event):
     inu = await inu_atsume(GIFPARAM if event.other_args[0] else IMGPARAM)
 

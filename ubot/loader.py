@@ -63,14 +63,14 @@ class Loader():
         def decorator(func):
             if args.get("hide_help", False):
                 if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] += [pattern]
+                    self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
                 else:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] = [pattern]
+                    self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
             else:
                 if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
                 else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
             self.command_handler.incoming_commands.append({
                 "pattern": pattern,
@@ -103,14 +103,14 @@ class Loader():
             for pattern in pattern_list:
                 if args.get("hide_help", False):
                     if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [pattern]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
                     else:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [pattern]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
                 else:
                     if func.__module__.split(".")[-1] in self.help_dict:
-                        self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
                     else:
-                        self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
                 self.command_handler.incoming_commands.append({
                     "pattern": pattern,

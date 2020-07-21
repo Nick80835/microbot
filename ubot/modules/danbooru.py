@@ -9,6 +9,7 @@ from ubot.micro_bot import ldr
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
 dan_button_dict = {}
+help_string = "Fetches images from Danbooru, takes tags as arguments."
 
 
 @ldr.add("danping", sudo=True, hide_help=True)
@@ -23,8 +24,8 @@ async def danbooru_ping(event):
         await event.reply(f"Danbooru response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add_list(["dan", "danx", "danq"], pattern_extra="(f|)", nsfw=True, userlocking=True)
-@ldr.add("dans", pattern_extra="(f|)", userlocking=True)
+@ldr.add_list(["dan", "danx", "danq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
+@ldr.add("dans", pattern_extra="(f|)", userlocking=True, help=help_string)
 async def danbooru(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])

@@ -9,6 +9,7 @@ from ubot.micro_bot import ldr
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
 san_button_dict = {}
+help_string = "Fetches images from Sankaku Complex, takes tags as arguments."
 
 
 @ldr.add("sanping", sudo=True, hide_help=True)
@@ -24,8 +25,8 @@ async def sankaku_ping(event):
         await event.reply(f"Sankaku response time -> **{time_taken_ms}**ms")
 
 
-@ldr.add_list(["san", "sanx", "sanq"], pattern_extra="(f|)", nsfw=True, userlocking=True)
-@ldr.add("sans", pattern_extra="(f|)", userlocking=True)
+@ldr.add_list(["san", "sanx", "sanq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
+@ldr.add("sans", pattern_extra="(f|)", userlocking=True, help=help_string)
 async def sankaku(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
