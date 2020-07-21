@@ -5,7 +5,7 @@ from time import time_ns
 from ubot.micro_bot import ldr
 
 
-@ldr.add("del")
+@ldr.add("del", help="Deletes messages from this bot, it's a safety feature.")
 async def delete_message(event):
     message_to_delete = await event.get_reply_message()
 
@@ -15,13 +15,24 @@ async def delete_message(event):
 
 @ldr.add("help")
 async def help_cmd(event):
+    if event.args:
+        for key, value in ldr.help_dict.items():
+            for info in value:
+                if event.args == info[0]:
+                    if info[1]:
+                        await event.reply(f"Help for **{info[0]}**: __{info[1]}__")
+                        return
+
+                    await event.reply(f"**{info[0]}** doesn't have a help string.")
+                    return
+
     prefix = ldr.prefix()
     help_string = ""
 
     for key, value in ldr.help_dict.items():
         help_string += f"\n**{key}**: "
         for info in value:
-            help_string += f"{prefix}{info}, "
+            help_string += f"{prefix}{info[0]}, "
         help_string = help_string.rstrip(", ")
 
     await event.reply(f"**Available commands:**\n{help_string}")
@@ -29,12 +40,23 @@ async def help_cmd(event):
 
 @ldr.add("sudohelp", sudo=True)
 async def sudohelp(event):
+    if event.args:
+        for key, value in ldr.help_hidden_dict.items():
+            for info in value:
+                if event.args == info[0]:
+                    if info[1]:
+                        await event.reply(f"Help for **{info[0]}**: __{info[1]}__")
+                        return
+
+                    await event.reply(f"**{info[0]}** doesn't have a help string.")
+                    return
+
     help_string = ""
 
     for key, value in ldr.help_hidden_dict.items():
         help_string += f"\n**{key}**: "
         for info in value:
-            help_string += f"`{info}`, "
+            help_string += f"`{info[0]}`, "
         help_string = help_string.rstrip(", ")
 
     await event.reply(f"**Available (hidden) commands:**\n{help_string}")
@@ -53,7 +75,7 @@ async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot")
 
 
-@ldr.add("nsfw", admin=True)
+@ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
     if not event.args or event.args not in ("on", "off"):
         if str(event.chat.id) not in ldr.settings.get_list("nsfw_blacklist"):

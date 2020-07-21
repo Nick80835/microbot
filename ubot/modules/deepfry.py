@@ -33,7 +33,7 @@ from PIL import Image, ImageEnhance
 from ubot.micro_bot import ldr
 
 
-@ldr.add("deepfry", pattern_extra="(f|)", userlocking=True)
+@ldr.add("deepfry", pattern_extra="(f|)", userlocking=True, help="Deepfries images, takes a number of passes as an argument.")
 async def deepfryer(event):
     as_file = bool(event.other_args[0])
 

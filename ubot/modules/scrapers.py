@@ -14,7 +14,7 @@ from ubot.micro_bot import ldr
 os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 
 
-@ldr.add("dadjoke")
+@ldr.add("dadjoke", help="Fetches the most funny shit you've ever read.")
 async def dadjoke(event):
     async with ldr.aioclient.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
         if response.status == 200:
@@ -26,7 +26,7 @@ async def dadjoke(event):
     await event.reply(dad_joke)
 
 
-@ldr.add("fact")
+@ldr.add("fact", help="Fetches random facts.")
 async def randomfact(event):
     async with ldr.aioclient.get("https://uselessfacts.jsph.pl/random.json", params={"language": "en"}) as response:
         if response.status == 200:
@@ -38,7 +38,7 @@ async def randomfact(event):
     await event.reply(random_fact)
 
 
-@ldr.add("fakeword")
+@ldr.add("fakeword", help="Fetches random fake words.")
 async def fakeword(event):
     async with ldr.aioclient.get("https://www.thisworddoesnotexist.com/api/random_word.json") as response:
         if response.status == 200:
@@ -53,7 +53,7 @@ async def fakeword(event):
     await event.reply(f"**{word}:** __{definition}__\n\n**Example:** __{example}__")
 
 
-@ldr.add("pokemon", pattern_extra="(s|)")
+@ldr.add("pokemon", pattern_extra="(s|)", help="Fetches Pokemon sprites, requires a name or ID as an argument.")
 async def pokemon_image(event):
     if not event.args:
         await event.reply("Specify a Pokémon name!")
@@ -100,7 +100,7 @@ async def howdoi_cmd(event):
     await event.reply(f"**Query:**\n{event.args}\n**Answer:**\n{response}")
 
 
-@ldr.add("tts")
+@ldr.add("tts", help="Text to speech.")
 async def text_to_speech(event):
     text, reply = await ldr.get_text(event, return_msg=True)
 
@@ -125,7 +125,7 @@ async def text_to_speech(event):
     await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
 
 
-@ldr.add("ip")
+@ldr.add("ip", help="IP lookup.")
 async def ip_lookup(event):
     ip = await ldr.get_text(event)
 
@@ -164,7 +164,7 @@ async def ip_lookup(event):
     await event.reply(text)
 
 
-@ldr.add("corona")
+@ldr.add("corona", help="Fetches Coronavirus stats, takes an optional country name as an argument.")
 async def corona(event):
     if event.args:
         async with ldr.aioclient.get(f"https://corona.lmao.ninja/v2/countries/{event.args}") as response:
