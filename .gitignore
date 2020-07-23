@@ -4,3 +4,4 @@ settings.ini
 *.session-journal
 *.db
 testing.py
+cache

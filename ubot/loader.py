@@ -8,12 +8,14 @@ from os.path import basename, dirname, isfile
 from aiohttp import ClientSession
 from telethon.tl.types import DocumentAttributeFilename
 
+from .cache import Cache
 from .command_handler import CommandHandler
 
 
 class Loader():
     aioclient = ClientSession()
     thread_pool = ThreadPoolExecutor()
+    cache = Cache(aioclient)
 
     help_dict = {}
     help_hidden_dict = {}
