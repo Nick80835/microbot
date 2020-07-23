@@ -1,12 +1,13 @@
 aiodns
+aiofiles
 aiohttp
+asyncpraw
 cchardet
 cryptg
 gTTS
 hachoir
 howdoi
 pillow
-asyncpraw
 psutil
 speedtest-cli
 telethon

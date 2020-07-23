@@ -192,8 +192,14 @@ async def corona(event):
 async def youtube_cmd(event):
     video = pafy.new(event.args)
     video_stream = video.getbest()
+
     try:
-        await event.reply(file=video_stream.url)
+        if await ldr.cache.is_cache_required(video_stream.url):
+            file_path = await ldr.cache.cache_file(video_stream.url, f"{event.chat_id}_{event.id}")
+            await event.reply(file=file_path)
+            ldr.cache.remove_cache(file_path)
+        else:
+            await event.reply(file=video_stream.url)
     except:
         await event.reply(f"Download failed: [URL]({video_stream.url})")
 
