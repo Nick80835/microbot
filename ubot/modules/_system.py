@@ -26,12 +26,23 @@ async def reload_modules(event):
 
 @ldr.add("help")
 async def help_cmd(event):
+    if event.args:
+        for key, value in ldr.help_dict.items():
+            for info in value:
+                if event.args == info[0]:
+                    if info[1]:
+                        await event.edit(f"Help for **{info[0]}**: __{info[1]}__")
+                        return
+
+                    await event.edit(f"**{info[0]}** doesn't have a help string.")
+                    return
+
     help_string = ""
 
     for key, value in ldr.help_dict.items():
         help_string += f"\n**{key}**: "
         for info in value:
-            help_string += f"`{info}`, "
+            help_string += f"{info[0]}, "
         help_string = help_string.rstrip(", ")
 
     await event.edit(f"**Available commands:**\n{help_string}")

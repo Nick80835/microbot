@@ -6,11 +6,11 @@ SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
 
 
-@ldr.add("san(s|x|q|)(f|)")
+@ldr.add_list(["san", "sanx", "sanq", "sans"], pattern_extra="(f|)", help="Fetches images from Sankaku Complex, takes tags as arguments.")
 async def sankaku(event):
     await event.edit(f"`Processing…`")
-    safety_arg = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    safety_arg = event.command[-1]
+    as_file = bool(event.other_args[0])
     rating = ""
 
     if safety_arg == "x":

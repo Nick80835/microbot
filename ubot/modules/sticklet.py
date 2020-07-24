@@ -3,7 +3,7 @@
 import io
 import textwrap
 
-from PIL import Image, ImageColor, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont
 
 from ubot.micro_bot import ldr
 

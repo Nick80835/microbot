@@ -1,6 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-import io
 from random import choice, shuffle
 
 import praw
@@ -120,14 +119,16 @@ async def bodyfetcher(event, sub):
 
         await event.edit(f"**{title}**\n\n{body}")
         return
-    
+
     await event.edit(f"`Failed to find any valid content on `**r/{sub}**`!`")
 
 
-@ldr.add("red(i|t|b)")
-async def redimg(event):
+@ldr.add("redi", help="Fetches images from Reddit, requires a subreddit name as an argument.")
+@ldr.add("redb", help="Fetches text from Reddit, requires a subreddit name as an argument.")
+@ldr.add("redt", help="Fetches titles from Reddit, requires a subreddit name as an argument.")
+async def reddit_fetcher(event):
     sub = event.args.replace(" ", "_")
-    fetch_type = event.pattern_match.group(1)
+    fetch_type = event.command[-1]
 
     if not sub:
         await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}red(i|t|b) <subreddit name>`")
@@ -161,14 +162,12 @@ async def todayifuckedup(event):
     await bodyfetcher(event, "TIFU")
 
 
-@ldr.add("jon(x|)")
+@ldr.add_list(["jon", "jonx"])
 async def imsorryjon(event):
-    if "x" in event.pattern_match.group(0):
-        sub = "ImReallySorryJon"
+    if event.command[-1] == "x":
+        await imagefetcher(event, "ImReallySorryJon")
     else:
-        sub = "ImSorryJon"
-
-    await imagefetcher(event, sub)
+        await imagefetcher(event, "ImSorryJon")
 
 
 @ldr.add("tihi")

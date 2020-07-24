@@ -4,8 +4,7 @@ import io
 import urllib
 
 from PIL import Image, ImageOps
-from telethon.tl.types import (DocumentAttributeFilename,
-                               DocumentAttributeSticker)
+from telethon.tl.types import DocumentAttributeFilename
 
 from ubot.micro_bot import ldr
 
@@ -13,7 +12,7 @@ pack_full = "Whoa! That's probably enough stickers for one pack, give it a break
 A pack can't have more than 120 stickers at the moment."
 
 
-@ldr.add("kang")
+@ldr.add("kang", help="Kangs stickers and images.")
 async def kang(event):
     await event.edit("`Kanging…`")
     reply = await event.get_reply_message()

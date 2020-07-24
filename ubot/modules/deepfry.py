@@ -28,14 +28,14 @@ import io
 from functools import partial
 from random import randint, uniform
 
-from PIL import Image, ImageEnhance, ImageOps
+from PIL import Image, ImageEnhance
 
 from ubot.micro_bot import ldr
 
 
-@ldr.add("deepfry(f|)")
+@ldr.add("deepfry", pattern_extra="(f|)", help="Deepfries images, takes a number of passes as an argument.")
 async def deepfryer(event):
-    as_file = bool(event.pattern_match.group(1))
+    as_file = bool(event.other_args[0])
 
     try:
         frycount = int(event.args)

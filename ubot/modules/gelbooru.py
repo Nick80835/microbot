@@ -8,11 +8,11 @@ GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
 
 
-@ldr.add("gel(s|x|q|)(f|)")
+@ldr.add_list(["gel", "gelx", "gelq", "gels"], pattern_extra="(f|)", help="Fetches images from Gelbooru, takes tags as arguments.")
 async def gelbooru(event):
     await event.edit(f"`Processing…`")
-    safety_arg = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    safety_arg = event.command[-1]
+    as_file = bool(event.other_args[0])
     rating = ""
 
     if safety_arg == "x":

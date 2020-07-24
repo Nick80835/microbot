@@ -158,7 +158,7 @@ async def userprofilegetter(event):
     await event.edit(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
 
 
-@ldr.add("stickpng")
+@ldr.add("stickpng", help="Converts stickers to PNG files.")
 async def stickertopng(event):
     await event.edit("`Getting sticker as PNG…`")
     reply = await event.get_reply_message()
@@ -180,7 +180,7 @@ async def stickertopng(event):
     await event.reply(file=sticker_png_io, force_document=True)
 
 
-@ldr.add("stickflip")
+@ldr.add("stickflip", help="Flips stickers horizontally.")
 async def flipsticker(event):
     await event.edit("`Flipping this bitch…`")
     reply = await event.get_reply_message()
@@ -203,7 +203,7 @@ async def flipsticker(event):
     await event.reply(file=sticker_flipped_io)
 
 
-@ldr.add("stickimg")
+@ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
 async def createsticker(event):
     await event.edit("`Creating sticker PNG…`")
 

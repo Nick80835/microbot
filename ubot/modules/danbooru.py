@@ -6,11 +6,11 @@ DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
 
 
-@ldr.add("dan(s|x|q|)(f|)")
+@ldr.add_list(["dan", "danx", "danq", "dans"], pattern_extra="(f|)", help="Fetches images from Danbooru, takes tags as arguments.")
 async def danbooru(event):
     await event.edit(f"`Processing…`")
-    safety_arg = event.pattern_match.group(1)
-    as_file = bool(event.pattern_match.group(2))
+    safety_arg = event.command[-1]
+    as_file = bool(event.other_args[0])
     rating = ""
 
     if safety_arg == "x":

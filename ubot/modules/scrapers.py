@@ -16,7 +16,7 @@ os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 tts_lang = "EN"
 
 
-@ldr.add("dadjoke")
+@ldr.add("dadjoke", help="Fetches the most funny shit you've ever read.")
 async def dadjoke(event):
     async with ldr.aioclient.get("https://icanhazdadjoke.com/", headers={"Accept": "application/json"}) as response:
         if response.status == 200:
@@ -28,7 +28,7 @@ async def dadjoke(event):
     await event.edit(dad_joke)
 
 
-@ldr.add("fact")
+@ldr.add("fact", help="Fetches random facts.")
 async def randomfact(event):
     async with ldr.aioclient.get("https://uselessfacts.jsph.pl/random.json", params={"language": "en"}) as response:
         if response.status == 200:
@@ -40,7 +40,22 @@ async def randomfact(event):
     await event.edit(random_fact)
 
 
-@ldr.add("pokemon(s|)")
+@ldr.add("fakeword", help="Fetches random fake words.")
+async def fakeword(event):
+    async with ldr.aioclient.get("https://www.thisworddoesnotexist.com/api/random_word.json") as response:
+        if response.status == 200:
+            random_word_json = (await response.json())["word"]
+            word = random_word_json["word"]
+            definition = random_word_json["definition"]
+            example = random_word_json["example"]
+        else:
+            await event.edit(f"An error occurred: **{response.status}**")
+            return
+
+    await event.edit(f"**{word}:** __{definition}__\n\n**Example:** __{example}__")
+
+
+@ldr.add("pokemon", pattern_extra="(s|)", help="Fetches Pokemon sprites, requires a name or ID as an argument.")
 async def pokemon_image(event):
     if not event.args:
         await event.edit("Specify a Pokémon name!")
@@ -48,7 +63,7 @@ async def pokemon_image(event):
 
     async with ldr.aioclient.get("https://pokeapi.co/api/v2/pokemon/" + event.args) as response:
         if response.status == 200:
-            sprite_url = (await response.json())["sprites"]["front_shiny" if event.pattern_match.group(1) else "front_default"]
+            sprite_url = (await response.json())["sprites"]["front_shiny" if event.other_args[0] else "front_default"]
         else:
             await event.edit(f"An error occurred: **{response.status}**")
             return
@@ -95,7 +110,7 @@ async def set_lang(event):
     await event.edit(f"`Default language changed to `**{event.args}**")
 
 
-@ldr.add("tts")
+@ldr.add("tts", help="Text to speech.")
 async def text_to_speech(event):
     await event.edit("`Processing…`")
     text, reply = await ldr.get_text(event, return_msg=True)
@@ -127,7 +142,7 @@ async def text_to_speech(event):
     await event.delete()
 
 
-@ldr.add("ip")
+@ldr.add("ip", help="IP lookup.")
 async def ip_lookup(event):
     ip = await ldr.get_text(event)
 
@@ -173,7 +188,7 @@ async def wiki_cmd(event):
     if not query:
         await event.edit("`You didn't specify what to search for!`")
         return
-    
+
     await event.edit("`Processing…`")
 
     wiki_results = wikipedia.search(query)
@@ -189,7 +204,7 @@ async def wiki_cmd(event):
     await event.edit(text)
 
 
-@ldr.add("corona")
+@ldr.add("corona", help="Fetches Coronavirus stats, takes an optional country name as an argument.")
 async def corona(event):
     if event.args:
         async with ldr.aioclient.get(f"https://corona.lmao.ninja/v2/countries/{event.args}") as response:

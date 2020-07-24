@@ -4,32 +4,35 @@ import glob
 from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
-from re import escape
 
 from aiohttp import ClientSession
-from telethon import events
 from telethon.tl.types import DocumentAttributeFilename
 
 from .command_handler import CommandHandler
 
 
 class Loader():
+    aioclient = ClientSession()
+    thread_pool = ThreadPoolExecutor()
+
+    help_dict = {}
+    loaded_modules = []
+    all_modules = []
+
     def __init__(self, client, logger, settings):
-        self.loaded_modules = []
-        self.all_modules = []
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, logger, settings)
-        self.help_dict = {}
-        self.aioclient = ClientSession()
-        self.thread_pool = ThreadPoolExecutor()
+        self.command_handler = CommandHandler(client, settings)
 
     def load_all_modules(self):
         self._find_all_modules()
 
         for module_name in self.all_modules:
-            self.loaded_modules.append(import_module("ubot.modules." + module_name))
+            try:
+                self.loaded_modules.append(import_module("ubot.modules." + module_name))
+            except Exception as exception:
+                self.logger.error(f"Error while loading {module_name}: {exception}")
 
     def reload_all_modules(self):
         self.command_handler.outgoing_commands = []
@@ -50,18 +53,21 @@ class Loader():
 
     def add(self, pattern=None, **args):
         pattern = args.get("pattern", pattern)
+        pattern_extra = args.get("pattern_extra", "")
 
         def decorator(func):
             if func.__module__.split(".")[-1] in self.help_dict:
-                self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
             else:
-                self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+                self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
             self.command_handler.outgoing_commands.append({
                 "pattern": pattern,
+                "pattern_extra": pattern_extra,
                 "function": func,
-                "noprefix": args.get('noprefix', False),
-                "extras": args.get('extras', None)
+                "simple_pattern": args.get('simple_pattern', False),
+                "raw_pattern": args.get('raw_pattern', False),
+                "extras": args.get('extras', pattern)
             })
 
             return func
@@ -75,14 +81,16 @@ class Loader():
         def decorator(func):
             for pattern in pattern_list:
                 if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [pattern]
+                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
                 else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [pattern]
+                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
                 self.command_handler.outgoing_commands.append({
-                    "pattern": pattern + pattern_extra,
+                    "pattern": pattern,
+                    "pattern_extra": pattern_extra,
                     "function": func,
-                    "noprefix": args.get('noprefix', False),
+                    "simple_pattern": args.get('simple_pattern', False),
+                    "raw_pattern": args.get('raw_pattern', False),
                     "extras": args.get('extras', pattern)
                 })
 
@@ -128,13 +136,13 @@ class Loader():
         else:
             return None
 
+    def prefix(self):
+        return (self.settings.get_list('cmd_prefix') or ['.'])[0]
+
     def _find_all_modules(self):
-        mod_paths = glob.glob(dirname(__file__) + "/modules/*.py")
+        module_paths = glob.glob(dirname(__file__) + "/modules/*.py")
 
-        self.all_modules = [
-            basename(f)[:-3] for f in mod_paths
+        self.all_modules = sorted([
+            basename(f)[:-3] for f in module_paths
             if isfile(f) and f.endswith(".py")
-        ]
-
-        system_index = self.all_modules.index("system")
-        self.all_modules.insert(0, self.all_modules.pop(system_index))
+        ])

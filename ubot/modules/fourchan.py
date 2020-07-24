@@ -10,14 +10,14 @@ CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
 VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
 
 
-@ldr.add("4c(f|)")
+@ldr.add("4c", pattern_extra="(f|)", help="Fetches images from 4chan, requires a board name as an argument.")
 async def fourchan(event):
     if not event.args:
         await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>`")
         return
 
     await event.edit(f"`Processing…`")
-    as_file = bool(event.pattern_match.group(1))
+    as_file = bool(event.other_args[0])
 
     async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
         if response.status == 200:

@@ -17,13 +17,12 @@ if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_in
 
 
 class MicroBot():
-    def __init__(self):
-        self.client = None
-        self.settings = Settings()
-        self.logger = None
-        self.loader = None
+    client = None
+    settings = Settings()
+    logger = None
+    loader = None
 
-    def start_microbot(self):
+    def __init__(self):
         self.start_logger()
         self.start_client()
         self.start_loader()
@@ -84,7 +83,6 @@ class MicroBot():
 
 
 micro_bot = MicroBot()
-micro_bot.start_microbot()
 ldr = micro_bot.loader
 
 try:
