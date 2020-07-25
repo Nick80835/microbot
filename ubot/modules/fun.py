@@ -31,6 +31,12 @@ async def ask_bot(event):
         await event.reply(choice(yesno_answers))
 
 
+@ldr.add(f"i('|)m", simple_pattern=True, hide_help=True, chance=15)
+async def im_botname(event):
+    if event.args:
+        await event.reply(f"Hi {event.args}, I'm {bot_name}!")
+
+
 @ldr.add(f"{bot_name}(,|) say", simple_pattern=True, hide_help=True)
 async def say_something(event):
     if event.args:
