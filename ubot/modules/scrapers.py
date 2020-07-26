@@ -3,6 +3,7 @@
 import io
 import os
 import re
+from time import time_ns
 
 import pafy
 from gtts import gTTS
@@ -205,7 +206,16 @@ async def youtube_cmd(event):
                 return
 
             wait_msg = await event.reply(f"Large file detected ({int(file_size / 1000000)}MB), this may take some time…")
+
+            start_time = time_ns()
             file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
+            end_time = time_ns()
+
+            time_taken_seconds = int((end_time - start_time) / 1000000000)
+            speed = int(int(file_size / 1000000) / time_taken_seconds)
+
+            await wait_msg.edit(f"Download complete, took {time_taken_seconds} at ~{speed}MB/s")
+
             file_handle = await upload_file(event.client, file_path)
 
             await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
