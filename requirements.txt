@@ -1,12 +1,12 @@
 aiodns
 aiohttp
+asyncpraw
 cchardet
 cryptg
 gtts
 hachoir
 howdoi
 pillow
-praw
 speedtest-cli
 telethon
 wikipedia

@@ -2,42 +2,34 @@
 
 from random import choice, shuffle
 
-import praw
-from prawcore import exceptions as redex
+import asyncpraw
+from asyncprawcore import exceptions as redex
 
 from ubot.micro_bot import ldr
 
-REDDIT = praw.Reddit(client_id='-fmzwojFG6JkGg',
-                     client_secret=None,
-                     user_agent='TG_Userbot')
+REDDIT = asyncpraw.Reddit(client_id='-fmzwojFG6JkGg',
+                          client_secret=None,
+                          user_agent='TG_Userbot')
 
-VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
+VALID_ENDS = (".mp4", ".jpg", ".jpeg", "jpe", ".png", ".gif")
 
 
-async def imagefetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    hot_list = list(hot.__iter__())
-    shuffle(hot_list)
-
-    for post in hot_list:
+async def imagefetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=10):
         if post.url and post.url.endswith(VALID_ENDS):
             return post
 
     return None
 
 
-async def titlefetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    return choice(list(hot.__iter__()))
+async def titlefetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=1):
+        return post
 
 
-async def bodyfetcherfallback(sub):
-    hot = REDDIT.subreddit(sub).hot()
-    hot_list = list(hot.__iter__())
-    shuffle(hot_list)
-
-    for post in hot_list:
-        if post.selftext and not post.permalink in post.url:
+async def bodyfetcherfallback(subreddit):
+    async for post in subreddit.random_rising(limit=10):
+        if post.selftext and not post.permalink is post.url:
             return post
 
     return None
@@ -46,10 +38,11 @@ async def bodyfetcherfallback(sub):
 async def imagefetcher(event, sub):
     await event.edit(f"`Fetching image from `**r/{sub}**`…`")
     image_url = False
+    subreddit = await REDDIT.subreddit(sub)
 
     for _ in range(10):
         try:
-            post = REDDIT.subreddit(sub).random() or await imagefetcherfallback(sub)
+            post = await subreddit.random() or await imagefetcherfallback(subreddit)
             post.title
         except redex.Forbidden:
             await event.edit(f"**r/{sub}**` is private!`")
@@ -77,11 +70,11 @@ async def imagefetcher(event, sub):
 
 
 async def titlefetcher(event, sub):
-    await event.edit(f"`Fetchingn title from `**r/{sub}**`…`")
+    await event.edit(f"`Fetching title from `**r/{sub}**`…`")
+    subreddit = await REDDIT.subreddit(sub)
 
     try:
-        post = REDDIT.subreddit(sub).random() or await titlefetcherfallback(sub)
-        post.title
+        post = await subreddit.random() or await titlefetcherfallback(subreddit)
     except redex.Forbidden:
         await event.edit(f"**r/{sub}**` is private!`")
         return
@@ -94,10 +87,11 @@ async def titlefetcher(event, sub):
 
 async def bodyfetcher(event, sub):
     await event.edit(f"`Fetching text from `**r/{sub}**`…`")
+    subreddit = await REDDIT.subreddit(sub)
 
     for _ in range(10):
         try:
-            post = REDDIT.subreddit(sub).random() or await bodyfetcherfallback(sub)
+            post = await subreddit.random() or await bodyfetcherfallback(subreddit)
             post.title
         except redex.Forbidden:
             await event.edit(f"**r/{sub}**` is private!`")
