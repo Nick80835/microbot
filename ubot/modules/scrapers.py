@@ -11,6 +11,7 @@ from PIL import Image
 from telethon.tl.types import DocumentAttributeVideo
 
 from ubot.fixes.fast_telethon import upload_file
+from ubot.fixes.parallel_download import download
 from ubot.micro_bot import ldr
 
 os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
@@ -197,7 +198,7 @@ async def youtube_cmd(event):
 
     try:
         if await ldr.cache.is_cache_required(video_stream.url):
-            file_path = await ldr.cache.cache_file(video_stream.url, f"{event.chat_id}_{event.id}")
+            file_path = await download(video_stream.url, ldr.aioclient)
             file_handle = await upload_file(event.client, file_path)
 
             await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
@@ -207,8 +208,6 @@ async def youtube_cmd(event):
                     h=video_stream.dimensions[1],
                     supports_streaming=True
                 )])
-
-            ldr.cache.remove_cache(file_path)
         else:
             await event.reply(file=video_stream.url)
     except:
