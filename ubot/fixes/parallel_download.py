@@ -14,9 +14,9 @@ class ParallelDownload:
         self.aioclient = aioclient
         self.file_name = file_name
 
-    async def download_chunk(self, chunk_start: int, chunk_end: int, total_size: int, chunk_number: int) -> str:
+    async def download_chunk(self, chunk_start: int, chunk_end: int, chunk_number: int) -> str:
         chunk_headers = {
-            "Content-Range": f"bytes {chunk_start}-{chunk_end}/{total_size}"
+            "Range": f"bytes={chunk_start}-{chunk_end}"
         }
 
         async with self.aioclient.get(self.url, headers=chunk_headers) as response:
@@ -44,10 +44,10 @@ class ParallelDownload:
 
         while place < content_length:
             if place + chunk_size > content_length:
-                chunk_coros.append(self.download_chunk(place, content_length, content_length, chunk_number))
+                chunk_coros.append(self.download_chunk(place, content_length, chunk_number))
                 break
 
-            chunk_coros.append(self.download_chunk(place, place + chunk_size, content_length, chunk_number))
+            chunk_coros.append(self.download_chunk(place, place + chunk_size, chunk_number))
             place += chunk_size
 
             chunk_number += 1
