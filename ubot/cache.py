@@ -31,6 +31,7 @@ class Cache():
     def remove_cache(self, filename: str):
         os.remove(filename)
 
-    async def is_cache_required(self, url: str) -> bool:
+    async def is_cache_required(self, url: str) -> (bool, int):
         async with self.aioclient.get(url) as response:
-            return int(response.headers["content-length"]) >= 20000000
+            size = int(response.headers["content-length"])
+            return size >= 20000000, size
