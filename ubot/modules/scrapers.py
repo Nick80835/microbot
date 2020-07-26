@@ -214,7 +214,7 @@ async def youtube_cmd(event):
             time_taken_seconds = int((end_time - start_time) / 1000000000)
             speed = int(int(file_size / 1000000) / time_taken_seconds)
 
-            await wait_msg.edit(f"Download complete, took {time_taken_seconds} at ~{speed}MB/s")
+            await wait_msg.edit(f"Download complete, took {time_taken_seconds} seconds at ~{speed}MB/s")
 
             file_handle = await upload_file(event.client, file_path)
 
