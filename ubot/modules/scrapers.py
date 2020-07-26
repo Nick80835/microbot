@@ -198,7 +198,7 @@ async def youtube_cmd(event):
 
     try:
         if await ldr.cache.is_cache_required(video_stream.url):
-            file_path = await download(video_stream.url, ldr.aioclient)
+            file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
             file_handle = await upload_file(event.client, file_path)
 
             await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
@@ -208,9 +208,16 @@ async def youtube_cmd(event):
                     h=video_stream.dimensions[1],
                     supports_streaming=True
                 )])
+
+            ldr.cache.remove_cache(file_path)
         else:
             await event.reply(file=video_stream.url)
     except:
+        try:
+            ldr.cache.remove_cache(file_path)
+        except:
+            pass
+
         await event.reply(f"Download failed: [URL]({video_stream.url})")
 
 

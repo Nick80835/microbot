@@ -327,7 +327,7 @@ async def upload_file(client: TelegramClient, file: Union[BinaryIO, BytesIO, str
     if isinstance(file, str):
         with open(file, mode="rb") as fh:
             res = (await _internal_transfer_to_telegram(client, fh, progress_callback, file))[0]
-    if isinstance(file, BytesIO):
+    elif isinstance(file, BytesIO):
         res = (await _internal_transfer_to_telegram(client, file, progress_callback, file.name))[0]
     else:
         res = (await _internal_transfer_to_telegram(client, file, progress_callback))[0]
