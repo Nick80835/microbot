@@ -194,10 +194,13 @@ async def corona(event):
 @ldr.add("yt", userlocking=True)
 async def youtube_cmd(event):
     video = pafy.new(event.args)
-    video_stream = video.getbest()
+    video_stream = video.getbest(preftype="mp4")
 
     try:
-        if await ldr.cache.is_cache_required(video_stream.url):
+        cache_required, file_size = await ldr.cache.is_cache_required(video_stream.url)
+
+        if cache_required:
+            wait_msg = await event.reply(f"Large file detected ({int(file_size / 1000000)}MB), this may take some time…")
             file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
             file_handle = await upload_file(event.client, file_path)
 
@@ -208,6 +211,8 @@ async def youtube_cmd(event):
                     h=video_stream.dimensions[1],
                     supports_streaming=True
                 )])
+
+            await wait_msg.delete()
 
             ldr.cache.remove_cache(file_path)
         else:
