@@ -9,6 +9,7 @@ import logging
 import math
 import os
 from collections import defaultdict
+from io import BufferedReader, BytesIO
 from typing import (AsyncGenerator, Awaitable, BinaryIO, DefaultDict, List,
                     Optional, Tuple, Union)
 
@@ -251,12 +252,17 @@ parallel_transfer_locks: DefaultDict[int, asyncio.Lock] = defaultdict(lambda: as
 
 
 async def _internal_transfer_to_telegram(client: TelegramClient,
-                                         response: BinaryIO,
+                                         response: Union[BinaryIO, BytesIO, BufferedReader],
                                          progress_callback: callable,
                                          name: str = None
                                          ) -> Tuple[TypeInputFile, int]:
     file_id = helpers.generate_random_long()
-    file_size = os.path.getsize(name or response.name)
+
+    if isinstance(response, BytesIO):
+        file_size = len(response.getvalue())
+    else:
+        file_size = os.path.getsize(name or response.name)
+
     hash_md5 = hashlib.md5()
     uploader = ParallelTransferrer(client)
     part_size, part_count, is_large = await uploader.init_upload(file_id, file_size)
@@ -317,10 +323,12 @@ async def download_file(client: TelegramClient, location: TypeLocation, out: Bin
     return out
 
 
-async def upload_file(client: TelegramClient, file: Union[BinaryIO, str], progress_callback: callable = None) -> TypeInputFile:
+async def upload_file(client: TelegramClient, file: Union[BinaryIO, BytesIO, str], progress_callback: callable = None) -> TypeInputFile:
     if isinstance(file, str):
         with open(file, mode="rb") as fh:
             res = (await _internal_transfer_to_telegram(client, fh, progress_callback, file))[0]
+    if isinstance(file, BytesIO):
+        res = (await _internal_transfer_to_telegram(client, file, progress_callback, file.name))[0]
     else:
         res = (await _internal_transfer_to_telegram(client, file, progress_callback))[0]
 
