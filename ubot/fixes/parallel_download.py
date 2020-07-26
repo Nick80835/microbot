@@ -48,8 +48,8 @@ class ParallelDownload:
                 break
 
             chunk_coros.append(self.download_chunk(place, place + chunk_size, chunk_number))
-            place += chunk_size
 
+            place += chunk_size + 1
             chunk_number += 1
 
         return chunk_coros, file_extension
