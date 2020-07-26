@@ -200,6 +200,10 @@ async def youtube_cmd(event):
         cache_required, file_size = await ldr.cache.is_cache_required(video_stream.url)
 
         if cache_required:
+            if file_size >= 1000000000:
+                await event.reply(f"File too large to send ({int(file_size / 1000000)}MB), sorry about that.")
+                return
+
             wait_msg = await event.reply(f"Large file detected ({int(file_size / 1000000)}MB), this may take some time…")
             file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
             file_handle = await upload_file(event.client, file_path)
