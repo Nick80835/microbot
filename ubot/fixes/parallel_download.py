@@ -58,11 +58,11 @@ class ParallelDownload:
                 chunk_size = content_length // (threads - 1)
         else:
             if content_length < 100000000:
-                chunk_size = 15000000
+                chunk_size = 35000000
             elif content_length < 500000000:
-                chunk_size = 80000000
+                chunk_size = 100000000
             else:
-                chunk_size = 180000000
+                chunk_size = 300000000
 
         return content_length, chunk_size, file_extension
 
