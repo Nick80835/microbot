@@ -55,7 +55,7 @@ class ParallelDownload:
         return chunk_coros, file_extension
 
 
-async def download(url: str, file_name: str, aioclient: ClientSession = ClientSession(), chunk_size: int = 5000000) -> str:
+async def download(url: str, file_name: str, aioclient: ClientSession = ClientSession(), chunk_size: int = 15000000) -> str:
     downloader = ParallelDownload(url, aioclient, file_name)
     chunk_coros, file_extension = await downloader.generate_chunk_coros(chunk_size)
     downloaded_part_files = await gather(*chunk_coros)
