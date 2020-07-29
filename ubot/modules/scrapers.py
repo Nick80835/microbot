@@ -211,7 +211,7 @@ async def youtube_cmd(event):
             file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
             end_time = time_ns()
 
-            time_taken_seconds = int((end_time - start_time) / 1000000000)
+            time_taken_seconds = int((end_time - start_time) / 1000000000) or 1
             speed = int(int(file_size / 1000000) / time_taken_seconds)
 
             await wait_msg.edit(f"Download complete, took {time_taken_seconds} seconds at ~{speed}MB/s")

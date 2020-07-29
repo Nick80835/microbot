@@ -177,17 +177,14 @@ class ParallelTransferrer:
                   for i in range(1, connections)])
         ]
 
-    async def _create_upload_sender(self, file_id: int, part_count: int, big: bool, index: int,
-                                    stride: int) -> UploadSender:
-        return UploadSender(await self._create_sender(), file_id, part_count, big, index, stride,
-                            loop=self.loop)
+    async def _create_upload_sender(self, file_id: int, part_count: int, big: bool, index: int, stride: int) -> UploadSender:
+        return UploadSender(await self._create_sender(), file_id, part_count, big, index, stride, loop=self.loop)
 
     async def _create_sender(self) -> MTProtoSender:
         dc = await self.client._get_dc(self.dc_id)
-        sender = MTProtoSender(self.auth_key, self.loop, loggers=self.client._log)
-        await sender.connect(self.client._connection(dc.ip_address, dc.port, dc.id,
-                                                     loop=self.loop, loggers=self.client._log,
-                                                     proxy=self.client._proxy))
+        sender = MTProtoSender(self.auth_key, loggers=self.client._log)
+        await sender.connect(self.client._connection(dc.ip_address, dc.port, dc.id, loggers=self.client._log, proxy=self.client._proxy))
+
         if not self.auth_key:
             log.debug(f"Exporting auth to DC {self.dc_id}")
             auth = await self.client(ExportAuthorizationRequest(self.dc_id))
