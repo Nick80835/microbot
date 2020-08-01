@@ -119,7 +119,7 @@ async def kang(event):
 
                     if not static_sticker:
                         await conv.get_response()
-                        await conv.send_message(pack_nickname)
+                        await conv.send_message(f"<{pack_nickname}>")
 
                     await conv.get_response()
                     await event.client.send_read_acknowledge(conv.chat_id)
@@ -159,7 +159,7 @@ async def kang(event):
 
             if not static_sticker:
                 await conv.get_response()
-                await conv.send_message(f"{pack_nickname}")
+                await conv.send_message(f"<{pack_nickname}>")
 
             await conv.get_response()
             await event.client.send_read_acknowledge(conv.chat_id)
