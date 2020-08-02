@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 from asyncio import sleep
-from random import choice, randint
+from random import choice
 
 from ubot.micro_bot import ldr
 

@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from random import choice
-
 from ubot.micro_bot import ldr
 
 GEL_URL = "https://gelbooru.com/index.php"

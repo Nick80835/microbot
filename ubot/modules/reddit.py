@@ -1,7 +1,5 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from random import choice, shuffle
-
 import asyncpraw
 from asyncprawcore import exceptions as redex
 
@@ -19,8 +17,6 @@ async def imagefetcherfallback(subreddit):
         if post.url and post.url.endswith(VALID_ENDS):
             return post
 
-    return None
-
 
 async def titlefetcherfallback(subreddit):
     async for post in subreddit.random_rising(limit=1):
@@ -31,8 +27,6 @@ async def bodyfetcherfallback(subreddit):
     async for post in subreddit.random_rising(limit=10):
         if post.selftext and not post.permalink is post.url:
             return post
-
-    return None
 
 
 async def imagefetcher(event, sub):
