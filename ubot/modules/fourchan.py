@@ -56,14 +56,14 @@ async def fourchan(event):
 @ldr.add_inline_photo("4c", default="4c")
 async def fourchan_inline(event):
     if not event.args:
-        return None
+        return
 
     async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
         if response.status == 200:
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
         else:
-            return None
+            return
 
     post_file_url_list = []
 
@@ -76,9 +76,9 @@ async def fourchan_inline(event):
             for post_info in post_info_list[:3]:
                 post_file_url_list += [CONTENT_URL.format(event.args, post_info[0], post_info[1])]
         else:
-            return None
+            return
 
     if not response:
-        return None
+        return
 
     return post_file_url_list

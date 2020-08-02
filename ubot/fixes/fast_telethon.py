@@ -57,7 +57,7 @@ class DownloadSender:
 
     async def next(self) -> Optional[bytes]:
         if not self.remaining:
-            return None
+            return
 
         result = await self.sender.send(self.request)
         self.remaining -= 1
