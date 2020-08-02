@@ -94,10 +94,10 @@ async def yandere_inline(event):
         if response.status == 200:
             response = await response.json()
         else:
-            return None
+            return
 
     if not response:
-        return None
+        return
 
     valid_urls = []
 
@@ -106,7 +106,7 @@ async def yandere_inline(event):
             valid_urls.append([post['file_url'], f"[sauce]({YAN_SAUCE_URL}{post['id']})"])
 
     if not valid_urls:
-        return None
+        return
 
     return valid_urls[:3]
 

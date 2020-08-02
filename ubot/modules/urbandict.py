@@ -64,12 +64,12 @@ async def urban_dict_inline(event):
         if response.status == 200:
             response = await response.json()
         else:
-            return None
+            return
 
     if response['list']:
         response_words = response['list'][:10]
     else:
-        return None
+        return
 
     definition_list = []
 

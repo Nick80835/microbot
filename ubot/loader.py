@@ -207,15 +207,15 @@ class Loader():
                 return event.photo
             elif event.document:
                 if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
-                    return None
+                    return
                 if event.gif or event.video or event.audio or event.voice:
-                    return None
+                    return
 
                 return event.media.document
             else:
-                return None
+                return
         else:
-            return None
+            return
 
     def prefix(self):
         return (self.settings.get_list('cmd_prefix') or ['.'])[0]
