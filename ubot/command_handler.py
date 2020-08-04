@@ -218,6 +218,10 @@ class CommandHandler():
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
             return False
 
+        if value["fun"] and str(event.chat.id) in self.settings.get_list("fun_blacklist"):
+            print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
+            return False
+
         return True
 
     def is_owner(self, event):

@@ -90,7 +90,8 @@ class Loader():
                 "lockreason": None,
                 "userlocking": args.get('userlocking', False),
                 "lockedusers": [],
-                "chance": args.get('chance', None)
+                "chance": args.get('chance', None),
+                "fun": args.get('fun', False),
             })
 
             return func
@@ -130,7 +131,8 @@ class Loader():
                     "lockreason": None,
                     "userlocking": args.get('userlocking', False),
                     "lockedusers": [],
-                    "chance": args.get('chance', None)
+                    "chance": args.get('chance', None),
+                    "fun": args.get('fun', False),
                 })
 
             return func

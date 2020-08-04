@@ -92,3 +92,22 @@ async def nsfw_toggle(event):
     elif event.args == "off":
         ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
         await event.reply("NSFW commands disabled for this chat!")
+
+
+@ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
+async def fun_toggle(event):
+    if not event.args or event.args not in ("on", "off"):
+        if str(event.chat.id) not in ldr.settings.get_list("fun_blacklist"):
+            current_config = 'On'
+        else:
+            current_config = 'Off'
+
+        await event.reply(f"Syntax: {ldr.prefix()}fun (on|off)\nCurrent config for this chat: {current_config}")
+        return
+
+    if event.args == "on":
+        ldr.settings.remove_from_list("fun_blacklist", event.chat.id)
+        await event.reply("Fun commands enabled for this chat!")
+    elif event.args == "off":
+        ldr.settings.add_to_list("fun_blacklist", event.chat.id)
+        await event.reply("Fun commands disabled for this chat!")

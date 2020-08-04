@@ -25,19 +25,19 @@ moo_answers = [
 ]
 
 
-@ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True)
+@ldr.add(f"{bot_name}(,|) (are|am|is|will|should|can|have|was|were|does|did|may|do)", simple_pattern=True, hide_help=True, fun=True)
 async def ask_bot(event):
     if event.args:
         await event.reply(choice(yesno_answers))
 
 
-@ldr.add(f"i('|)m", simple_pattern=True, hide_help=True, chance=15)
+@ldr.add(f"i('|)m", simple_pattern=True, hide_help=True, chance=15, fun=True)
 async def im_botname(event):
     if event.args:
         await event.reply(f"Hi {event.args}, I'm {bot_name}!")
 
 
-@ldr.add(f"{bot_name}(,|) say", simple_pattern=True, hide_help=True)
+@ldr.add(f"{bot_name}(,|) say", simple_pattern=True, hide_help=True, fun=True)
 async def say_something(event):
     if event.args:
         if event.is_reply:
@@ -52,7 +52,7 @@ async def say_something(event):
             pass
 
 
-@ldr.add(f"{bot_name}(,|) edit to", simple_pattern=True, hide_help=True, sudo=True)
+@ldr.add(f"{bot_name}(,|) edit to", simple_pattern=True, hide_help=True, sudo=True, fun=True)
 async def edit_message(event):
     if event.args:
         if event.is_reply:
@@ -65,18 +65,18 @@ async def edit_message(event):
                 pass
 
 
-@ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True)
+@ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True, fun=True)
 async def floor(event):
     if not event.args:
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add(f"bruh", simple_pattern=True, hide_help=True, chance=25)
+@ldr.add(f"bruh", simple_pattern=True, hide_help=True, chance=25, fun=True)
 async def bruh_moment(event):
     if not event.args:
         await event.reply("moment")
 
 
-@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25)
+@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
 async def moo(event):
     await event.reply(choice(moo_answers))
