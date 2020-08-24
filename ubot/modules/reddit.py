@@ -130,48 +130,28 @@ async def reddit_fetcher(event):
         await bodyfetcher(event, sub)
 
 
-@ldr.add("suffer")
-async def makemesuffer(event):
-    await imagefetcher(event, "MakeMeSuffer")
+reddit_images = {
+    "suffer": "MakeMeSuffer",
+    "snafu": "CoaxedIntoASnafu",
+    "jon": "ImSorryJon",
+    "jonx": "ImReallySorryJon",
+    "tihi": "TIHI",
+    "gab": "Tenma",
+    "pourn": "PourPainting",
+    "monke": "Ape"
+}
+
+reddit_bodies = {
+    "aita": "AmITheAsshole",
+    "tifu": "TIFU"
+}
 
 
-@ldr.add("snafu")
-async def coaxedintoasnafu(event):
-    await imagefetcher(event, "CoaxedIntoASnafu")
+@ldr.add_dict(reddit_images)
+async def quick_reddit_image(event):
+    await imagefetcher(event, event.extra)
 
 
-@ldr.add("aita")
-async def amitheasshole(event):
-    await bodyfetcher(event, "AmITheAsshole")
-
-
-@ldr.add("tifu")
-async def todayifuckedup(event):
-    await bodyfetcher(event, "TIFU")
-
-
-@ldr.add_list(["jon", "jonx"])
-async def imsorryjon(event):
-    if event.command[-1] == "x":
-        await imagefetcher(event, "ImReallySorryJon")
-    else:
-        await imagefetcher(event, "ImSorryJon")
-
-
-@ldr.add("tihi")
-async def thanksihateit(event):
-    await imagefetcher(event, "TIHI")
-
-
-@ldr.add("gab")
-async def tenma(event):
-    await imagefetcher(event, "Tenma")
-
-
-@ldr.add("pourn")
-async def pourn(event):
-    await imagefetcher(event, "PourPainting")
-
-@ldr.add("monke")
-async def monke(event):
-    await imagefetcher(event, "Monke")
+@ldr.add_dict(reddit_bodies)
+async def quick_reddit_body(event):
+    await bodyfetcher(event, event.extra)

@@ -32,7 +32,7 @@ class CommandHandler():
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
                 event.command = pattern_match.groups()[1]
-                event.extras = value["extras"]
+                event.extra = value["extra"]
 
                 try:
                     await value["function"](event)
