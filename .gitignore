@@ -2,6 +2,6 @@ __pycache__
 settings.ini
 *.session
 *.session-journal
-*.db
+*.sqlite
 testing.py
 cache
