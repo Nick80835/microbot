@@ -79,10 +79,14 @@ async def bot_repo(event):
 async def disable_command(event):
     if event.args:
         for value in ldr.help_dict.values():
-            for info in [i[0] for i in value]:
-                if event.args == info:
-                    await event.reply(f"Disabling **{info}** in chat **{event.chat.id}**!")
-                    ldr.db.disable_command(event.chat.id, info)
+            for info in value:
+                if event.args == info[0]:
+                    if info[2]:
+                        await event.reply(f"**{info[0]}** cannot be disabled!")
+                        return
+
+                    await event.reply(f"Disabling **{info[0]}** in chat **{event.chat.id}**!")
+                    ldr.db.disable_command(event.chat.id, info[0])
                     return
 
         await event.reply(f"**{event.args}** is not a command!")
