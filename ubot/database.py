@@ -1,30 +1,30 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import json
-import sqlite3
+
+from sqlalchemy import Column, Integer, MetaData, String, Table, create_engine
 
 
 class Database():
-    db_conn = sqlite3.connect("database.sqlite")
+    engine = create_engine('sqlite:///database.sqlite')
+    metadata = MetaData()
 
-    def __init__(self):
-        cur = self.db_conn.cursor()
-        cur.execute(
-            """CREATE TABLE IF NOT EXISTS chats (
-                id integer PRIMARY KEY,
-                disabled_commands text NOT NULL
-            );"""
-        )
+    chats = Table(
+        "chats",
+        metadata,
+        Column("id", Integer, primary_key=True),
+        Column("disabled_commands", String, nullable=False)
+    )
 
-    def ensure_chat_table(self, chat_id: int):
-        cur = self.db_conn.cursor()
-        cur.execute("INSERT OR IGNORE INTO chats (id, disabled_commands) VALUES (?, ?);", [str(chat_id), "[]"])
-        self.db_conn.commit()
+    metadata.create_all(engine)
+    conn = engine.connect()
+
+    def ensure_disabled_commands_table(self, chat_id: int):
+        self.conn.execute(f"INSERT OR IGNORE INTO chats (id, disabled_commands) VALUES (?, ?);", (chat_id, "[]"))
 
     def get_disabled_commands(self, chat_id: int) -> list:
-        self.ensure_chat_table(chat_id)
-        cur = self.db_conn.cursor()
-        disabled_raw = cur.execute("SELECT disabled_commands FROM chats WHERE id = ?;", [str(chat_id)]).fetchone()
+        self.ensure_disabled_commands_table(chat_id)
+        disabled_raw = self.conn.execute(f"SELECT disabled_commands FROM chats WHERE id = ?;", (chat_id, )).fetchone()
         return json.loads(disabled_raw[0] if disabled_raw else "[]")
 
     def disable_command(self, chat_id: int, command: str):
@@ -33,9 +33,7 @@ class Database():
         if command not in disabled_commands:
             disabled_commands.append(command)
             new_disabled_commands = json.dumps(disabled_commands)
-            cur = self.db_conn.cursor()
-            cur.execute("UPDATE chats SET disabled_commands = ? WHERE id = ?;", [new_disabled_commands, str(chat_id)])
-            self.db_conn.commit()
+            self.conn.execute("UPDATE chats SET disabled_commands = ? WHERE id = ?;", (new_disabled_commands, chat_id))
 
     def enable_command(self, chat_id: int, command: str):
         disabled_commands = self.get_disabled_commands(chat_id)
@@ -43,6 +41,4 @@ class Database():
         if command in disabled_commands:
             disabled_commands.remove(command)
             new_disabled_commands = json.dumps(disabled_commands)
-            cur = self.db_conn.cursor()
-            cur.execute("UPDATE chats SET disabled_commands = ? WHERE id = ?;", [new_disabled_commands, str(chat_id)])
-            self.db_conn.commit()
+            self.conn.execute(f"UPDATE chats SET disabled_commands = ? WHERE id = ?;", (new_disabled_commands, chat_id))

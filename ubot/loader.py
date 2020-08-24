@@ -64,18 +64,19 @@ class Loader():
     def add(self, pattern: str = None, **args):
         pattern = args.get("pattern", pattern)
         pattern_extra = args.get("pattern_extra", "")
+        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
 
         def decorator(func):
             if args.get("hide_help", False):
                 if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                    self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                 else:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                    self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
             else:
                 if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                 else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
 
             self.command_handler.incoming_commands.append({
                 "pattern": pattern,
@@ -104,19 +105,20 @@ class Loader():
     def add_list(self, pattern: list = None, **args):
         pattern_list = args.get("pattern", pattern)
         pattern_extra = args.get("pattern_extra", "")
+        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
 
         def decorator(func):
             for pattern in pattern_list:
                 if args.get("hide_help", False):
                     if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                     else:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
                 else:
                     if func.__module__.split(".")[-1] in self.help_dict:
-                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                     else:
-                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
 
                 self.command_handler.incoming_commands.append({
                     "pattern": pattern,
@@ -145,19 +147,20 @@ class Loader():
     def add_dict(self, pattern: dict = None, **args):
         pattern_dict = args.get("pattern", pattern)
         pattern_extra = args.get("pattern_extra", "")
+        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
 
         def decorator(func):
             for pattern, extra in pattern_dict.items():
                 if args.get("hide_help", False):
                     if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                     else:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
                 else:
                     if func.__module__.split(".")[-1] in self.help_dict:
-                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
                     else:
-                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
 
                 self.command_handler.incoming_commands.append({
                     "pattern": pattern,

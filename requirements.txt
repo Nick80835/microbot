@@ -10,6 +10,7 @@ howdoi
 pillow
 psutil
 speedtest-cli
+sqlalchemy
 telethon
 Pafy
 youtube-dl
