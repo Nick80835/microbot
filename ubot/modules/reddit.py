@@ -137,7 +137,8 @@ reddit_images = {
     "tihi": "TIHI",
     "gab": "Tenma",
     "pourn": "PourPainting",
-    "monke": "Ape"
+    "monke": "Ape",
+    "meme": "dankmemes+memes+deepfriedmemes"
 }
 
 reddit_bodies = {
