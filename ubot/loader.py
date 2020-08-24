@@ -58,7 +58,7 @@ class Loader():
 
         return errors or None
 
-    def add(self, pattern=None, **args):
+    def add(self, pattern: str = None, **args):
         pattern = args.get("pattern", pattern)
         pattern_extra = args.get("pattern_extra", "")
 
@@ -81,7 +81,7 @@ class Loader():
                 "simple_pattern": args.get('simple_pattern', False),
                 "raw_pattern": args.get('raw_pattern', False),
                 "sudo": args.get('sudo', False),
-                "extras": args.get('extras', None),
+                "extra": args.get('extra', None),
                 "nsfw": args.get('nsfw', False),
                 "pass_nsfw": args.get('pass_nsfw', False),
                 "admin": args.get('admin', False),
@@ -98,7 +98,7 @@ class Loader():
 
         return decorator
 
-    def add_list(self, pattern=None, **args):
+    def add_list(self, pattern: list = None, **args):
         pattern_list = args.get("pattern", pattern)
         pattern_extra = args.get("pattern_extra", "")
 
@@ -122,7 +122,48 @@ class Loader():
                     "simple_pattern": args.get('simple_pattern', False),
                     "raw_pattern": args.get('raw_pattern', False),
                     "sudo": args.get('sudo', False),
-                    "extras": args.get('extras', pattern),
+                    "extra": args.get('extra', None),
+                    "nsfw": args.get('nsfw', False),
+                    "pass_nsfw": args.get('pass_nsfw', False),
+                    "admin": args.get('admin', False),
+                    "owner": args.get('owner', False),
+                    "locking": args.get('locking', False),
+                    "lockreason": None,
+                    "userlocking": args.get('userlocking', False),
+                    "lockedusers": [],
+                    "chance": args.get('chance', None),
+                    "fun": args.get('fun', False),
+                })
+
+            return func
+
+        return decorator
+
+    def add_dict(self, pattern: dict = None, **args):
+        pattern_dict = args.get("pattern", pattern)
+        pattern_extra = args.get("pattern_extra", "")
+
+        def decorator(func):
+            for pattern, extra in pattern_dict.items():
+                if args.get("hide_help", False):
+                    if func.__module__.split(".")[-1] in self.help_hidden_dict:
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                    else:
+                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+                else:
+                    if func.__module__.split(".")[-1] in self.help_dict:
+                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
+                    else:
+                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
+
+                self.command_handler.incoming_commands.append({
+                    "pattern": pattern,
+                    "pattern_extra": pattern_extra,
+                    "function": func,
+                    "simple_pattern": args.get('simple_pattern', False),
+                    "raw_pattern": args.get('raw_pattern', False),
+                    "sudo": args.get('sudo', False),
+                    "extra": args.get('extra', extra),
                     "nsfw": args.get('nsfw', False),
                     "pass_nsfw": args.get('pass_nsfw', False),
                     "admin": args.get('admin', False),
@@ -174,7 +215,7 @@ class Loader():
             self.command_handler.callback_queries.append({
                 "data_id": data_id,
                 "function": func,
-                "extras": args.get('extras', None)
+                "extra": args.get('extra', None)
             })
 
             return func

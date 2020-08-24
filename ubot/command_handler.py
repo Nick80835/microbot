@@ -53,7 +53,7 @@ class CommandHandler():
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
                 event.command = pattern_match.groups()[1]
-                event.extras = value["extras"]
+                event.extra = value["extra"]
 
                 await self.execute_command(event, value)
 
@@ -147,7 +147,7 @@ class CommandHandler():
         for value in self.callback_queries:
             if value["data_id"] == data_id:
                 event.args = data_data
-                event.extras = value["extras"]
+                event.extra = value["extra"]
 
                 try:
                     await value["function"](event)

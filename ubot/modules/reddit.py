@@ -129,48 +129,28 @@ async def redimg(event):
         await bodyfetcher(event, sub)
 
 
-@ldr.add("suffer", userlocking=True, pass_nsfw=True)
-async def makemesuffer(event):
-    await imagefetcher(event, "MakeMeSuffer")
+reddit_images = {
+    "suffer": "MakeMeSuffer",
+    "snafu": "CoaxedIntoASnafu",
+    "jon": "ImSorryJon",
+    "jonx": "ImReallySorryJon",
+    "tihi": "TIHI",
+    "gab": "Tenma",
+    "pourn": "PourPainting",
+    "monke": "Ape"
+}
+
+reddit_bodies = {
+    "aita": "AmITheAsshole",
+    "tifu": "TIFU"
+}
 
 
-@ldr.add("snafu", userlocking=True, pass_nsfw=True)
-async def coaxedintoasnafu(event):
-    await imagefetcher(event, "CoaxedIntoASnafu")
+@ldr.add_dict(reddit_images, userlocking=True, pass_nsfw=True)
+async def quick_reddit_image(event):
+    await imagefetcher(event, event.extra)
 
 
-@ldr.add("aita", userlocking=True, pass_nsfw=True)
-async def amitheasshole(event):
-    await bodyfetcher(event, "AmITheAsshole")
-
-
-@ldr.add("tifu", userlocking=True, pass_nsfw=True)
-async def todayifuckedup(event):
-    await bodyfetcher(event, "TIFU")
-
-
-@ldr.add_list(["jon", "jonx"], userlocking=True, pass_nsfw=True)
-async def imsorryjon(event):
-    if event.command[-1] == "x":
-        await imagefetcher(event, "ImReallySorryJon")
-    else:
-        await imagefetcher(event, "ImSorryJon")
-
-
-@ldr.add("tihi", userlocking=True, pass_nsfw=True)
-async def thanksihateit(event):
-    await imagefetcher(event, "TIHI")
-
-
-@ldr.add("gab", userlocking=True, pass_nsfw=True)
-async def tenma(event):
-    await imagefetcher(event, "Tenma")
-
-
-@ldr.add("pourn", userlocking=True, pass_nsfw=True)
-async def pourn(event):
-    await imagefetcher(event, "PourPainting")
-
-@ldr.add("monke", userlocking=True, pass_nsfw=True)
-async def monke(event):
-    await imagefetcher(event, "Monke")
+@ldr.add_dict(reddit_bodies, userlocking=True, pass_nsfw=True)
+async def quick_reddit_body(event):
+    await bodyfetcher(event, event.extra)
