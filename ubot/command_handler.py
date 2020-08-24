@@ -49,10 +49,15 @@ class CommandHandler():
                 if value["pass_nsfw"]:
                     event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
 
+                event.command = pattern_match.groups()[1]
+
+                if event.command in self.loader.db.get_disabled_commands(event.chat.id):
+                    print(f"Attempted command ({event.raw_text}) in chat which disabled it ({event.chat.id}) from ID {event.from_id}")
+                    return
+
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
-                event.command = pattern_match.groups()[1]
                 event.extra = value["extra"]
 
                 await self.execute_command(event, value)
@@ -231,6 +236,9 @@ class CommandHandler():
         return bool(str(event.from_id) in self.settings.get_list("sudo_users"))
 
     async def is_admin(self, event):
+        if event.is_private:
+            return True
+
         channel_participant = await event.client(functions.channels.GetParticipantRequest(event.chat, event.from_id))
         return bool(isinstance(channel_participant.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)))
 

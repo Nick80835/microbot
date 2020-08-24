@@ -75,6 +75,47 @@ async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot")
 
 
+@ldr.add("disable", admin=True, help="Disables commands in the current chat, requires admin.")
+async def disable_command(event):
+    if event.args:
+        for value in ldr.help_dict.values():
+            for info in [i[0] for i in value]:
+                if event.args == info:
+                    await event.reply(f"Disabling **{info}** in chat **{event.chat.id}**!")
+                    ldr.db.disable_command(event.chat.id, info)
+                    return
+
+        await event.reply(f"**{event.args}** is not a command!")
+    else:
+        await event.reply(f"Specify a command to disable!")
+
+
+@ldr.add("enable", admin=True, help="Enables commands in the current chat, requires admin.")
+async def enable_command(event):
+    if event.args:
+        for value in ldr.help_dict.values():
+            for info in [i[0] for i in value]:
+                if event.args == info:
+                    await event.reply(f"Enabling **{info}** in chat **{event.chat.id}**!")
+                    ldr.db.enable_command(event.chat.id, info)
+                    return
+
+        await event.reply(f"**{event.args}** is not a command!")
+    else:
+        await event.reply(f"Specify a command to enable!")
+
+
+@ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")
+async def show_disabled(event):
+    disabled_list = ldr.db.get_disabled_commands(event.chat.id)
+
+    if disabled_list:
+        disabled_commands = "\n".join(ldr.db.get_disabled_commands(event.chat.id))
+        await event.reply(f"Disabled commands in **{event.chat.id}**:\n\n{disabled_commands}")
+    else:
+        await event.reply(f"There are no disabled commands in **{event.chat.id}**!")
+
+
 @ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
     if not event.args or event.args not in ("on", "off"):
