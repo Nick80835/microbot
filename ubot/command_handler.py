@@ -39,10 +39,6 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"] + value["pattern_extra"], self.username), event.raw_text)
 
             if pattern_match:
-                if self.is_blacklisted(event):
-                    print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
-                    return
-
                 if not await self.check_privs(event, value):
                     return
 
@@ -207,6 +203,10 @@ class CommandHandler():
             raise exception
 
     async def check_privs(self, event, value):
+        if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
+            print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
+            return False
+
         if value["owner"] and not self.is_owner(event):
             print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
             return False
