@@ -208,18 +208,22 @@ class CommandHandler():
             return False
 
         if value["owner"] and not self.is_owner(event):
+            await event.reply("You lack the permissions to use that command!")
             print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
             return False
 
         if value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
+            await event.reply("You lack the permissions to use that command!")
             print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
             return False
 
         if value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
+            await event.reply("You lack the permissions to use that command!")
             print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
             return False
 
         if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
+            await event.reply("NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
             return False
 
