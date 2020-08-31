@@ -56,4 +56,5 @@ class Settings():
         self.write_changes()
 
     def get_list(self, key):
-        return self.config.get("DEFAULT", key, fallback="").split("|")
+        list_setting = self.config.get("DEFAULT", key, fallback="")
+        return list_setting.split("|") if list_setting else []
