@@ -44,6 +44,7 @@ class MicroBot():
         session_name = self.settings.get_config("session_name")
         api_key = self.settings.get_config("api_key")
         api_hash = self.settings.get_config("api_hash")
+        bot_token = self.settings.get_config("bot_token")
 
         while not api_key:
             api_key = input("Enter your API key: ")
@@ -55,19 +56,24 @@ class MicroBot():
 
         self.settings.set_config("api_hash", api_hash)
 
+        while not bot_token:
+        	bot_token = input("Enter your Bot Token")
+
+        self.settings.set_config("bot_token", bot_token)
+
         if not session_name:
             session_name = "user0"
             self.settings.set_config("session_name", session_name)
 
-        return api_key, api_hash, session_name
+        return api_key, api_hash, bot_token, session_name
 
     def start_client(self):
-        api_key, api_hash, session_name = self._check_config()
+        api_key, api_hash, bot_token, session_name = self._check_config()
 
         self.client = tt.TelegramClient(session_name, api_key, api_hash, connection=CTA)
 
         try:
-            self.client.start()
+            self.client.start(bot_token=bot_token)
         except PhoneNumberInvalidError:
             self.logger.error("The phone number provided is invalid, exiting.")
             sys.exit(2)
