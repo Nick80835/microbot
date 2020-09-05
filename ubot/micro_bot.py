@@ -4,7 +4,7 @@ import sys
 from logging import INFO, basicConfig, getLogger
 
 import telethon as tt
-from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
+from telethon.errors.rpcerrorlist import TokenInvalidError
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
@@ -74,8 +74,8 @@ class MicroBot():
 
         try:
             self.client.start(bot_token=bot_token)
-        except PhoneNumberInvalidError:
-            self.logger.error("The phone number provided is invalid, exiting.")
+        except TokenInvalidError:
+            self.logger.error("The token provided is invalid, exiting.")
             sys.exit(2)
 
     async def stop_client(self, reason=None):
