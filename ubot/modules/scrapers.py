@@ -206,6 +206,42 @@ async def corona(event):
         await event.reply("\n".join(response_list))
 
 
+@ldr.add_inline_article("corona", default="corona")
+async def corona(event):
+    if event.args:
+        async with ldr.aioclient.get(f"https://disease.sh/v3/covid-19/countries/{event.args}", headers={"accept": "application/json"}) as response:
+            if response.status == 200:
+                response = await response.json()
+            else:
+                return
+
+        response_list = [
+            f"Corona stats for **{response['country']}**\n",
+            f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Recoveries**\n   {response['recovered']} total"
+        ]
+
+        return [{"title": f"Corona Stats", "description": response['country'], "text": "\n".join(response_list)}]
+    else:
+        async with ldr.aioclient.get("https://disease.sh/v3/covid-19/all", headers={"accept": "application/json"}) as response:
+            if response.status == 200:
+                response = await response.json()
+            else:
+                return
+
+        response_list = [
+            f"Global Corona stats\n",
+            f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Recoveries**\n   {response['recovered']} total"
+        ]
+
+        return [{"title": f"Corona Stats", "description": "Global", "text": "\n".join(response_list)}]
+
+
 @ldr.add("yt", userlocking=True)
 async def youtube_cmd(event):
     video = pafy.new(event.args)
