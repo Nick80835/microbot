@@ -15,7 +15,7 @@ REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'kiss', 'blowjob
 @ldr.add_list(NEKO_TYPES_NSFW, nsfw=True, pattern_extra="(f|)", userlocking=True)
 @ldr.add_list(NEKO_TYPES, pattern_extra="(f|)", userlocking=True)
 async def supernekoatsume(event):
-    nekotype = event.command
+    nekotype = event.command.lower()
     as_file = bool(event.other_args[0])
 
     if nekotype in REPLY_TYPES:
