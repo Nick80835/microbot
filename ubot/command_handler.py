@@ -153,7 +153,7 @@ class CommandHandler():
                 try:
                     await value["function"](event)
                 except Exception as exception:
-                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
+                    await event.reply(f"An error occurred in **{value['function'].__name__}**: `{exception}`")
                     raise exception
 
     async def fallback_inline(self, event):
@@ -199,7 +199,7 @@ class CommandHandler():
             if event.from_id in value["lockedusers"]:
                 value["lockedusers"].remove(event.from_id)
 
-            await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
+            await event.reply(f"An error occurred in **{value['function'].__name__}**: `{exception}`")
             raise exception
 
     async def check_privs(self, event, value):
