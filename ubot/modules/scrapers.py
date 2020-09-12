@@ -207,25 +207,39 @@ async def wiki_cmd(event):
 @ldr.add("corona", help="Fetches Coronavirus stats, takes an optional country name as an argument.")
 async def corona(event):
     if event.args:
-        async with ldr.aioclient.get(f"https://corona.lmao.ninja/v2/countries/{event.args}") as response:
+        async with ldr.aioclient.get(f"https://disease.sh/v3/covid-19/countries/{event.args}", headers={"accept": "application/json"}) as response:
             if response.status == 200:
                 response = await response.json()
             else:
                 await event.edit(f"`An error occurred, response code: `**{response.status}**")
                 return
 
-        response_text = f"`Stats for `**{response['country']}**\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
-        await event.edit(response_text)
+        response_list = [
+            f"Corona stats for **{response['country']}**\n",
+            f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Recoveries**\n   {response['recovered']} total"
+        ]
+
+        await event.edit("\n".join(response_list))
     else:
-        async with ldr.aioclient.get(f"https://corona.lmao.ninja/v2/all") as response:
+        async with ldr.aioclient.get("https://disease.sh/v3/covid-19/all", headers={"accept": "application/json"}) as response:
             if response.status == 200:
                 response = await response.json()
             else:
                 await event.edit(f"`An error occurred, response code: `**{response.status}**")
                 return
 
-        response_text = f"`Global stats`\n\n`Cases: `**{response['cases']}** **({response['todayCases']} today)**\n`Deaths: `**{response['deaths']}** **({response['todayDeaths']} today)**\n`Recoveries: `**{response['recovered']}**"
-        await event.edit(response_text)
+        response_list = [
+            f"Global Corona stats\n",
+            f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Recoveries**\n   {response['recovered']} total"
+        ]
+
+        await event.edit("\n".join(response_list))
 
 
 @ldr.add("yt")
