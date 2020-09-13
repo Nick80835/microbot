@@ -40,38 +40,6 @@ def speed_convert(size):
     return f"{round(size, 2)} {units[zero]}"
 
 
-@ldr.add("b2d")
-async def bintodec(event):
-    if not event.args:
-        await event.edit("`Give me a binary number!`")
-        return
-
-    try:
-        decimal = int(event.args, 2)
-    except ValueError:
-        await event.edit("`Give me a binary number!`")
-        return
-
-    await event.edit(f"**{event.args}** `=` **{decimal}**")
-
-
-@ldr.add("d2b")
-async def dectobin(event):
-    try:
-        decimal = int(event.args)
-    except ValueError:
-        await event.edit("`Give me a decimal number!`")
-        return
-
-    if not decimal:
-        await event.edit("`Give me a decimal number!`")
-        return
-
-    binary = bin(decimal).replace("0b","")
-
-    await event.edit(f"**{decimal}** `=` **{binary}**")
-
-
 @ldr.add("eval")
 async def evaluate(event):
     await event.edit("`Processing…`")
