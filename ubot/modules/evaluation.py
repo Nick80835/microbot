@@ -102,6 +102,39 @@ async def evaluate(event):
     await event.edit(f"**Evaluation:**\n`{event.args}`\n**Return{isawait}:**\n`{eval_ret}`")
 
 
+@ldr.add("exec")
+async def execute(event):
+    await event.edit("`Processing…`")
+    reply = await event.get_reply_message()
+
+    if not event.args:
+        await event.edit("`Give me code to run!`")
+        return
+
+    temp_locals = {}
+
+    exec(
+        f'async def __ex(event, reply): ' +
+        ''.join(f'\n {l}' for l in event.args.split('\n')),
+        {},
+        temp_locals
+    )
+
+    try:
+        eval_ret = await temp_locals['__ex'](event, reply)
+    except Exception as exception:
+        eval_ret = exception
+
+    if len(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`") > 4096:
+        text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
+        text_io.name = "return.txt"
+        await event.edit("`Output too large for a message, sending as a file…`")
+        await event.reply(file=text_io)
+        return
+
+    await event.edit(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`")
+
+
 @ldr.add("chatid")
 async def chatidgetter(event):
     if event.is_reply:
