@@ -5,7 +5,7 @@ import io
 from PIL import Image, ImageOps
 from speedtest import Speedtest
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 
 @ldr.add("speed", owner=True, hide_help=True)

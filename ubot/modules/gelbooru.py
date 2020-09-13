@@ -4,7 +4,7 @@ from time import time_ns
 
 from telethon import Button
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="

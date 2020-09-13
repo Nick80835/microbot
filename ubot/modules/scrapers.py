@@ -13,7 +13,7 @@ from telethon.tl.types import DocumentAttributeVideo
 
 from ubot.fixes.fast_telethon import upload_file
 from ubot.fixes.parallel_download import download
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 

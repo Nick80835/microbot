@@ -4,7 +4,7 @@ from time import time_ns
 
 from telethon import Button
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
