@@ -113,14 +113,14 @@ async def execute(event):
 
     temp_locals = {}
 
-    exec(
-        f'async def __ex(event, reply): ' +
-        ''.join(f'\n {l}' for l in event.args.split('\n')),
-        {},
-        temp_locals
-    )
-
     try:
+        exec(
+            f'async def __ex(event, reply): ' +
+            ''.join(f'\n {l}' for l in event.args.split('\n')),
+            globals(),
+            temp_locals
+        )
+
         eval_ret = await temp_locals['__ex'](event, reply)
     except Exception as exception:
         eval_ret = exception
