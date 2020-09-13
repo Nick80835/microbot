@@ -138,7 +138,7 @@ reddit_images = {
     "gab": "Tenma",
     "pourn": "PourPainting",
     "monke": "Ape",
-    "meme": "dankmemes+memes+deepfriedmemes",
+    "meme": "DankMemes",
     "okbr": "OKBuddyRetard"
 }
 
