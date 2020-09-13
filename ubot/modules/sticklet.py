@@ -4,7 +4,7 @@ import io
 
 from PIL import Image
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 
 @ldr.add("color")

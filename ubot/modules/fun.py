@@ -2,7 +2,7 @@
 
 from random import choice
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 bot_name = ldr.settings.get_config("bot_name") or "bot"
 

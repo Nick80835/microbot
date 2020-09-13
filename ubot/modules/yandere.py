@@ -4,7 +4,7 @@ from time import time_ns
 
 from telethon import Button
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 YAN_URL = "https://yande.re/post.json"
 YAN_SAUCE_URL = "https://yande.re/post/show/"

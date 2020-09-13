@@ -4,7 +4,7 @@ import io
 
 from PIL import Image
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
 NEKO_TYPES_NSFW = ['lewd', 'tits', 'trap', 'anal', 'gasm', 'spank', 'feet', 'blowjob']

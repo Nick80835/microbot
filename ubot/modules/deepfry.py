@@ -30,7 +30,7 @@ from random import randint, uniform
 
 from PIL import Image, ImageEnhance
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 
 @ldr.add("deepfry", pattern_extra="(f|)", userlocking=True, help="Deepfries images, takes a number of passes as an argument.")

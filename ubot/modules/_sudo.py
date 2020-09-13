@@ -9,7 +9,7 @@ from platform import python_version
 import psutil
 from telethon import version
 
-from ubot.micro_bot import ldr, micro_bot
+from ubot import ldr, micro_bot
 
 
 @ldr.add("eval", owner=True, hide_help=True)

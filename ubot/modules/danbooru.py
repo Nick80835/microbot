@@ -4,7 +4,7 @@ from time import time_ns
 
 from telethon import Button
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"

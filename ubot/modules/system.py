@@ -2,7 +2,7 @@
 
 from time import time_ns
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 
 @ldr.add("del", help="Deletes messages from this bot, it's a safety feature.")
