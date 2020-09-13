@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
 SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"

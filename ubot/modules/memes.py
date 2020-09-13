@@ -3,7 +3,7 @@
 from asyncio import sleep
 from random import choice
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 emoji = list("😂😝🤪🤩😤🥵🤯🥶😱🤔😩🙄💀👻🤡😹👀👁👌💦🔥🌚🌝🌞🔫💯")
 b_emoji = "🅱️"

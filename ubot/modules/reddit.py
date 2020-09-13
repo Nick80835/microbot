@@ -3,7 +3,7 @@
 import asyncpraw
 from asyncprawcore import exceptions as redex
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 REDDIT = asyncpraw.Reddit(client_id='-fmzwojFG6JkGg',
                           client_secret=None,

@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 CAT_URL = 'http://api.thecatapi.com/v1/images/search'
 DOG_URL = 'http://api.thedogapi.com/v1/images/search'

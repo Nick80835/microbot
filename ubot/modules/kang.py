@@ -6,7 +6,7 @@ import urllib
 from PIL import Image, ImageOps
 from telethon.tl.types import DocumentAttributeFilename
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 pack_full = "Whoa! That's probably enough stickers for one pack, give it a break. \
 A pack can't have more than 120 stickers at the moment."

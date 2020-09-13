@@ -5,7 +5,7 @@ import textwrap
 
 from PIL import Image, ImageDraw, ImageFont
 
-from ubot.micro_bot import ldr
+from ubot import ldr
 
 
 @ldr.add("color")
