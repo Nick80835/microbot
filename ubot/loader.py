@@ -6,8 +6,10 @@ from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 
 from aiohttp import ClientSession
+
 from telethon.tl.types import DocumentAttributeFilename
 
+from .command import Command
 from .command_handler import CommandHandler
 
 
@@ -52,23 +54,14 @@ class Loader():
         return errors or None
 
     def add(self, pattern: str = None, **args):
-        pattern = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
-
         def decorator(func):
             if func.__module__.split(".")[-1] in self.help_dict:
                 self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
             else:
                 self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
-            self.command_handler.outgoing_commands.append({
-                "pattern": pattern,
-                "pattern_extra": pattern_extra,
-                "function": func,
-                "simple_pattern": args.get('simple_pattern', False),
-                "raw_pattern": args.get('raw_pattern', False),
-                "extra": args.get('extra', pattern)
-            })
+            args["pattern"] = args.get("pattern", pattern)
+            self.command_handler.outgoing_commands.append(Command(func, args))
 
             return func
 
@@ -76,7 +69,6 @@ class Loader():
 
     def add_list(self, pattern: list = None, **args):
         pattern_list = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
 
         def decorator(func):
             for pattern in pattern_list:
@@ -85,14 +77,9 @@ class Loader():
                 else:
                     self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
-                self.command_handler.outgoing_commands.append({
-                    "pattern": pattern,
-                    "pattern_extra": pattern_extra,
-                    "function": func,
-                    "simple_pattern": args.get('simple_pattern', False),
-                    "raw_pattern": args.get('raw_pattern', False),
-                    "extra": args.get('extra', None)
-                })
+                this_args = args.copy()
+                this_args["pattern"] = pattern
+                self.command_handler.outgoing_commands.append(Command(func, this_args))
 
             return func
 
@@ -100,7 +87,6 @@ class Loader():
 
     def add_dict(self, pattern: dict = None, **args):
         pattern_dict = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
 
         def decorator(func):
             for pattern, extra in pattern_dict.items():
@@ -109,14 +95,10 @@ class Loader():
                 else:
                     self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
 
-                self.command_handler.outgoing_commands.append({
-                    "pattern": pattern,
-                    "pattern_extra": pattern_extra,
-                    "function": func,
-                    "simple_pattern": args.get('simple_pattern', False),
-                    "raw_pattern": args.get('raw_pattern', False),
-                    "extra": args.get('extra', extra)
-                })
+                this_args = args.copy()
+                this_args["pattern"] = pattern
+                this_args["extra"] = args.get('extra', extra)
+                self.command_handler.outgoing_commands.append(Command(func, this_args))
 
             return func
 

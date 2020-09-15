@@ -19,23 +19,23 @@ class CommandHandler():
     async def handle_outgoing(self, event):
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
 
-        for value in self.outgoing_commands:
-            if value["simple_pattern"]:
-                pattern_match = search(self.simple_pattern_template.format(value["pattern"], value["pattern_extra"]), event.raw_text)
-            elif value["raw_pattern"]:
-                pattern_match = search(self.raw_pattern_template.format(value["pattern"] + value["pattern_extra"]), event.raw_text)
+        for command in self.outgoing_commands:
+            if command.simple_pattern:
+                pattern_match = search(self.simple_pattern_template.format(command.pattern, command.pattern_extra), event.raw_text)
+            elif command.raw_pattern:
+                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
             else:
-                pattern_match = search(self.pattern_template.format(prefix, value["pattern"], value["pattern_extra"]), event.raw_text)
+                pattern_match = search(self.pattern_template.format(prefix, command.pattern, command.pattern_extra), event.raw_text)
 
             if pattern_match:
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
                 event.command = pattern_match.groups()[1]
-                event.extra = value["extra"]
+                event.extra = command.extra
 
                 try:
-                    await value["function"](event)
+                    await command.function(event)
                 except Exception as exception:
-                    await event.reply(f"`An error occurred in {value['function'].__name__}: {exception}`")
+                    await event.reply(f"`An error occurred in {command.command.__name__}: {exception}`")
                     raise exception
