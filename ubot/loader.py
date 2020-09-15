@@ -17,7 +17,6 @@ class Loader():
     aioclient = ClientSession()
     thread_pool = ThreadPoolExecutor()
 
-    help_dict = {}
     loaded_modules = []
     all_modules = []
 
@@ -38,7 +37,6 @@ class Loader():
 
     def reload_all_modules(self):
         self.command_handler.outgoing_commands = []
-        self.help_dict = {}
 
         errors = ""
 
@@ -55,11 +53,6 @@ class Loader():
 
     def add(self, pattern: str = None, **args):
         def decorator(func):
-            if func.__module__.split(".")[-1] in self.help_dict:
-                self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
-            else:
-                self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
-
             args["pattern"] = args.get("pattern", pattern)
             self.command_handler.outgoing_commands.append(Command(func, args))
 
@@ -72,11 +65,6 @@ class Loader():
 
         def decorator(func):
             for pattern in pattern_list:
-                if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
-                else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
-
                 this_args = args.copy()
                 this_args["pattern"] = pattern
                 self.command_handler.outgoing_commands.append(Command(func, this_args))
@@ -90,11 +78,6 @@ class Loader():
 
         def decorator(func):
             for pattern, extra in pattern_dict.items():
-                if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None)]]
-                else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None)]]
-
                 this_args = args.copy()
                 this_args["pattern"] = pattern
                 this_args["extra"] = args.get('extra', extra)

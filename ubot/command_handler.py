@@ -37,5 +37,5 @@ class CommandHandler():
                 try:
                     await command.function(event)
                 except Exception as exception:
-                    await event.reply(f"`An error occurred in {command.command.__name__}: {exception}`")
+                    await event.reply(f"`An error occurred in {command.function.__name__}: {exception}`")
                     raise exception

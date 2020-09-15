@@ -27,25 +27,26 @@ async def reload_modules(event):
 @ldr.add("help")
 async def help_cmd(event):
     if event.args:
-        for key, value in ldr.help_dict.items():
-            for info in value:
-                if event.args == info[0]:
-                    if info[1]:
-                        await event.edit(f"Help for **{info[0]}**: __{info[1]}__")
-                        return
-
-                    await event.edit(f"**{info[0]}** doesn't have a help string.")
+        for command in ldr.command_handler.outgoing_commands:
+            if event.args == command.pattern:
+                if command.help:
+                    await event.edit(f"Help for **{command.pattern}**: __{command.help}__")
                     return
 
-    help_string = ""
+                await event.edit(f"**{command.pattern}** doesn't have a help string.")
+                return
 
-    for key, value in ldr.help_dict.items():
-        help_string += f"\n**{key}**: "
-        for info in value:
-            help_string += f"{info[0]}, "
-        help_string = help_string.rstrip(", ")
+    help_dict = {}
 
-    await event.edit(f"**Available commands:**\n{help_string}")
+    for command in ldr.command_handler.outgoing_commands:
+        if command.module in help_dict:
+            help_dict[command.module].append(command.pattern)
+        else:
+            help_dict[command.module] = [command.pattern]
+
+    help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
+
+    await event.edit(f"**Available commands:**\n\n{help_string}")
 
 
 @ldr.add("sysd")
