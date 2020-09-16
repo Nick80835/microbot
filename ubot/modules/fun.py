@@ -85,6 +85,14 @@ async def bab(event):
         await event.reply("Who am I supposed to bab?")
 
 
+@ldr.add("unbab", hide_help=True, fun=True)
+async def unbab(event):
+    if event.is_reply:
+        await (await event.get_reply_message()).reply("You've been unbabbed!")
+    else:
+        await event.reply("Who am I supposed to unbab?")
+
+
 @ldr.add("(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
 async def moo(event):
     await event.reply(choice(moo_answers))
