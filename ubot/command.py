@@ -9,8 +9,8 @@ class Command:
         self.function = func
 
         self.pattern = args.get("pattern")
-        self.simple_pattern = args.get("simple_pattern", None)
-        self.raw_pattern = args.get("raw_pattern", None)
+        self.simple_pattern = args.get("simple_pattern", False)
+        self.raw_pattern = args.get("raw_pattern", False)
         self.pattern_extra = args.get("pattern_extra", "")
         self.extra = args.get("extra", None)
         self.help = args.get("help", None)
