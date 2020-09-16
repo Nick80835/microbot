@@ -10,6 +10,8 @@ from aiohttp import ClientSession
 from telethon.tl.types import DocumentAttributeFilename
 
 from .cache import Cache
+from .command import (CallbackQueryCommand, Command, InlineArticleCommand,
+                      InlinePhotoCommand)
 from .command_handler import CommandHandler
 from .database import Database
 
@@ -20,8 +22,6 @@ class Loader():
     cache = Cache(aioclient)
     db = Database()
 
-    help_dict = {}
-    help_hidden_dict = {}
     loaded_modules = []
     all_modules = []
 
@@ -45,8 +45,6 @@ class Loader():
         self.command_handler.inline_photo_commands = []
         self.command_handler.inline_article_commands = []
         self.command_handler.callback_queries = []
-        self.help_dict = {}
-        self.help_hidden_dict = {}
 
         errors = ""
 
@@ -62,41 +60,9 @@ class Loader():
         return errors or None
 
     def add(self, pattern: str = None, **args):
-        pattern = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
-        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
-
         def decorator(func):
-            if args.get("hide_help", False):
-                if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                else:
-                    self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-            else:
-                if func.__module__.split(".")[-1] in self.help_dict:
-                    self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                else:
-                    self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-
-            self.command_handler.incoming_commands.append({
-                "pattern": pattern,
-                "pattern_extra": pattern_extra,
-                "function": func,
-                "simple_pattern": args.get('simple_pattern', False),
-                "raw_pattern": args.get('raw_pattern', False),
-                "sudo": args.get('sudo', False),
-                "extra": args.get('extra', None),
-                "nsfw": args.get('nsfw', False),
-                "pass_nsfw": args.get('pass_nsfw', False),
-                "admin": args.get('admin', False),
-                "owner": args.get('owner', False),
-                "locking": args.get('locking', False),
-                "lockreason": None,
-                "userlocking": args.get('userlocking', False),
-                "lockedusers": [],
-                "chance": args.get('chance', None),
-                "fun": args.get('fun', False),
-            })
+            args["pattern"] = args.get("pattern", pattern)
+            self.command_handler.incoming_commands.append(Command(func, args))
 
             return func
 
@@ -104,41 +70,12 @@ class Loader():
 
     def add_list(self, pattern: list = None, **args):
         pattern_list = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
-        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
 
         def decorator(func):
             for pattern in pattern_list:
-                if args.get("hide_help", False):
-                    if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                    else:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-                else:
-                    if func.__module__.split(".")[-1] in self.help_dict:
-                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                    else:
-                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-
-                self.command_handler.incoming_commands.append({
-                    "pattern": pattern,
-                    "pattern_extra": pattern_extra,
-                    "function": func,
-                    "simple_pattern": args.get('simple_pattern', False),
-                    "raw_pattern": args.get('raw_pattern', False),
-                    "sudo": args.get('sudo', False),
-                    "extra": args.get('extra', None),
-                    "nsfw": args.get('nsfw', False),
-                    "pass_nsfw": args.get('pass_nsfw', False),
-                    "admin": args.get('admin', False),
-                    "owner": args.get('owner', False),
-                    "locking": args.get('locking', False),
-                    "lockreason": None,
-                    "userlocking": args.get('userlocking', False),
-                    "lockedusers": [],
-                    "chance": args.get('chance', None),
-                    "fun": args.get('fun', False),
-                })
+                this_args = args.copy()
+                this_args["pattern"] = pattern
+                self.command_handler.incoming_commands.append(Command(func, this_args))
 
             return func
 
@@ -146,83 +83,40 @@ class Loader():
 
     def add_dict(self, pattern: dict = None, **args):
         pattern_dict = args.get("pattern", pattern)
-        pattern_extra = args.get("pattern_extra", "")
-        not_disableable = args.get("no_disable", False) or args.get('owner', False) or args.get('sudo', False) or args.get('admin', False)
 
         def decorator(func):
             for pattern, extra in pattern_dict.items():
-                if args.get("hide_help", False):
-                    if func.__module__.split(".")[-1] in self.help_hidden_dict:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                    else:
-                        self.help_hidden_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-                else:
-                    if func.__module__.split(".")[-1] in self.help_dict:
-                        self.help_dict[func.__module__.split(".")[-1]] += [[pattern, args.get('help', None), not_disableable]]
-                    else:
-                        self.help_dict[func.__module__.split(".")[-1]] = [[pattern, args.get('help', None), not_disableable]]
-
-                self.command_handler.incoming_commands.append({
-                    "pattern": pattern,
-                    "pattern_extra": pattern_extra,
-                    "function": func,
-                    "simple_pattern": args.get('simple_pattern', False),
-                    "raw_pattern": args.get('raw_pattern', False),
-                    "sudo": args.get('sudo', False),
-                    "extra": args.get('extra', extra),
-                    "nsfw": args.get('nsfw', False),
-                    "pass_nsfw": args.get('pass_nsfw', False),
-                    "admin": args.get('admin', False),
-                    "owner": args.get('owner', False),
-                    "locking": args.get('locking', False),
-                    "lockreason": None,
-                    "userlocking": args.get('userlocking', False),
-                    "lockedusers": [],
-                    "chance": args.get('chance', None),
-                    "fun": args.get('fun', False),
-                })
+                this_args = args.copy()
+                this_args["pattern"] = pattern
+                this_args["extra"] = args.get('extra', extra)
+                self.command_handler.incoming_commands.append(Command(func, this_args))
 
             return func
 
         return decorator
 
     def add_inline_photo(self, pattern=None, **args):
-        pattern = args.get("pattern", pattern)
-
         def decorator(func):
-            self.command_handler.inline_photo_commands.append({
-                "pattern": pattern,
-                "function": func,
-                "default": args.get("default", None)
-            })
+            args["pattern"] = args.get("pattern", pattern)
+            self.command_handler.inline_photo_commands.append(InlinePhotoCommand(func, args))
 
             return func
 
         return decorator
 
     def add_inline_article(self, pattern=None, **args):
-        pattern = args.get("pattern", pattern)
-
         def decorator(func):
-            self.command_handler.inline_article_commands.append({
-                "pattern": pattern,
-                "function": func,
-                "default": args.get("default", None)
-            })
+            args["pattern"] = args.get("pattern", pattern)
+            self.command_handler.inline_article_commands.append(InlineArticleCommand(func, args))
 
             return func
 
         return decorator
 
     def add_callback_query(self, data_id=None, **args):
-        data_id = args.get("data_id", data_id)
-
         def decorator(func):
-            self.command_handler.callback_queries.append({
-                "data_id": data_id,
-                "function": func,
-                "extra": args.get('extra', None)
-            })
+            args["data_id"] = args.get("data_id", data_id)
+            self.command_handler.callback_queries.append(CallbackQueryCommand(func, args))
 
             return func
 

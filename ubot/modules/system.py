@@ -16,50 +16,57 @@ async def delete_message(event):
 @ldr.add("help")
 async def help_cmd(event):
     if event.args:
-        for key, value in ldr.help_dict.items():
-            for info in value:
-                if event.args == info[0]:
-                    if info[1]:
-                        await event.reply(f"Help for **{info[0]}**: __{info[1]}__")
+        for command in ldr.command_handler.incoming_commands:
+            if not command.hide_help:
+                if event.args == command.pattern:
+                    if command.help:
+                        await event.reply(f"Help for **{command.pattern}**: __{command.help}__")
                         return
 
-                    await event.reply(f"**{info[0]}** doesn't have a help string.")
+                    await event.reply(f"**{command.pattern}** doesn't have a help string.")
                     return
 
     prefix = ldr.prefix()
-    help_string = ""
+    help_dict = {}
 
-    for key, value in ldr.help_dict.items():
-        help_string += f"\n**{key}**: "
-        for info in value:
-            help_string += f"{prefix}{info[0]}, "
-        help_string = help_string.rstrip(", ")
+    for command in ldr.command_handler.incoming_commands:
+        if not command.hide_help:
+            if command.module in help_dict:
+                help_dict[command.module].append(prefix + command.pattern)
+            else:
+                help_dict[command.module] = [prefix + command.pattern]
 
-    await event.reply(f"**Available commands:**\n{help_string}")
+    help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
+
+    await event.reply(f"**Available commands:**\n\n{help_string}")
 
 
 @ldr.add("sudohelp", sudo=True)
 async def sudohelp(event):
     if event.args:
-        for key, value in ldr.help_hidden_dict.items():
-            for info in value:
-                if event.args == info[0]:
-                    if info[1]:
-                        await event.reply(f"Help for **{info[0]}**: __{info[1]}__")
+        for command in ldr.command_handler.incoming_commands:
+            if command.hide_help:
+                if event.args == command.pattern:
+                    if command.help:
+                        await event.reply(f"Help for **{command.pattern}**: __{command.help}__")
                         return
 
-                    await event.reply(f"**{info[0]}** doesn't have a help string.")
+                    await event.reply(f"**{command.pattern}** doesn't have a help string.")
                     return
 
-    help_string = ""
+    prefix = ldr.prefix()
+    help_dict = {}
 
-    for key, value in ldr.help_hidden_dict.items():
-        help_string += f"\n**{key}**: "
-        for info in value:
-            help_string += f"`{info[0]}`, "
-        help_string = help_string.rstrip(", ")
+    for command in ldr.command_handler.incoming_commands:
+        if command.hide_help:
+            if command.module in help_dict:
+                help_dict[command.module].append(prefix + command.pattern)
+            else:
+                help_dict[command.module] = [prefix + command.pattern]
 
-    await event.reply(f"**Available (hidden) commands:**\n{help_string}")
+    help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
+
+    await event.reply(f"**Available hidden commands:**\n\n{help_string}")
 
 
 @ldr.add("ping", hide_help=True)
@@ -78,16 +85,15 @@ async def bot_repo(event):
 @ldr.add("disable", admin=True, help="Disables commands in the current chat, requires admin.")
 async def disable_command(event):
     if event.args:
-        for value in ldr.help_dict.values():
-            for info in value:
-                if event.args == info[0]:
-                    if info[2]:
-                        await event.reply(f"**{info[0]}** cannot be disabled!")
-                        return
-
-                    await event.reply(f"Disabling **{info[0]}** in chat **{event.chat.id}**!")
-                    ldr.db.disable_command(event.chat.id, info[0])
+        for command in ldr.command_handler.incoming_commands:
+            if event.args == command.pattern:
+                if command.not_disableable:
+                    await event.reply(f"**{command.pattern}** cannot be disabled!")
                     return
+
+                await event.reply(f"Disabling **{command.pattern}** in chat **{event.chat.id}**!")
+                ldr.db.disable_command(event.chat.id, command.pattern)
+                return
 
         await event.reply(f"**{event.args}** is not a command!")
     else:
@@ -97,12 +103,11 @@ async def disable_command(event):
 @ldr.add("enable", admin=True, help="Enables commands in the current chat, requires admin.")
 async def enable_command(event):
     if event.args:
-        for value in ldr.help_dict.values():
-            for info in [i[0] for i in value]:
-                if event.args == info:
-                    await event.reply(f"Enabling **{info}** in chat **{event.chat.id}**!")
-                    ldr.db.enable_command(event.chat.id, info)
-                    return
+        for command in ldr.command_handler.incoming_commands:
+            if event.args == command.pattern:
+                await event.reply(f"Enabling **{command.pattern}** in chat **{event.chat.id}**!")
+                ldr.db.enable_command(event.chat.id, command.pattern)
+                return
 
         await event.reply(f"**{event.args}** is not a command!")
     else:
