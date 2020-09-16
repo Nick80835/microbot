@@ -77,6 +77,14 @@ async def bruh_moment(event):
         await event.reply("moment")
 
 
+@ldr.add(f"bab", hide_help=True, fun=True)
+async def bab(event):
+    if event.is_reply:
+        await (await event.get_reply_message()).reply("You've been babbed!")
+    else:
+        await event.reply("Who am I supposed to bab?")
+
+
 @ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
 async def moo(event):
     await event.reply(choice(moo_answers))
