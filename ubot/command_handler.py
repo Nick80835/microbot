@@ -55,6 +55,7 @@ class CommandHandler():
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
                 event.extra = command.extra
+                event.command_object = command
 
                 await self.execute_command(event, command)
 
