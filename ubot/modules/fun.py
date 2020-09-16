@@ -31,7 +31,7 @@ async def ask_bot(event):
         await event.reply(choice(yesno_answers))
 
 
-@ldr.add(f"i('|)m", simple_pattern=True, hide_help=True, chance=15, fun=True)
+@ldr.add("i('|)m", simple_pattern=True, hide_help=True, chance=15, fun=True)
 async def im_botname(event):
     if event.args:
         await event.reply(f"Hi {event.args}, I'm {bot_name}!")
@@ -65,19 +65,19 @@ async def edit_message(event):
                 pass
 
 
-@ldr.add(f"let the bodies hit the", simple_pattern=True, hide_help=True, fun=True)
+@ldr.add("let the bodies hit the", simple_pattern=True, hide_help=True, fun=True)
 async def floor(event):
     if not event.args:
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add(f"bruh", simple_pattern=True, hide_help=True, chance=25, fun=True)
+@ldr.add("bruh", simple_pattern=True, hide_help=True, chance=25, fun=True)
 async def bruh_moment(event):
     if not event.args:
         await event.reply("moment")
 
 
-@ldr.add(f"bab", hide_help=True, fun=True)
+@ldr.add("bab", hide_help=True, fun=True)
 async def bab(event):
     if event.is_reply:
         await (await event.get_reply_message()).reply("You've been babbed!")
@@ -85,6 +85,6 @@ async def bab(event):
         await event.reply("Who am I supposed to bab?")
 
 
-@ldr.add(f"(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
+@ldr.add("(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
 async def moo(event):
     await event.reply(choice(moo_answers))
