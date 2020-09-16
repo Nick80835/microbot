@@ -30,19 +30,19 @@ class CommandHandler():
     async def handle_incoming(self, event):
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
 
-        for value in self.incoming_commands:
-            if value["simple_pattern"]:
-                pattern_match = search(self.inline_pattern_template.format(value["pattern"] + value["pattern_extra"]), event.raw_text)
-            elif value["raw_pattern"]:
-                pattern_match = search(self.raw_pattern_template.format(value["pattern"] + value["pattern_extra"]), event.raw_text)
+        for command in self.incoming_commands:
+            if command.simple_pattern:
+                pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
+            elif command.raw_pattern:
+                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
             else:
-                pattern_match = search(self.pattern_template.format(f"({prefix})", value["pattern"] + value["pattern_extra"], self.username), event.raw_text)
+                pattern_match = search(self.pattern_template.format(f"({prefix})", command.pattern + command.pattern_extra, self.username), event.raw_text)
 
             if pattern_match:
-                if not await self.check_privs(event, value):
+                if not await self.check_privs(event, command):
                     return
 
-                if value["pass_nsfw"]:
+                if command.pass_nsfw:
                     event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
 
                 event.command = pattern_match.groups()[1]
@@ -54,43 +54,43 @@ class CommandHandler():
                 event.pattern_match = pattern_match
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
-                event.extra = value["extra"]
+                event.extra = command.extra
 
-                await self.execute_command(event, value)
+                await self.execute_command(event, command)
 
     async def handle_inline(self, event):
-        for value in self.inline_photo_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+        for command in self.inline_photo_commands:
+            pattern_match = search(self.inline_pattern_template.format(command.pattern), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
                     print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
-                await self.handle_inline_photo(event, pattern_match, value)
+                await self.handle_inline_photo(event, pattern_match, command)
                 return
 
-        for value in self.inline_article_commands:
-            pattern_match = search(self.inline_pattern_template.format(value["pattern"]), event.text)
+        for command in self.inline_article_commands:
+            pattern_match = search(self.inline_pattern_template.format(command.pattern), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
                     print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
                     return
 
-                await self.handle_inline_article(event, pattern_match, value)
+                await self.handle_inline_article(event, pattern_match, command)
                 return
 
         await self.fallback_inline(event)
 
-    async def handle_inline_photo(self, event, pattern_match, value):
+    async def handle_inline_photo(self, event, pattern_match, command):
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
         event.other_args = pattern_match.groups()[1:-1]
         event.command = pattern_match.groups()[0]
 
-        photo_list = await value["function"](event)
+        photo_list = await command.function(event)
 
         if not photo_list:
             return
@@ -116,13 +116,13 @@ class CommandHandler():
         except:
             pass
 
-    async def handle_inline_article(self, event, pattern_match, value):
+    async def handle_inline_article(self, event, pattern_match, command):
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
         event.other_args = pattern_match.groups()[:-1]
 
-        result_list = await value["function"](event)
+        result_list = await command.function(event)
 
         if not result_list:
             return
@@ -145,22 +145,22 @@ class CommandHandler():
         data_id = data_str.split("*")[0]
         data_data = data_str.lstrip(data_id + "*")
 
-        for value in self.callback_queries:
-            if value["data_id"] == data_id:
+        for command in self.callback_queries:
+            if command.data_id == data_id:
                 event.args = data_data
-                event.extra = value["extra"]
+                event.extra = command.extra
 
                 try:
-                    await value["function"](event)
+                    await command.function(event)
                 except Exception as exception:
-                    await event.reply(f"An error occurred in **{value['function'].__name__}**: `{exception}`")
+                    await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
                     raise exception
 
     async def fallback_inline(self, event):
         defaults_list = self.inline_photo_commands + self.inline_article_commands
 
         try:
-            await event.answer([await event.builder.article(title=value["pattern"], text=f"{self.loader.prefix()}{value['default']}") for value in defaults_list if value["default"]])
+            await event.answer([await event.builder.article(title=command.pattern, text=f"{self.loader.prefix()}{command.default}") for command in defaults_list if command.default])
         except:
             pass
 
@@ -170,64 +170,64 @@ class CommandHandler():
         except:
             return
 
-    async def execute_command(self, event, value):
+    async def execute_command(self, event, command):
         try:
-            if value["locking"]:
-                if value["lockreason"]:
-                    await event.reply(f"That command is currently locked: {value['lockreason']}")
+            if command.locking:
+                if command.lock_reason:
+                    await event.reply(f"That command is currently locked: {command.lock_reason}")
                     return
 
-                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
-                    value["lockreason"] = f"In use by **{event.from_id}** (`{event.raw_text}`)"
-                    await value["function"](event)
-                    value["lockreason"] = None
-            elif value["userlocking"]:
-                if event.from_id in value["lockedusers"]:
+                if command.chance and randint(0, 100) <= command.chance or not command.chance:
+                    command.lock_reason = f"In use by **{event.from_id}** (`{event.raw_text}`)"
+                    await command.function(event)
+                    command.lock_reason = None
+            elif command.user_locking:
+                if event.from_id in command.locked_users:
                     await event.reply(f"Please don't spam that command.")
                     return
 
-                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
-                    value["lockedusers"].append(event.from_id)
-                    await value["function"](event)
-                    value["lockedusers"].remove(event.from_id)
+                if command.chance and randint(0, 100) <= command.chance or not command.chance:
+                    command.locked_users.append(event.from_id)
+                    await command.function(event)
+                    command.locked_users.remove(event.from_id)
             else:
-                if value["chance"] and randint(0, 100) <= value["chance"] or not value["chance"]:
-                    await value["function"](event)
+                if command.chance and randint(0, 100) <= command.chance or not command.chance:
+                    await command.function(event)
         except Exception as exception:
-            value["lockreason"] = None
+            command.lock_reason = None
 
-            if event.from_id in value["lockedusers"]:
-                value["lockedusers"].remove(event.from_id)
+            if event.from_id in command.locked_users:
+                command.locked_users.remove(event.from_id)
 
-            await event.reply(f"An error occurred in **{value['function'].__name__}**: `{exception}`")
+            await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
             raise exception
 
-    async def check_privs(self, event, value):
+    async def check_privs(self, event, command):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
             print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
             return False
 
-        if value["owner"] and not self.is_owner(event):
+        if command.owner and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
             print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
             return False
 
-        if value["sudo"] and not self.is_sudo(event) and not self.is_owner(event):
+        if command.sudo and not self.is_sudo(event) and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
             print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
             return False
 
-        if value["admin"] and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
+        if command.admin and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
             print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
             return False
 
-        if value["nsfw"] and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
+        if command.nsfw and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
             await event.reply("NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
             return False
 
-        if value["fun"] and str(event.chat.id) in self.settings.get_list("fun_blacklist"):
+        if command.fun and str(event.chat.id) in self.settings.get_list("fun_blacklist"):
             print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
             return False
 
