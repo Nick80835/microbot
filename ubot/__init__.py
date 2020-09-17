@@ -4,7 +4,9 @@ import sys
 from logging import INFO, basicConfig, getLogger
 
 import telethon as tt
-from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
+from telethon.errors.rpcerrorlist import (AccessTokenExpiredError,
+                                          AccessTokenInvalidError,
+                                          TokenInvalidError)
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
@@ -41,9 +43,9 @@ class MicroBot():
         self.logger = getLogger(__name__)
 
     def _check_config(self):
-        session_name = self.settings.get_config("session_name")
         api_key = self.settings.get_config("api_key")
         api_hash = self.settings.get_config("api_hash")
+        bot_token = self.settings.get_config("bot_token")
 
         while not api_key:
             api_key = input("Enter your API key: ")
@@ -55,21 +57,22 @@ class MicroBot():
 
         self.settings.set_config("api_hash", api_hash)
 
-        if not session_name:
-            session_name = "user0"
-            self.settings.set_config("session_name", session_name)
+        while not bot_token:
+            bot_token = input("Enter your bot token: ")
 
-        return api_key, api_hash, session_name
+        self.settings.set_config("bot_token", bot_token)
+
+        return api_key, api_hash, bot_token
 
     def start_client(self):
-        api_key, api_hash, session_name = self._check_config()
+        api_key, api_hash, bot_token = self._check_config()
 
-        self.client = tt.TelegramClient(session_name, api_key, api_hash, connection=CTA)
+        self.client = tt.TelegramClient(self.settings.get_config("session_name", "bot0"), api_key, api_hash, connection=CTA)
 
         try:
-            self.client.start()
-        except PhoneNumberInvalidError:
-            self.logger.error("The phone number provided is invalid, exiting.")
+            self.client.start(bot_token=bot_token)
+        except (TokenInvalidError, AccessTokenExpiredError, AccessTokenInvalidError):
+            self.logger.error("The bot token provided is invalid, exiting.")
             sys.exit(2)
 
     async def stop_client(self, reason=None):
