@@ -123,7 +123,10 @@ class Loader():
         return decorator
 
     def get_cmds_by_func(self, func) -> list:
-        return [i for i in self.command_handler.outgoing_commands if i.function == func]
+        return [i for i in self.command_handler.incoming_commands if i.function == func]
+
+    def get_cbs_by_func(self, func) -> list:
+        return [i for i in self.command_handler.callback_queries if i.function == func]
 
     async def get_text(self, event, with_reply=True, return_msg=False, default=None):
         if event.args:
