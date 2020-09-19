@@ -8,7 +8,6 @@ from ubot import ldr
 
 YAN_URL = "https://yande.re/post.json"
 YAN_SAUCE_URL = "https://yande.re/post/show/"
-yan_button_dict = {}
 help_string = "Fetches images from Yande.re, takes tags as arguments."
 
 
@@ -138,7 +137,7 @@ async def yandere_buttons(event):
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    yan_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    ldr.get_cbs_by_func(yandere_buttons_callback)[0].data[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
 
     await event.reply(
         f"[sauce]({YAN_SAUCE_URL}{valid_urls[0][1]})",
@@ -154,8 +153,8 @@ async def yandere_buttons_callback(event):
     dict_id = args_split[0]
     direction = args_split[1]
 
-    if dict_id in yan_button_dict:
-        this_dict = yan_button_dict[dict_id]
+    if dict_id in event.object.data:
+        this_dict = event.object.data[dict_id]
     else:
         return
 

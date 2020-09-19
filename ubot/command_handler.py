@@ -55,7 +55,7 @@ class CommandHandler():
                 event.args = pattern_match.groups()[-1].strip()
                 event.other_args = pattern_match.groups()[2:-1]
                 event.extra = command.extra
-                event.command_object = command
+                event.object = command
 
                 await self.execute_command(event, command)
 
@@ -90,6 +90,7 @@ class CommandHandler():
         event.args = pattern_match.groups()[-1]
         event.other_args = pattern_match.groups()[1:-1]
         event.command = pattern_match.groups()[0]
+        event.object = command
 
         photo_list = await command.function(event)
 
@@ -122,6 +123,7 @@ class CommandHandler():
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
         event.other_args = pattern_match.groups()[:-1]
+        event.object = command
 
         result_list = await command.function(event)
 
@@ -150,6 +152,7 @@ class CommandHandler():
             if command.data_id == data_id:
                 event.args = data_data
                 event.extra = command.extra
+                event.object = command
 
                 try:
                     await command.function(event)
