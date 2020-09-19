@@ -6,6 +6,7 @@ import re
 
 import pafy
 import wikipedia
+from googletrans import Translator, constants
 from gtts import gTTS
 from howdoi import howdoi
 from PIL import Image
@@ -14,6 +15,7 @@ from ubot import ldr
 
 os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 tts_lang = "EN"
+translator = Translator()
 
 
 @ldr.add("dadjoke", help="Fetches the most funny shit you've ever read.")
@@ -202,6 +204,14 @@ async def wiki_cmd(event):
             pass
 
     await event.edit(text)
+
+
+@ldr.add("trt", pattern_extra=f"({'|'.join(constants.LANGUAGES.keys())}|)", help="Translates text to the given language code appended to the trt command, defaults to English.")
+async def translate(event):
+    text_arg = await ldr.get_text(event)
+    lang = event.other_args[0].lower() or "en"
+    translation = translator.translate(text_arg, dest=lang)
+    await event.edit(f"Translated from **{constants.LANGUAGES.get(translation.src, 'English').title()}** to **{constants.LANGUAGES.get(translation.dest, 'English').title()}**:\n\n__{translation.text}__")
 
 
 @ldr.add("corona", help="Fetches Coronavirus stats, takes an optional country name as an argument.")

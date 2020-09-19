@@ -3,6 +3,7 @@ aiohttp
 asyncpraw
 cchardet
 cryptg
+googletrans
 gtts
 hachoir
 howdoi
