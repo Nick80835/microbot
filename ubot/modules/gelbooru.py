@@ -8,7 +8,6 @@ from ubot import ldr
 
 GEL_URL = "https://gelbooru.com/index.php"
 GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
-gel_button_dict = {}
 help_string = "Fetches images from Gelbooru, takes tags as arguments."
 
 
@@ -150,7 +149,7 @@ async def gelbooru_buttons(event):
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    gel_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    ldr.get_cbs_by_func(gelbooru_buttons_callback)[0].data[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
 
     await event.reply(
         f"[sauce]({GEL_SAUCE_URL}{valid_urls[0][1]})",
@@ -166,8 +165,8 @@ async def gelbooru_buttons_callback(event):
     dict_id = args_split[0]
     direction = args_split[1]
 
-    if dict_id in gel_button_dict:
-        this_dict = gel_button_dict[dict_id]
+    if dict_id in event.object.data:
+        this_dict = event.object.data[dict_id]
     else:
         return
 
