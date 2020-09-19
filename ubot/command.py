@@ -52,6 +52,7 @@ class CallbackQueryCommand:
     def __init__(self, func: FunctionType, args: dict):
         self.module = func.__module__.split(".")[-1]
         self.function = func
+        self.data = {}
 
         self.data_id = args.get("data_id")
         self.extra = args.get("extra", None)
