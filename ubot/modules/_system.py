@@ -1,9 +1,11 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import asyncio
+import os
 from platform import python_version
 from time import time_ns
 
+import psutil
 from telethon import version
 
 from ubot import ldr, micro_bot
@@ -71,9 +73,12 @@ async def sysd(event):
 async def alive(event):
     alive_format = "μBot is running!\n" \
                    "**Telethon version:** {0}\n" \
-                   "**Python version:** {1}"
+                   "**Python version:** {1}\n" \
+                   "**Memory usage:** {2}MiB"
 
-    await event.edit(alive_format.format(version.__version__, python_version()))
+    mem_usage = int(psutil.Process(os.getpid()).memory_info().rss / 1048576)
+
+    await event.edit(alive_format.format(version.__version__, python_version(), mem_usage))
 
 
 @ldr.add("shutdown")
