@@ -211,7 +211,7 @@ async def translate(event):
     text_arg = await ldr.get_text(event)
     lang = event.other_args[0].lower() or "en"
     translation = translator.translate(text_arg, dest=lang)
-    await event.edit(f"Translated from **{constants.LANGUAGES.get(translation.src, 'English').title()}** to **{constants.LANGUAGES.get(translation.dest, 'English').title()}**:\n\n__{translation.text}__")
+    await event.edit(f"Translated from **{constants.LANGUAGES.get(translation.src.lower(), 'English').title()}** to **{constants.LANGUAGES.get(translation.dest.lower(), 'English').title()}**:\n\n__{translation.text}__")
 
 
 @ldr.add("corona", help="Fetches Coronavirus stats, takes an optional country name as an argument.")
