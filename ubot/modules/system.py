@@ -79,7 +79,7 @@ async def ping(event):
 
 @ldr.add("repo")
 async def bot_repo(event):
-    await event.reply("https://github.com/Nick80835/microbot")
+    await event.reply("https://github.com/Nick80835/microbot/tree/bot")
 
 
 @ldr.add("disable", admin=True, help="Disables commands in the current chat, requires admin.")
