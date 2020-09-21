@@ -207,7 +207,7 @@ async def corona(event):
 
 
 @ldr.add_inline_article("corona", default="corona")
-async def corona(event):
+async def corona_inline(event):
     if event.args:
         async with ldr.aioclient.get(f"https://disease.sh/v3/covid-19/countries/{event.args}", headers={"accept": "application/json"}) as response:
             if response.status == 200:
