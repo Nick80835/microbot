@@ -2,6 +2,7 @@
 
 from time import time_ns
 
+from telethon import Button
 from ubot import ldr
 
 
@@ -11,6 +12,15 @@ async def delete_message(event):
 
     if message_to_delete and message_to_delete.from_id == (await event.client.get_me()).id:
         await message_to_delete.delete()
+
+
+@ldr.add("start", help="A start command to start the bot so you know what this bot is capable of when you start it, dumbass.")
+async def start_cmd(event):
+    await event.reply(
+        f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use {ldr.prefix()}help to see what commands I have!",
+        buttons=[Button.url("Creator", "https://t.me/Nick80835"), Button.url("Source", "https://github.com/Nick80835/microbot/tree/bot")],
+        link_preview=False
+    )
 
 
 @ldr.add("help")
