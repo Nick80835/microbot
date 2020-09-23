@@ -103,9 +103,9 @@ class Loader():
             reply = await event.get_reply_message()
 
             if return_msg:
-                return reply.text, reply
+                return reply.raw_text, reply
 
-            return reply.text
+            return reply.raw_text
         else:
             if return_msg:
                 return default, None
