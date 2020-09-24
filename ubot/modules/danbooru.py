@@ -8,6 +8,7 @@ from ubot import ldr
 
 DAN_URL = "http://danbooru.donmai.us/posts.json"
 DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
+dan_button_dict = {}
 help_string = "Fetches images from Danbooru, takes tags as arguments."
 
 
@@ -136,7 +137,7 @@ async def danbooru_buttons(event):
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    ldr.get_cbs_by_func(danbooru_buttons_callback)[0].data[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    dan_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
 
     await event.reply(
         f"[sauce]({DAN_SAUCE_URL}{valid_urls[0][1]})",
@@ -152,8 +153,8 @@ async def danbooru_buttons_callback(event):
     dict_id = args_split[0]
     direction = args_split[1]
 
-    if dict_id in event.object.data:
-        this_dict = event.object.data[dict_id]
+    if dict_id in dan_button_dict:
+        this_dict = dan_button_dict[dict_id]
     else:
         return
 
