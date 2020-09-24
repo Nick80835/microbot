@@ -36,6 +36,7 @@ class InlinePhotoCommand:
         self.function = func
 
         self.pattern = args.get("pattern")
+        self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
 
 
@@ -45,6 +46,7 @@ class InlineArticleCommand:
         self.function = func
 
         self.pattern = args.get("pattern")
+        self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
 
 
