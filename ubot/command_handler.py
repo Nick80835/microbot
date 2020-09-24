@@ -61,7 +61,7 @@ class CommandHandler():
 
     async def handle_inline(self, event):
         for command in self.inline_photo_commands:
-            pattern_match = search(self.inline_pattern_template.format(command.pattern), event.text)
+            pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
@@ -72,7 +72,7 @@ class CommandHandler():
                 return
 
         for command in self.inline_article_commands:
-            pattern_match = search(self.inline_pattern_template.format(command.pattern), event.text)
+            pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.text)
 
             if pattern_match:
                 if self.is_blacklisted(event, True):
@@ -122,7 +122,8 @@ class CommandHandler():
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
-        event.other_args = pattern_match.groups()[:-1]
+        event.other_args = pattern_match.groups()[1:-1]
+        event.command = pattern_match.groups()[0]
         event.object = command
 
         result_list = await command.function(event)
