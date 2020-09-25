@@ -1,6 +1,6 @@
 aiodns
 aiofiles
-aiohttp
+aiohttp[speedups]
 asyncpraw
 cchardet
 cryptg
