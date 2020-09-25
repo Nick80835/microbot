@@ -181,8 +181,8 @@ async def corona(event):
         response_list = [
             f"Corona stats for **{response['country']}**\n",
             f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
-            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
-            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2) if response['tests'] != 0 else 0.0}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2) if response['cases'] != 0 else 0.0}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
             f"**Recoveries**\n   {response['recovered']} total"
         ]
 
@@ -198,8 +198,8 @@ async def corona(event):
         response_list = [
             f"Global Corona stats\n",
             f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
-            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
-            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2) if response['tests'] != 0 else 0.0}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2) if response['cases'] != 0 else 0.0}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
             f"**Recoveries**\n   {response['recovered']} total"
         ]
 
@@ -218,8 +218,8 @@ async def corona_inline(event):
         response_list = [
             f"Corona stats for **{response['country']}**\n",
             f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
-            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
-            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2) if response['tests'] != 0 else 0.0}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2) if response['cases'] != 0 else 0.0}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
             f"**Recoveries**\n   {response['recovered']} total"
         ]
 
@@ -234,8 +234,8 @@ async def corona_inline(event):
         response_list = [
             f"Global Corona stats\n",
             f"**Cases**\n   {response['cases']} total\n   {response['todayCases']} today\n   {response['active']} active\n   {round(response['cases'] / response['population'] * 100, 2)}% of population",
-            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2)}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
-            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2)}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
+            f"**Tests**\n   {response['tests']} total\n   {round(response['cases'] / response['tests'] * 100, 2) if response['tests'] != 0 else 0.0}% positive\n   {round(response['tests'] / response['population'] * 100, 2)}% of population",
+            f"**Deaths**\n   {response['deaths']} total\n   {response['todayDeaths']} today\n   {round(response['deaths'] / response['cases'] * 100, 2) if response['cases'] != 0 else 0.0}% of cases\n   {round(response['deaths'] / response['population'] * 100, 2)}% of population",
             f"**Recoveries**\n   {response['recovered']} total"
         ]
 
