@@ -293,8 +293,16 @@ async def youtube_cmd(event):
 @ldr.add("yta", userlocking=True)
 async def youtube_audio_cmd(event):
     video = pafy.new(event.args)
-    video_stream = video.getbestaudio()
+    audio_stream = video.getbestaudio(preftype="m4a")
+
     try:
-        await event.reply(file=video_stream.url)
+        async with ldr.aioclient.get(audio_stream.url) as response:
+            if response.status == 200:
+                audio_data = io.BytesIO(await response.read())
+                audio_data.name = "audio.m4a"
+            else:
+                raise Exception
+
+        await event.reply(file=audio_data)
     except:
-        await event.reply(f"Download failed: [URL]({video_stream.url})")
+        await event.reply(f"Download failed: [URL]({audio_stream.url})")
