@@ -298,11 +298,16 @@ async def youtube_audio_cmd(event):
     try:
         async with ldr.aioclient.get(audio_stream.url) as response:
             if response.status == 200:
+                if int(response.headers["content-length"]) >= 40000000:
+                    await event.reply("Fuck off.")
+                    return
+
                 audio_data = io.BytesIO(await response.read())
                 audio_data.name = "audio.m4a"
             else:
                 raise Exception
 
-        await event.reply(file=audio_data)
+        file_handle = await upload_file(event.client, audio_data)
+        await event.reply(file=file_handle)
     except:
         await event.reply(f"Download failed: [URL]({audio_stream.url})")
