@@ -126,7 +126,7 @@ async def text_to_speech(event):
         await event.reply('Error loading the languages dictionary.')
         return
 
-    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
+    await event.client.send_file(event.peer_id, tts_bytesio, voice_note=True, reply_to=reply)
 
 
 @ldr.add("ip", help="IP lookup.")
@@ -258,7 +258,7 @@ async def youtube_cmd(event):
             wait_msg = await event.reply(f"Large file detected ({int(file_size / 1000000)}MB), this may take some time…")
 
             start_time = time_ns()
-            file_path = await download(video_stream.url, f"{event.chat_id}_{event.id}", ldr.aioclient)
+            file_path = await download(video_stream.url, f"{event.sender_id}_{event.id}", ldr.aioclient)
             end_time = time_ns()
 
             time_taken_seconds = int((end_time - start_time) / 1000000000) or 1

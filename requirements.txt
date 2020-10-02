@@ -3,7 +3,6 @@ aiofiles
 aiohttp[speedups]
 asyncpraw
 cchardet
-cryptg
 gTTS
 hachoir
 howdoi
@@ -11,6 +10,7 @@ pillow
 psutil
 speedtest-cli
 sqlalchemy
-telethon
+tgcrypto
 Pafy
 youtube-dl
+https://github.com/Nick80835/Telethon/archive/master.zip
