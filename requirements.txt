@@ -2,7 +2,6 @@ aiodns
 aiohttp[speedups]
 asyncpraw
 cchardet
-cryptg
 googletrans
 gtts
 hachoir
@@ -10,7 +9,8 @@ howdoi
 pillow
 psutil
 speedtest-cli
-telethon
+tgcrypto
 wikipedia
 Pafy
 youtube-dl
+https://github.com/Nick80835/Telethon/archive/master.zip
