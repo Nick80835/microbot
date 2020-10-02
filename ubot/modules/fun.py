@@ -33,7 +33,7 @@ async def ask_bot(event):
 
 @ldr.add("i('|)m", simple_pattern=True, hide_help=True, chance=15, fun=True)
 async def im_botname(event):
-    if event.args:
+    if event.args and " " not in event.args:
         await event.reply(f"Hi {event.args}, I'm {bot_name}!")
 
 
