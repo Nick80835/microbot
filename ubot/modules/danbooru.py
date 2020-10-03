@@ -1,27 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from time import time_ns
-
+from asyncbooru import Danbooru
 from telethon import Button
-
 from ubot import ldr
 
-DAN_URL = "http://danbooru.donmai.us/posts.json"
-DAN_SAUCE_URL = "https://danbooru.donmai.us/posts/"
+danbooru_api = Danbooru(ldr.aioclient)
 dan_button_dict = {}
 help_string = "Fetches images from Danbooru, takes tags as arguments."
-
-
-@ldr.add("danping", sudo=True, hide_help=True)
-async def danbooru_ping(event):
-    params = {"limit": 1,
-              "random": "true"}
-
-    start = time_ns()
-
-    async with ldr.aioclient.get(DAN_URL, params=params) as _:
-        time_taken_ms = int((time_ns() - start) / 1000000)
-        await event.reply(f"Danbooru response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add_list(["dan", "danx", "danq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
@@ -29,43 +14,21 @@ async def danbooru_ping(event):
 async def danbooru(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
-    rating = ""
+    posts = await danbooru_api.get_random_posts(event.args, 3, safety_arg)
 
-    if safety_arg == "x":
-        rating = "Rating:explicit"
-    elif safety_arg == "s":
-        rating = "Rating:safe"
-    elif safety_arg == "q":
-        rating = "Rating:questionable"
-
-    params = {"limit": 3,
-              "random": "true",
-              "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(DAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image in valid_urls:
+    for image in images:
         try:
-            await event.reply(f"[sauce]({DAN_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
@@ -75,73 +38,29 @@ async def danbooru(event):
 
 @ldr.add_inline_photo("dan(s|x|q|)", default="dan")
 async def danbooru_inline(event):
-    safety_arg = event.other_args[0]
-    rating = ""
-
-    if safety_arg == "x":
-        rating = "Rating:explicit"
-    elif safety_arg == "s":
-        rating = "Rating:safe"
-    elif safety_arg == "q":
-        rating = "Rating:questionable"
-
-    params = {"limit": 3,
-              "random": "true",
-              "tags": f"{rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(DAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            return
-
-    if not response:
-        return
-
-    valid_urls = []
-
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], f"[sauce]({DAN_SAUCE_URL}{post['id']})"])
-
-    if not valid_urls:
-        return
-
-    return valid_urls[:3]
+    posts = await danbooru_api.get_random_posts(event.args, 3, event.other_args[0])
+    return [[post.file_url, f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
 @ldr.add("danb", nsfw=True, userlocking=True)
 async def danbooru_buttons(event):
-    params = {"limit": 30,
-              "random": "true",
-              "tags": f"{event.args}".strip()}
+    posts = await danbooru_api.get_random_posts(event.args, 30)
 
-    async with ldr.aioclient.get(DAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    dan_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    dan_button_dict[f"{event.chat.id}_{event.id}"] = [0, images]
 
     await event.reply(
-        f"[sauce]({DAN_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0],
+        f"[sauce]({images[0][1]})",
+        file=images[0][0],
         buttons=[Button.inline('➡️', f'dan*{event.chat.id}_{event.id}*r')]
     )
 
@@ -183,7 +102,7 @@ async def danbooru_buttons_callback(event):
 
     try:
         await event.edit(
-            f"[sauce]({DAN_SAUCE_URL}{this_image[1]})",
+            f"[sauce]({this_image[1]})",
             file=this_image[0],
             buttons=buttons
         )

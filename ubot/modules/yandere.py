@@ -1,28 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from time import time_ns
-
+from asyncbooru import Yandere
 from telethon import Button
-
 from ubot import ldr
 
-YAN_URL = "https://yande.re/post.json"
-YAN_SAUCE_URL = "https://yande.re/post/show/"
+yandere_api = Yandere(ldr.aioclient)
 yan_button_dict = {}
-help_string = "Fetches images from Yande.re, takes tags as arguments."
-
-
-@ldr.add("yanping", sudo=True, hide_help=True)
-async def yandere_ping(event):
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random"}
-
-    start = time_ns()
-
-    async with ldr.aioclient.get(YAN_URL, params=params) as _:
-        time_taken_ms = int((time_ns() - start) / 1000000)
-        await event.reply(f"Yande.re response time -> **{time_taken_ms}**ms")
+help_string = "Fetches images from Yandere, takes tags as arguments."
 
 
 @ldr.add_list(["yan", "yanx", "yanq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
@@ -30,43 +14,21 @@ async def yandere_ping(event):
 async def yandere(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
-    rating = ""
+    posts = await yandere_api.get_random_posts(event.args, 3, safety_arg)
 
-    if safety_arg == "x":
-        rating = "rating:explicit"
-    elif safety_arg == "s":
-        rating = "rating:safe"
-    elif safety_arg == "q":
-        rating = "rating:questionable"
-
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(YAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image in valid_urls:
+    for image in images:
         try:
-            await event.reply(f"[sauce]({YAN_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
@@ -76,73 +38,29 @@ async def yandere(event):
 
 @ldr.add_inline_photo("yan(s|x|q|)", default="yan")
 async def yandere_inline(event):
-    safety_arg = event.other_args[0]
-    rating = ""
-
-    if safety_arg == "x":
-        rating = "rating:explicit"
-    elif safety_arg == "s":
-        rating = "rating:safe"
-    elif safety_arg == "q":
-        rating = "rating:questionable"
-
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(YAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            return
-
-    if not response:
-        return
-
-    valid_urls = []
-
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], f"[sauce]({YAN_SAUCE_URL}{post['id']})"])
-
-    if not valid_urls:
-        return
-
-    return valid_urls[:3]
+    posts = await yandere_api.get_random_posts(event.args, 3, event.other_args[0])
+    return [[post.file_url, f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
 @ldr.add("yanb", nsfw=True, userlocking=True)
 async def yandere_buttons(event):
-    params = {"page": 1,
-              "limit": 30,
-              "tags": f"order:random {event.args}".strip()}
+    posts = await yandere_api.get_random_posts(event.args, 30)
 
-    async with ldr.aioclient.get(YAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    yan_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    yan_button_dict[f"{event.chat.id}_{event.id}"] = [0, images]
 
     await event.reply(
-        f"[sauce]({YAN_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0],
+        f"[sauce]({images[0][1]})",
+        file=images[0][0],
         buttons=[Button.inline('➡️', f'yan*{event.chat.id}_{event.id}*r')]
     )
 
@@ -184,7 +102,7 @@ async def yandere_buttons_callback(event):
 
     try:
         await event.edit(
-            f"[sauce]({YAN_SAUCE_URL}{this_image[1]})",
+            f"[sauce]({this_image[1]})",
             file=this_image[0],
             buttons=buttons
         )

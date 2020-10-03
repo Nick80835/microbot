@@ -1,28 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from time import time_ns
-
+from asyncbooru import Sankaku
 from telethon import Button
-
 from ubot import ldr
 
-SAN_URL = "https://capi-v2.sankakucomplex.com/posts"
-SAN_SAUCE_URL = "https://beta.sankakucomplex.com/post/show/"
+sankaku_api = Sankaku(ldr.aioclient)
 san_button_dict = {}
 help_string = "Fetches images from Sankaku Complex, takes tags as arguments."
-
-
-@ldr.add("sanping", sudo=True, hide_help=True)
-async def sankaku_ping(event):
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random"}
-
-    start = time_ns()
-
-    async with ldr.aioclient.get(SAN_URL, params=params) as _:
-        time_taken_ms = int((time_ns() - start) / 1000000)
-        await event.reply(f"Sankaku response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add_list(["san", "sanx", "sanq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
@@ -30,43 +14,21 @@ async def sankaku_ping(event):
 async def sankaku(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
-    rating = ""
+    posts = await sankaku_api.get_random_posts(event.args, 3, safety_arg)
 
-    if safety_arg == "x":
-        rating = "rating:explicit"
-    elif safety_arg == "s":
-        rating = "rating:safe"
-    elif safety_arg == "q":
-        rating = "rating:questionable"
-
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(SAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image in valid_urls:
+    for image in images:
         try:
-            await event.reply(f"[sauce]({SAN_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
@@ -76,73 +38,29 @@ async def sankaku(event):
 
 @ldr.add_inline_photo("san(s|x|q|)", default="san")
 async def sankaku_inline(event):
-    safety_arg = event.other_args[0]
-    rating = ""
-
-    if safety_arg == "x":
-        rating = "rating:explicit"
-    elif safety_arg == "s":
-        rating = "rating:safe"
-    elif safety_arg == "q":
-        rating = "rating:questionable"
-
-    params = {"page": 1,
-              "limit": 3,
-              "tags": f"order:random {rating} {event.args}".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(SAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            return
-
-    if not response:
-        return
-
-    valid_urls = []
-
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], f"[sauce]({SAN_SAUCE_URL}{post['id']})"])
-
-    if not valid_urls:
-        return
-
-    return valid_urls[:3]
+    posts = await sankaku_api.get_random_posts(event.args, 3, event.other_args[0])
+    return [[post.file_url, f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
 @ldr.add("sanb", nsfw=True, userlocking=True)
 async def sankaku_buttons(event):
-    params = {"page": 1,
-              "limit": 30,
-              "tags": f"order:random {event.args}".strip()}
+    posts = await sankaku_api.get_random_posts(event.args, 30)
 
-    async with ldr.aioclient.get(SAN_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    san_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    san_button_dict[f"{event.chat.id}_{event.id}"] = [0, images]
 
     await event.reply(
-        f"[sauce]({SAN_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0],
+        f"[sauce]({images[0][1]})",
+        file=images[0][0],
         buttons=[Button.inline('➡️', f'san*{event.chat.id}_{event.id}*r')]
     )
 
@@ -184,7 +102,7 @@ async def sankaku_buttons_callback(event):
 
     try:
         await event.edit(
-            f"[sauce]({SAN_SAUCE_URL}{this_image[1]})",
+            f"[sauce]({this_image[1]})",
             file=this_image[0],
             buttons=buttons
         )
