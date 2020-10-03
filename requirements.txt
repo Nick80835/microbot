@@ -1,6 +1,7 @@
 aiodns
 aiofiles
 aiohttp[speedups]
+asyncbooru
 asyncpraw
 cchardet
 gTTS

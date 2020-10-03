@@ -1,31 +1,12 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
-from time import time_ns
-
+from asyncbooru import Gelbooru
 from telethon import Button
-
 from ubot import ldr
 
-GEL_URL = "https://gelbooru.com/index.php"
-GEL_SAUCE_URL = "https://gelbooru.com/index.php?page=post&s=view&id="
+gelbooru_api = Gelbooru(ldr.aioclient)
 gel_button_dict = {}
 help_string = "Fetches images from Gelbooru, takes tags as arguments."
-
-
-@ldr.add("gelping", sudo=True, hide_help=True)
-async def gelbooru_ping(event):
-    params = {"page": "dapi",
-              "s": "post",
-              "q": "index",
-              "json": 1,
-              "limit": 3,
-              "tags": f"sort:random"}
-
-    start = time_ns()
-
-    async with ldr.aioclient.get(GEL_URL, params=params) as _:
-        time_taken_ms = int((time_ns() - start) / 1000000)
-        await event.reply(f"Gelbooru response time -> **{time_taken_ms}**ms")
 
 
 @ldr.add_list(["gel", "gelx", "gelq"], pattern_extra="(f|)", nsfw=True, userlocking=True, help=help_string)
@@ -33,46 +14,21 @@ async def gelbooru_ping(event):
 async def gelbooru(event):
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
-    rating = ""
+    posts = await gelbooru_api.get_random_posts(event.args, 3, safety_arg)
 
-    if safety_arg == "x":
-        rating = "Rating:explicit"
-    elif safety_arg == "s":
-        rating = "Rating:safe"
-    elif safety_arg == "q":
-        rating = "Rating:questionable"
-
-    params = {"page": "dapi",
-              "s": "post",
-              "q": "index",
-              "json": 1,
-              "limit": 3,
-              "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(GEL_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    for image in valid_urls:
+    for image in images:
         try:
-            await event.reply(f"[sauce]({GEL_SAUCE_URL}{image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
@@ -82,79 +38,29 @@ async def gelbooru(event):
 
 @ldr.add_inline_photo("gel(s|x|q|)", default="gel")
 async def gelbooru_inline(event):
-    safety_arg = event.other_args[0]
-    rating = ""
-
-    if safety_arg == "x":
-        rating = "Rating:explicit"
-    elif safety_arg == "s":
-        rating = "Rating:safe"
-    elif safety_arg == "q":
-        rating = "Rating:questionable"
-
-    params = {"page": "dapi",
-              "s": "post",
-              "q": "index",
-              "json": 1,
-              "limit": 3,
-              "tags": f"{rating} {event.args} sort:random".strip().replace("  ", " ")}
-
-    async with ldr.aioclient.get(GEL_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            return
-
-    if not response:
-        return
-
-    valid_urls = []
-
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], f"[sauce]({GEL_SAUCE_URL}{post['id']})"])
-
-    if not valid_urls:
-        return
-
-    return valid_urls[:3]
+    posts = await gelbooru_api.get_random_posts(event.args, 3, event.other_args[0])
+    return [[post.file_url, f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
 @ldr.add("gelb", nsfw=True, userlocking=True)
 async def gelbooru_buttons(event):
-    params = {"page": "dapi",
-              "s": "post",
-              "q": "index",
-              "json": 1,
-              "limit": 30,
-              "tags": f"{event.args} sort:random"}
+    posts = await gelbooru_api.get_random_posts(event.args, 30)
 
-    async with ldr.aioclient.get(GEL_URL, params=params) as response:
-        if response.status == 200:
-            response = await response.json()
-        else:
-            await event.reply(f"An error occurred, response code: **{response.status}**")
-            return
-
-    if not response:
+    if not posts:
         await event.reply(f"No results for query: {event.args}")
         return
 
-    valid_urls = []
+    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
 
-    for post in response:
-        if 'file_url' in post.keys():
-            valid_urls.append([post['file_url'], post['id']])
-
-    if not valid_urls:
+    if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
         return
 
-    gel_button_dict[f"{event.chat.id}_{event.id}"] = [0, valid_urls]
+    gel_button_dict[f"{event.chat.id}_{event.id}"] = [0, images]
 
     await event.reply(
-        f"[sauce]({GEL_SAUCE_URL}{valid_urls[0][1]})",
-        file=valid_urls[0][0],
+        f"[sauce]({images[0][1]})",
+        file=images[0][0],
         buttons=[Button.inline('➡️', f'gel*{event.chat.id}_{event.id}*r')]
     )
 
@@ -196,7 +102,7 @@ async def gelbooru_buttons_callback(event):
 
     try:
         await event.edit(
-            f"[sauce]({GEL_SAUCE_URL}{this_image[1]})",
+            f"[sauce]({this_image[1]})",
             file=this_image[0],
             buttons=buttons
         )
