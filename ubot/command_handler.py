@@ -165,6 +165,7 @@ class CommandHandler():
 
         for command in self.callback_queries:
             if command.data_id == data_id:
+                event.command = data_id
                 event.args = data_data
                 event.extra = command.extra
                 event.object = command
