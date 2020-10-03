@@ -87,6 +87,8 @@ class MicroBot():
 
 micro_bot = MicroBot()
 ldr = micro_bot.loader
+client = micro_bot.client
+logger = micro_bot.logger
 
 try:
     micro_bot.run_until_done()
