@@ -71,7 +71,7 @@ async def floor(event):
         await event.reply("FLOOOOOOOOOOOOOOOOOOR")
 
 
-@ldr.add("bruh", simple_pattern=True, hide_help=True, chance=25, fun=True)
+@ldr.add("^bruh$", raw_pattern=True, hide_help=True, chance=15, fun=True)
 async def bruh_moment(event):
     if not event.args:
         await event.reply("moment")
