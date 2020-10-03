@@ -56,9 +56,9 @@ async def chatidgetter(event):
 async def useridgetter(event):
     if event.is_reply:
         reply = await event.get_reply_message()
-        user_id = reply.from_id
+        user_id = reply.sender_id
     else:
-        user_id = event.from_id
+        user_id = event.sender_id
 
     await event.reply(f"**User ID:** {user_id}")
 
@@ -73,7 +73,7 @@ async def userprofilegetter(event):
             return
     elif event.is_reply:
         reply = await event.get_reply_message()
-        reply_id = reply.from_id
+        reply_id = reply.sender_id
         if reply_id:
             try:
                 user_entity = await event.client.get_entity(reply_id)

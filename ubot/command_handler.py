@@ -4,7 +4,7 @@ import asyncio
 from random import randint
 from re import escape, search
 
-from telethon import events, functions, types
+from telethon import events
 
 from .fixes import inline_photos
 
@@ -65,7 +65,7 @@ class CommandHandler():
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.sender_id}")
                     return
 
                 await self.handle_inline_photo(event, pattern_match, command)
@@ -76,7 +76,7 @@ class CommandHandler():
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.from_id}")
+                    print(f"Attempted command ({event.text}) from blacklisted ID {event.sender_id}")
                     return
 
                 await self.handle_inline_article(event, pattern_match, command)
@@ -183,57 +183,57 @@ class CommandHandler():
                     return
 
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
-                    command.lock_reason = f"In use by **{event.from_id}** (`{event.raw_text}`)"
+                    command.lock_reason = f"In use by **{event.sender_id}** (`{event.raw_text}`)"
                     await command.function(event)
                     command.lock_reason = None
             elif command.user_locking:
-                if event.from_id in command.locked_users:
+                if event.sender_id in command.locked_users:
                     await event.reply(f"Please don't spam that command.")
                     return
 
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
-                    command.locked_users.append(event.from_id)
+                    command.locked_users.append(event.sender_id)
                     await command.function(event)
-                    command.locked_users.remove(event.from_id)
+                    command.locked_users.remove(event.sender_id)
             else:
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
                     await command.function(event)
         except Exception as exception:
             command.lock_reason = None
 
-            if event.from_id in command.locked_users:
-                command.locked_users.remove(event.from_id)
+            if event.sender_id in command.locked_users:
+                command.locked_users.remove(event.sender_id)
 
             await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
             raise exception
 
     async def check_privs(self, event, command):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
-            print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.from_id}")
+            print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.sender_id}")
             return False
 
         if command.owner and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted owner command ({event.raw_text}) from ID {event.from_id}")
+            print(f"Attempted owner command ({event.raw_text}) from ID {event.sender_id}")
             return False
 
         if command.sudo and not self.is_sudo(event) and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
+            print(f"Attempted sudo command ({event.raw_text}) from ID {event.sender_id}")
             return False
 
         if event.is_private and command.admin or event.chat and command.admin and not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
+            print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
             return False
 
         if event.chat and command.nsfw and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
             await event.reply("NSFW commands are disabled in this chat!")
-            print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
+            print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
         if event.chat and command.fun and str(event.chat.id) in self.settings.get_list("fun_blacklist"):
-            print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.from_id}")
+            print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
         return True

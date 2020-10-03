@@ -188,7 +188,7 @@ async def get_user(event):
             return
     elif event.is_reply:
         reply = await event.get_reply_message()
-        reply_id = reply.from_id
+        reply_id = reply.sender_id
 
         if reply_id:
             try:
