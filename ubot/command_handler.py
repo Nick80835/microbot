@@ -222,7 +222,7 @@ class CommandHandler():
             print(f"Attempted sudo command ({event.raw_text}) from ID {event.from_id}")
             return False
 
-        if not event.chat and command.admin or event.chat and command.admin and not await self.is_admin(event) and not self.is_sudo(event) and not self.is_owner(event):
+        if event.is_private and command.admin or event.chat and command.admin and not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
             await event.reply("You lack the permissions to use that command!")
             print(f"Attempted admin command ({event.raw_text}) from ID {event.from_id}")
             return False
@@ -243,13 +243,6 @@ class CommandHandler():
 
     def is_sudo(self, event):
         return bool(str(event.sender_id) in self.settings.get_list("sudo_users"))
-
-    async def is_admin(self, event):
-        if event.is_private:
-            return True
-
-        channel_participant = await event.client(functions.channels.GetParticipantRequest(event.chat, event.from_id))
-        return bool(isinstance(channel_participant.participant, (types.ChannelParticipantAdmin, types.ChannelParticipantCreator)))
 
     def is_blacklisted(self, event, inline=False):
         if inline:
