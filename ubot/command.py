@@ -38,6 +38,7 @@ class InlinePhotoCommand:
         self.pattern = args.get("pattern")
         self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
+        self.extra = args.get("extra", None)
 
 
 class InlineArticleCommand:
@@ -48,6 +49,7 @@ class InlineArticleCommand:
         self.pattern = args.get("pattern")
         self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
+        self.extra = args.get("extra", None)
 
 
 class CallbackQueryCommand:
