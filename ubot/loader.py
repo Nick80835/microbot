@@ -86,10 +86,17 @@ class Loader():
 
         def decorator(func):
             for pattern, extra in pattern_dict.items():
-                this_args = args.copy()
-                this_args["pattern"] = pattern
-                this_args["extra"] = args.get('extra', extra)
-                self.command_handler.incoming_commands.append(Command(func, this_args))
+                if isinstance(pattern, tuple):
+                    for patt in pattern:
+                        this_args = args.copy()
+                        this_args["pattern"] = patt
+                        this_args["extra"] = args.get('extra', extra)
+                        self.command_handler.incoming_commands.append(Command(func, this_args))
+                else:
+                    this_args = args.copy()
+                    this_args["pattern"] = pattern
+                    this_args["extra"] = args.get('extra', extra)
+                    self.command_handler.incoming_commands.append(Command(func, this_args))
 
             return func
 
