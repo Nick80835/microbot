@@ -1,5 +1,6 @@
 aiodns
 aiohttp[speedups]
+asyncbooru
 asyncpraw
 cchardet
 googletrans
