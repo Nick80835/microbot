@@ -28,10 +28,14 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(prefix, command.pattern, command.pattern_extra), event.raw_text)
 
             if pattern_match:
+                if command.raw_pattern:
+                    event.command = command.pattern
+                else:
+                    event.command = pattern_match.groups()[1]
+                    event.args = pattern_match.groups()[-1].strip()
+                    event.other_args = pattern_match.groups()[2:-1]
+
                 event.pattern_match = pattern_match
-                event.args = pattern_match.groups()[-1].strip()
-                event.other_args = pattern_match.groups()[2:-1]
-                event.command = pattern_match.groups()[1]
                 event.extra = command.extra
                 event.object = command
 
