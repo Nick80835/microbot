@@ -3,6 +3,7 @@
 import asyncio
 from random import randint
 from re import escape, search
+from traceback import format_exc
 
 from telethon import events
 
@@ -23,9 +24,15 @@ class CommandHandler():
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.settings = settings
         self.loader = loader
-        client.add_event_handler(self.handle_incoming, events.NewMessage(incoming=True))
+        client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
+
+    async def report_incoming_excepts(self, event):
+        try:
+            await self.handle_incoming(event)
+        except:
+            await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
