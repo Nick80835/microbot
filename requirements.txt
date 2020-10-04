@@ -1,7 +1,7 @@
 aiodns
 aiofiles
 aiohttp[speedups]
-asyncbooru
+asyncbooru>=0.0.5
 asyncpraw
 cchardet
 gTTS
