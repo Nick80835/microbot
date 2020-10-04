@@ -219,7 +219,11 @@ class CommandHandler():
             if event.sender_id in command.locked_users:
                 command.locked_users.remove(event.sender_id)
 
-            await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
+            try:
+                await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
+            except:
+                pass
+
             raise exception
 
     async def check_privs(self, event, command):
