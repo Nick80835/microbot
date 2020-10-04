@@ -111,3 +111,8 @@ async def change_prefix(event):
 @ldr.add("repo")
 async def bot_repo(event):
     await event.edit("https://github.com/Nick80835/microbot")
+
+
+@ldr.add("support")
+async def support_link(event):
+    await event.edit("[μBot Support](https://t.me/joinchat/Ed1JxFLq3DtQSbBnyNRI7A)")
