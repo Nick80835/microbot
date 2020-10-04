@@ -3,7 +3,7 @@
 import asyncio
 from random import randint
 from re import escape, search
-from traceback import format_exc
+from traceback import format_exc, print_exc
 
 from telethon import events
 
@@ -119,7 +119,7 @@ class CommandHandler():
                 else:
                     photo_coros += [self.try_coro(builder.photo(photo))]
             except:
-                pass
+                print_exc()
 
         if photo_coros:
             photos = await asyncio.gather(*photo_coros)
@@ -129,7 +129,7 @@ class CommandHandler():
         try:
             await event.answer([i for i in photos if i], gallery=True)
         except:
-            pass
+            print_exc()
 
     async def handle_inline_article(self, event, pattern_match, command):
         builder = event.builder
@@ -151,12 +151,12 @@ class CommandHandler():
             try:
                 articles += [await builder.article(title=result["title"], description=result["description"], text=result["text"])]
             except:
-                pass
+                print_exc()
 
         try:
             await event.answer([i for i in articles if i])
         except:
-            pass
+            print_exc()
 
     async def handle_callback_query(self, event):
         data_str = event.data.decode("utf-8")
@@ -174,7 +174,7 @@ class CommandHandler():
                     await command.function(event)
                 except Exception as exception:
                     await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
-                    raise exception
+                    print_exc()
 
     async def fallback_inline(self, event):
         defaults_list = self.inline_photo_commands + self.inline_article_commands
@@ -182,7 +182,7 @@ class CommandHandler():
         try:
             await event.answer([await event.builder.article(title=command.pattern, text=f"{self.loader.prefix()}{command.default}") for command in defaults_list if command.default])
         except:
-            pass
+            print_exc()
 
     async def try_coro(self, coro):
         try:
@@ -224,7 +224,7 @@ class CommandHandler():
             except:
                 pass
 
-            raise exception
+            print_exc()
 
     async def check_privs(self, event, command):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
