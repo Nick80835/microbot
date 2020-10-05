@@ -1,6 +1,7 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 from re import escape, search
+from traceback import print_exc
 
 from telethon import events
 
@@ -43,4 +44,4 @@ class CommandHandler():
                     await command.function(event)
                 except Exception as exception:
                     await event.reply(f"`An error occurred in {command.function.__name__}: {exception}`")
-                    raise exception
+                    print_exc()
