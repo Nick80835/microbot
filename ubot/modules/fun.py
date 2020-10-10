@@ -44,7 +44,7 @@ async def say_something(event):
             reply = await event.get_reply_message()
             await reply.reply(event.args)
         else:
-            await event.client.send_message(event.chat, event.args)
+            await event.respond(event.args)
 
         try:
             await event.delete()
