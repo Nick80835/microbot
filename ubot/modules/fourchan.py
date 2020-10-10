@@ -16,7 +16,7 @@ async def fourchan(event):
         await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}4c(f|) <board name>`")
         return
 
-    await event.edit(f"`Processing…`")
+    await event.edit("`Processing…`")
     as_file = bool(event.other_args[0])
 
     async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:

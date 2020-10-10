@@ -14,7 +14,7 @@ commands = {
 
 @ldr.add_dict(commands, pattern_extra="(f|)", help="Fetches images from Danbooru, Gelbooru, Konachan, Sankaku Complex and Yandere, takes tags as arguments.")
 async def booru(event):
-    await event.edit(f"`Processing…`")
+    await event.edit("`Processing…`")
     safety_arg = event.command[-1]
     as_file = bool(event.other_args[0])
     post = await event.extra.get_random_post(event.args, safety_arg)

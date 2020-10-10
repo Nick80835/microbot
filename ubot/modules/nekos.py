@@ -13,7 +13,7 @@ REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'blowjob']
 
 @ldr.add_list(NEKO_TYPES, pattern_extra="(f|)")
 async def supernekoatsume(event):
-    await event.edit(f"`Processing…`")
+    await event.edit("`Processing…`")
     nekotype = event.command.lower()
     as_file = bool(event.other_args[0])
 
@@ -38,7 +38,7 @@ async def supernekoatsume(event):
 
 @ldr.add("8ball")
 async def eightball(event):
-    await event.edit(f"`Processing…`")
+    await event.edit("`Processing…`")
 
     async with ldr.aioclient.get(NEKO_URL + "8ball") as response:
         if response.status == 200:
