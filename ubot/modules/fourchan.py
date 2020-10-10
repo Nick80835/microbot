@@ -18,7 +18,7 @@ async def fourchan(event):
         return
 
     if event.nsfw_disabled and event.args in NSFW_BOARDS:
-        await event.reply(f"Sorry, that board is NSFW and NSFW commands are disabled!")
+        await event.reply("Sorry, that board is NSFW and NSFW commands are disabled!")
         return
 
     as_file = bool(event.other_args[0])
