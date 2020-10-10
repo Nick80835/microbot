@@ -30,7 +30,7 @@ async def supernekoatsume(event):
             return
 
     try:
-        await event.client.send_file(event.chat_id, file=image_url, force_document=as_file, reply_to=reply_to)
+        await event.respond(file=image_url, force_document=as_file, reply_to=reply_to)
         await event.delete()
     except:
         await event.edit(f"`Failed to fetch media for query: `**{nekotype}**")
@@ -61,7 +61,7 @@ async def eightball(event):
     sticker_io.name = "sticker.webp"
 
     try:
-        await event.client.send_file(event.chat_id, file=sticker_io)
+        await event.respond(file=sticker_io)
         await event.delete()
     except:
-        await event.edit(f"`Failed to send 8ball! :(`")
+        await event.edit("`Failed to send 8ball! :(`")

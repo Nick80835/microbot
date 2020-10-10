@@ -43,7 +43,7 @@ async def urban_dict(event):
         file_io = io.BytesIO()
         file_io.write(bytes(definition.encode('utf-8')))
         file_io.name = f"definition of {response_word['word']}.txt"
-        await event.client.send_file(event.chat_id, file_io, caption="`Output was too large, sent it as a file.`")
+        await event.respond(file=file_io, caption="`Output was too large, sent it as a file.`")
         await event.delete()
         return
 

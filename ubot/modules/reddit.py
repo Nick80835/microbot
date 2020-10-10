@@ -57,7 +57,7 @@ async def imagefetcher(event, sub):
         return
 
     try:
-        await event.client.send_file(event.chat_id, image_url, caption=title)
+        await event.respond(file=image_url, caption=title)
         await event.delete()
     except:
         await event.edit(f"`Failed to download content from `**r/{sub}**`!`\n`Title: `**{title}**\n`URL: `{image_url}")

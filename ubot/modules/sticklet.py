@@ -28,7 +28,7 @@ async def stickcolor(event):
     image_stream.name = "sticker.webp"
     image.save(image_stream, "WebP")
     image_stream.seek(0)
-    await event.client.send_file(event.chat_id, image_stream)
+    await event.respond(file=image_stream)
 
 
 @ldr.add("slet")
@@ -70,7 +70,7 @@ async def sticklet(event):
     image.save(image_stream, "WebP")
     image_stream.seek(0)
 
-    await event.client.send_file(event.chat_id, image_stream)
+    await event.respond(file=image_stream)
 
 
 def find_optimal_wrap(text):

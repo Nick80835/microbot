@@ -89,7 +89,7 @@ async def pokemon_image(event):
     sticker_io.seek(0)
     sticker_io.name = "sticker.webp"
 
-    await event.client.send_file(event.chat, sticker_io)
+    await event.respond(file=sticker_io)
     await event.delete()
 
 
@@ -140,7 +140,7 @@ async def text_to_speech(event):
         await event.edit('`Error loading the languages dictionary.`')
         return
 
-    await event.client.send_file(event.chat_id, tts_bytesio, voice_note=True, reply_to=reply)
+    await event.respond(file=tts_bytesio, voice_note=True, reply_to=reply)
     await event.delete()
 
 
@@ -257,7 +257,7 @@ async def youtube_cmd(event):
     video = pafy.new(event.args)
     video_stream = video.getbest()
     try:
-        await event.client.send_file(event.chat_id, file=video_stream.url)
+        await event.respond(file=video_stream.url)
     except:
         await event.reply(f"`Download failed: `[URL]({video_stream.url})")
 
@@ -267,6 +267,6 @@ async def youtube_audio_cmd(event):
     video = pafy.new(event.args)
     video_stream = video.getbestaudio()
     try:
-        await event.client.send_file(event.chat_id, file=video_stream.url)
+        await event.respond(file=video_stream.url)
     except:
         await event.reply(f"`Download failed: `[URL]({video_stream.url})")

@@ -62,7 +62,7 @@ async def shibe(event):
         await event.edit(f"`There was an error finding the shibes! :( -> {shibe_inu}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), shibe_inu[0])
+    await event.respond(file=shibe_inu[0])
     await event.delete()
 
 
@@ -74,7 +74,7 @@ async def bird(event):
         await event.edit(f"`There was an error finding the birdies! :( -> {tori}`")
         return
 
-    await event.client.send_file(await event.client.get_input_entity(event.chat_id), tori[0])
+    await event.respond(file=tori[0])
     await event.delete()
 
 
@@ -86,7 +86,7 @@ async def cat(event):
         await event.reply(f"There was an error finding the cats! :( -> **{neko}**")
         return
 
-    await event.client.send_file(event.chat, neko[0]["url"], force_document=bool(event.other_args[1]))
+    await event.respond(file=neko[0]["url"], force_document=bool(event.other_args[1]))
     await event.delete()
 
 
@@ -98,5 +98,5 @@ async def dog(event):
         await event.edit(f"There was an error finding the dogs! :( -> **{inu}**")
         return
 
-    await event.client.send_file(event.chat, inu[0]["url"], force_document=bool(event.other_args[1]))
+    await event.respond(file=inu[0]["url"], force_document=bool(event.other_args[1]))
     await event.delete()
