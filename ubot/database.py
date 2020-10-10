@@ -20,11 +20,11 @@ class Database():
     conn = engine.connect()
 
     def ensure_disabled_commands_table(self, chat_id: int):
-        self.conn.execute(f"INSERT OR IGNORE INTO chats (id, disabled_commands) VALUES (?, ?);", (chat_id, "[]"))
+        self.conn.execute("INSERT OR IGNORE INTO chats (id, disabled_commands) VALUES (?, ?);", (chat_id, "[]"))
 
     def get_disabled_commands(self, chat_id: int) -> list:
         self.ensure_disabled_commands_table(chat_id)
-        disabled_raw = self.conn.execute(f"SELECT disabled_commands FROM chats WHERE id = ?;", (chat_id, )).fetchone()
+        disabled_raw = self.conn.execute("SELECT disabled_commands FROM chats WHERE id = ?;", (chat_id, )).fetchone()
         return json.loads(disabled_raw[0] if disabled_raw else "[]")
 
     def disable_command(self, chat_id: int, command: str):
@@ -41,4 +41,4 @@ class Database():
         if command in disabled_commands:
             disabled_commands.remove(command)
             new_disabled_commands = json.dumps(disabled_commands)
-            self.conn.execute(f"UPDATE chats SET disabled_commands = ? WHERE id = ?;", (new_disabled_commands, chat_id))
+            self.conn.execute("UPDATE chats SET disabled_commands = ? WHERE id = ?;", (new_disabled_commands, chat_id))

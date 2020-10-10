@@ -112,7 +112,7 @@ async def disable_command(event):
 
         await event.reply(f"**{event.args}** is not a command!")
     else:
-        await event.reply(f"Specify a command to disable!")
+        await event.reply("Specify a command to disable!")
 
 
 @ldr.add("enable", admin=True, help="Enables commands in the current chat, requires admin.")
@@ -126,7 +126,7 @@ async def enable_command(event):
 
         await event.reply(f"**{event.args}** is not a command!")
     else:
-        await event.reply(f"Specify a command to enable!")
+        await event.reply("Specify a command to enable!")
 
 
 @ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")

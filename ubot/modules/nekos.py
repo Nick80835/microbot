@@ -61,4 +61,4 @@ async def eightball(event):
     try:
         await event.reply(file=sticker_io)
     except:
-        await event.reply(f"Failed to send 8ball! :(")
+        await event.reply("Failed to send 8ball! :(")

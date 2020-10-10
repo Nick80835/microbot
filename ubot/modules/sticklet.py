@@ -10,7 +10,7 @@ from ubot import ldr
 @ldr.add("color")
 async def stickcolor(event):
     if not event.args:
-        await event.reply(f"Specify a valid color, use #colorhex or a color name.")
+        await event.reply("Specify a valid color, use #colorhex or a color name.")
         return
 
     try:
