@@ -31,7 +31,7 @@ async def supernekoatsume(event):
             return
 
     try:
-        await event.client.send_file(event.peer_id, file=image_url, force_document=as_file, reply_to=reply_to)
+        await event.respond(file=image_url, force_document=as_file, reply_to=reply_to)
     except:
         await event.reply(f"Failed to fetch media for query: **{nekotype}**")
 

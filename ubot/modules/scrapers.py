@@ -126,7 +126,7 @@ async def text_to_speech(event):
         await event.reply('Error loading the languages dictionary.')
         return
 
-    await event.client.send_file(event.peer_id, tts_bytesio, voice_note=True, reply_to=reply)
+    await event.respond(file=tts_bytesio, voice_note=True, reply_to=reply)
 
 
 @ldr.add("ip", help="IP lookup.")
@@ -268,7 +268,7 @@ async def youtube_cmd(event):
 
             file_handle = await upload_file(event.client, file_path)
 
-            await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
+            await event.respond(file=file_handle, reply_to=event, attributes=[
                 DocumentAttributeVideo(
                     duration=video.length,
                     w=video_stream.dimensions[0],
