@@ -41,7 +41,7 @@ async def fourchan(event):
         return
 
     try:
-        await event.respond(file=post_file_url, force_document=as_file, caption=post_info[2].replace("<br>", "\n") if post_info[2] else None, parse_mode="html")
+        await event.respond(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=post_file_url, force_document=as_file, parse_mode="html")
         await event.delete()
         return
     except:
