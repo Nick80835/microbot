@@ -6,7 +6,6 @@ asyncpraw
 cchardet
 gTTS
 hachoir
-howdoi
 pillow
 psutil
 speedtest-cli
