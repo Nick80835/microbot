@@ -1,19 +1,16 @@
 # SPDX-License-Identifier: GPL-2.0-or-later
 
 import io
-import os
 import re
 
 import pafy
 import wikipedia
 from googletrans import Translator, constants
 from gtts import gTTS
-from howdoi import howdoi
 from PIL import Image
 
 from ubot import ldr
 
-os.environ["HOWDOI_SEARCH_ENGINE"] = "bing"
 tts_lang = "EN"
 translator = Translator()
 
@@ -91,18 +88,6 @@ async def pokemon_image(event):
 
     await event.respond(file=sticker_io)
     await event.delete()
-
-
-@ldr.add("hdi")
-async def howdoi_cmd(event):
-    if not event.args:
-        await event.edit(f"`Syntax: {ldr.settings.get_config('cmd_prefix') or '.'}hdi <question>`")
-        return
-
-    response = howdoi.howdoi(vars(howdoi.get_parser().parse_args(event.args.split(' '))))
-    response = re.sub(r'\n\n+', '\n\n', response).strip()
-
-    await event.edit(f"**Query:**\n{event.args}\n**Answer:**\n{response}")
 
 
 @ldr.add("lang")
