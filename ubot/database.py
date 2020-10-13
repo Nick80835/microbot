@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 import json
 
 from sqlalchemy import Column, Integer, MetaData, String, Table, create_engine

@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 # Original source for the deepfrying code (used under the following license): https://github.com/Ovyerus/deeppyer
 
 # MIT License
