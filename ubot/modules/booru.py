@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 from asyncbooru import Danbooru, Gelbooru, Konachan, Sankaku, Yandere
 from ubot import ldr
 

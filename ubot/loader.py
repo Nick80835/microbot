@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 import glob
 from concurrent.futures import ThreadPoolExecutor
 from importlib import import_module, reload

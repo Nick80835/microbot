@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 from ubot import ldr
 
 CAT_URL = 'http://api.thecatapi.com/v1/images/search'
