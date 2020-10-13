@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 import asyncio
 from random import randint
 from re import escape, search

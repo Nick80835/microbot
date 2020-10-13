@@ -1,5 +1,3 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
-
 import asyncpraw
 from asyncprawcore import exceptions as redex
 
