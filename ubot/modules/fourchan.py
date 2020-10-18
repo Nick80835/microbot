@@ -15,13 +15,14 @@ async def fourchan(event):
         await event.reply(f"Syntax: {ldr.prefix()}4c(f|) <board name>")
         return
 
-    if event.nsfw_disabled and event.args in NSFW_BOARDS:
+    board = event.args.lower()
+    as_file = bool(event.other_args[0])
+
+    if event.nsfw_disabled and board in NSFW_BOARDS:
         await event.reply("Sorry, that board is NSFW and NSFW commands are disabled!")
         return
 
-    as_file = bool(event.other_args[0])
-
-    async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
+    async with ldr.aioclient.get(BOARD_URL.format(board)) as response:
         if response.status == 200:
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
@@ -29,17 +30,23 @@ async def fourchan(event):
             await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
-    async with ldr.aioclient.get(POST_URL.format(event.args, op_id)) as response:
+    async with ldr.aioclient.get(POST_URL.format(board, op_id)) as response:
         if response.status == 200:
             post_response = await response.json()
-            post_info = choice([[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS])
-            post_file_url = CONTENT_URL.format(event.args, post_info[0], post_info[1])
+            post_info_list = [[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS]
+
+            if not post_info_list:
+                await event.reply(f"No results for board: **{board}**")
+                return
+
+            post_info = choice(post_info_list)
+            post_file_url = CONTENT_URL.format(board, post_info[0], post_info[1])
         else:
             await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
     if not response:
-        await event.reply(f"No results for board: **{event.args}**")
+        await event.reply(f"No results for board: **{board}**")
         return
 
     try:
@@ -48,7 +55,7 @@ async def fourchan(event):
     except:
         pass
 
-    await event.reply(f"Failed to fetch media for board: **{event.args}**")
+    await event.reply(f"Failed to fetch media for board: **{board}**")
 
 
 @ldr.add_inline_photo("4c", default="4c")
@@ -56,7 +63,9 @@ async def fourchan_inline(event):
     if not event.args:
         return
 
-    async with ldr.aioclient.get(BOARD_URL.format(event.args)) as response:
+    board = event.args.lower()
+
+    async with ldr.aioclient.get(BOARD_URL.format(board)) as response:
         if response.status == 200:
             board_response = await response.json()
             op_id = choice(choice(board_response)["threads"])["no"]
@@ -65,14 +74,18 @@ async def fourchan_inline(event):
 
     post_file_url_list = []
 
-    async with ldr.aioclient.get(POST_URL.format(event.args, op_id)) as response:
+    async with ldr.aioclient.get(POST_URL.format(board, op_id)) as response:
         if response.status == 200:
             post_response = await response.json()
             post_info_list = [[i["tim"], i["ext"], i["com"] if "com" in i else None] for i in post_response["posts"] if "tim" in i and i["ext"] in VALID_ENDS]
+
+            if not post_info_list:
+                return
+
             shuffle(post_info_list)
 
             for post_info in post_info_list[:3]:
-                post_file_url_list += [CONTENT_URL.format(event.args, post_info[0], post_info[1])]
+                post_file_url_list += [CONTENT_URL.format(board, post_info[0], post_info[1])]
         else:
             return
 
