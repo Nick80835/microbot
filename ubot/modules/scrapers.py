@@ -250,7 +250,7 @@ async def youtube_cmd(event):
 
             file_handle = await upload_file(event.client, file_path)
 
-            await event.respond(file=file_handle, reply_to=event, attributes=[
+            await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
                 DocumentAttributeVideo(
                     duration=video.length,
                     w=video_stream.dimensions[0],
