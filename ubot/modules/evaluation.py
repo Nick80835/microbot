@@ -199,7 +199,8 @@ async def flipsticker(event):
     sticker_flipped_io.name = "sticker.webp"
     sticker_flipped_io.seek(0)
 
-    await event.reply(file=sticker_flipped_io)
+    await event.delete()
+    await reply.reply(file=sticker_flipped_io)
 
 
 @ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
