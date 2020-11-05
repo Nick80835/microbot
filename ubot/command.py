@@ -48,6 +48,7 @@ class InlineArticleCommand:
         self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
         self.extra = args.get("extra", None)
+        self.link_preview = args.get("link_preview", True)
 
 
 class CallbackQueryCommand:

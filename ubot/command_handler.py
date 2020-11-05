@@ -137,6 +137,7 @@ class CommandHandler():
         event.command = pattern_match.groups()[0]
         event.extra = command.extra
         event.object = command
+        event.link_preview = command.link_preview
 
         result_list = await command.function(event)
 
@@ -147,7 +148,7 @@ class CommandHandler():
 
         for result in result_list:
             try:
-                articles += [await builder.article(title=result["title"], description=result["description"], text=result["text"])]
+                articles += [await builder.article(title=result["title"], description=result["description"], text=result["text"], link_preview=event.link_preview)]
             except:
                 print_exc()
 
