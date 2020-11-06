@@ -187,7 +187,7 @@ async def flipsticker(event):
     if reply and reply.sticker:
         sticker_webp_data = reply.sticker
     else:
-        await event.edit("`Reply to a sticker to flip that bitch!`")
+        await event.edit("`Reply to a sticker to flip that fish!`")
         return
 
     sticker_webp_io = io.BytesIO()
