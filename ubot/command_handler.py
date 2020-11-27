@@ -4,6 +4,7 @@ from re import escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
+from telethon.tl.types import PeerChannel, PeerChat
 
 from .fixes import inline_photos
 
@@ -240,10 +241,12 @@ class CommandHandler():
             print(f"Attempted sudo command ({event.raw_text}) from ID {event.sender_id}")
             return False
 
-        if event.is_private and command.admin or event.chat and command.admin and not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
-            await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
-            return False
+        if command.admin:
+            if event.chat and not isinstance(event.peer_id, (PeerChat, PeerChannel)):
+                if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
+                    await event.reply("You lack the permissions to use that command!")
+                    print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
+                    return False
 
         if event.chat and command.nsfw and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
             await event.reply("NSFW commands are disabled in this chat!")
