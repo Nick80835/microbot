@@ -67,11 +67,15 @@ async def titlefetcher(event, sub):
 
     try:
         post = await subreddit.random() or await titlefetcherfallback(subreddit)
+        post.title
     except redex.Forbidden:
         await event.reply(f"**r/{sub}** is private!")
         return
     except (redex.NotFound, KeyError):
         await event.reply(f"**r/{sub}** doesn't exist!")
+        return
+    except AttributeError:
+        await event.reply(f"Failed to find any valid content on **r/{sub}**!")
         return
 
     await event.reply(post.title)
