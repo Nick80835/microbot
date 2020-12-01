@@ -4,7 +4,6 @@ from re import escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
-from telethon.tl.types import PeerChannel, PeerChat
 
 from .fixes import inline_photos
 
