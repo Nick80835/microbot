@@ -242,7 +242,7 @@ class CommandHandler():
             return False
 
         if command.admin:
-            if event.chat and not isinstance(event.peer_id, (PeerChat, PeerChannel)):
+            if event.chat and event.sender_id:
                 if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
                     await event.reply("You lack the permissions to use that command!")
                     print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
