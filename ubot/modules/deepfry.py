@@ -23,7 +23,6 @@
 # SOFTWARE.
 
 import io
-from functools import partial
 from random import randint, uniform
 
 from PIL import Image, ImageEnhance
@@ -64,7 +63,7 @@ async def deepfryer(event):
     image = Image.open(image)
 
     for _ in range(frycount):
-        image = await event.client.loop.run_in_executor(ldr.thread_pool, partial(deepfry, image))
+        image = await ldr.run_async(deepfrysync, image)
 
     fried_io = io.BytesIO()
     fried_io.name = "image.png"
@@ -77,7 +76,7 @@ async def deepfryer(event):
         await event.reply(file=fried_io, force_document=as_file)
 
 
-def deepfry(img):
+def deepfrysync(img):
     # Generate color overlay
     overlay = img.copy()
     overlay = ImageEnhance.Contrast(overlay).enhance(uniform(0.7, 1.8))
