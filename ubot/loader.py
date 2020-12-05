@@ -4,8 +4,8 @@ from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 
 from aiohttp import ClientSession
-
-from telethon.tl.types import DocumentAttributeFilename
+from telethon.tl.types import (DocumentAttributeFilename,
+                               DocumentAttributeSticker)
 
 from .command import Command
 from .command_handler import CommandHandler
@@ -132,6 +132,15 @@ class Loader():
                 return
         else:
             return
+
+    async def is_sticker(self, event) -> bool:
+        if event and event.sticker:
+            attrs = [i.alt for i in event.sticker.attributes if isinstance(i, DocumentAttributeSticker)]
+
+            if attrs and attrs[0]:
+                return True
+
+        return False
 
     def prefix(self):
         return (self.settings.get_list('cmd_prefix') or ['.'])[0]
