@@ -76,16 +76,29 @@ async def pokemon_image(event):
             await event.edit(f"An error occurred: **{response.status}**")
             return
 
+    await event.respond(file=await ldr.run_async(pokemon_image_sync, sprite_io))
+    await event.delete()
+
+
+def pokemon_image_sync(sprite_io):
     sticker_image = Image.open(io.BytesIO(sprite_io))
     sticker_image = sticker_image.crop(sticker_image.getbbox())
-    sticker_image = sticker_image.resize((sticker_image.size[0]*4, sticker_image.size[1]*4), Image.NEAREST)
+
+    final_width = 512
+    final_height = 512
+
+    if sticker_image.width > sticker_image.height:
+        final_height = 512 * (sticker_image.height / sticker_image.width)
+    elif sticker_image.width < sticker_image.height:
+        final_width = 512 * (sticker_image.width / sticker_image.height)
+
+    sticker_image = sticker_image.resize((int(final_width), int(final_height)), Image.NEAREST)
     sticker_io = io.BytesIO()
     sticker_image.save(sticker_io, "WebP", quality=99)
     sticker_io.seek(0)
     sticker_io.name = "sticker.webp"
 
-    await event.respond(file=sticker_io)
-    await event.delete()
+    return sticker_io
 
 
 @ldr.add("lang")

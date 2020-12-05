@@ -170,13 +170,17 @@ async def stickertopng(event):
 
     sticker_webp_io = io.BytesIO()
     await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    await event.reply(file=await ldr.run_async(stickertopngsync, sticker_webp_io), force_document=True)
+
+
+def stickertopngsync(sticker_webp_io):
     sticker_webp = Image.open(sticker_webp_io)
     sticker_png_io = io.BytesIO()
     sticker_webp.save(sticker_png_io, "PNG")
     sticker_png_io.name = "sticker.png"
     sticker_png_io.seek(0)
 
-    await event.reply(file=sticker_png_io, force_document=True)
+    return sticker_png_io
 
 
 @ldr.add("stickflip", help="Flips stickers horizontally.")
@@ -192,6 +196,11 @@ async def flipsticker(event):
 
     sticker_webp_io = io.BytesIO()
     await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    await event.delete()
+    await reply.reply(file=await ldr.run_async(flipstickersync, sticker_webp_io))
+
+
+def flipstickersync(sticker_webp_io):
     sticker_webp = Image.open(sticker_webp_io)
     sticker_webp = ImageOps.mirror(sticker_webp)
     sticker_flipped_io = io.BytesIO()
@@ -199,8 +208,7 @@ async def flipsticker(event):
     sticker_flipped_io.name = "sticker.webp"
     sticker_flipped_io.seek(0)
 
-    await event.delete()
-    await reply.reply(file=sticker_flipped_io)
+    return sticker_flipped_io
 
 
 @ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
@@ -223,6 +231,10 @@ async def createsticker(event):
 
     image_io = io.BytesIO()
     await event.client.download_media(data, image_io)
+    await event.reply(file=await ldr.run_async(createstickersync, image_io), force_document=True)
+
+
+def createstickersync(image_io):
     sticker_png = Image.open(image_io)
     sticker_png = sticker_png.crop(sticker_png.getbbox())
 
@@ -240,7 +252,7 @@ async def createsticker(event):
     sticker_new_io.name = "sticker.png"
     sticker_new_io.seek(0)
 
-    await event.reply(file=sticker_new_io, force_document=True)
+    return sticker_new_io
 
 
 @ldr.add("compress")
@@ -265,7 +277,10 @@ async def compressor(event):
 
     sticker_io = io.BytesIO()
     await event.client.download_media(sticker_webp_data, sticker_io)
+    await event.reply(file=await ldr.run_async(compressorsync, sticker_io, compression_quality))
 
+
+def compressorsync(sticker_io, compression_quality):
     sticker_image = Image.open(sticker_io)
     sticker_image = sticker_image.convert("RGB")
     sticker_io = io.BytesIO()
@@ -276,14 +291,4 @@ async def compressor(event):
     sticker_io.seek(0)
     sticker_io.name = "sticker.webp"
 
-    await event.reply(file=sticker_io)
-
-
-@ldr.add("eiter")
-async def edit_iterator(event):
-    for i in range(45):
-        await asyncio.sleep(0.08)
-        try:
-            await event.edit(f"`{i}`")
-        except:
-            pass
+    return sticker_io

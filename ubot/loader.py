@@ -1,5 +1,6 @@
 import glob
 from concurrent.futures import ThreadPoolExecutor
+from functools import partial
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 
@@ -141,6 +142,9 @@ class Loader():
                 return True
 
         return False
+
+    async def run_async(self, function, *args):
+        return await self.client.loop.run_in_executor(self.thread_pool, partial(function, *args))
 
     def prefix(self):
         return (self.settings.get_list('cmd_prefix') or ['.'])[0]

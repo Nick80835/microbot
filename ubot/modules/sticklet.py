@@ -12,21 +12,30 @@ async def stickcolor(event):
         await event.edit("`Specify a valid color, use #colorhex or a color name.`")
         return
 
+    color_sticker = await ldr.run_async(stickcolorsync, event.args)
+
+    if color_sticker:
+        await event.respond(file=color_sticker)
+        await event.delete()
+    else:
+        await event.edit(f"**{event.args}**` is an invalid color, use #colorhex or a color name.`")
+
+
+def stickcolorsync(color):
     try:
-        image = Image.new("RGBA", (512, 512), event.args)
+        image = Image.new("RGBA", (512, 512), color)
     except:
         try:
-            image = Image.new("RGBA", (512, 512), "#" + event.args)
+            image = Image.new("RGBA", (512, 512), "#" + color)
         except:
-            await event.edit(f"**{event.args}**` is an invalid color, use #colorhex or a color name.`")
             return
 
-    await event.delete()
     image_stream = io.BytesIO()
     image_stream.name = "sticker.webp"
     image.save(image_stream, "WebP")
     image_stream.seek(0)
-    await event.respond(file=image_stream)
+
+    return image_stream
 
 
 @ldr.add("slet")
@@ -42,6 +51,10 @@ async def sticklet(event):
     sticktext = find_optimal_wrap(sticktext)
     sticktext = '\n'.join(sticktext)
 
+    await event.respond(file=await ldr.run_async(stickletsync, sticktext))
+
+
+def stickletsync(sticktext):
     image = Image.new("RGBA", (512, 512), (255, 255, 255, 0))
     draw = ImageDraw.Draw(image)
     fontsize = 230
@@ -68,7 +81,7 @@ async def sticklet(event):
     image.save(image_stream, "WebP")
     image_stream.seek(0)
 
-    await event.respond(file=image_stream)
+    return image_stream
 
 
 def find_optimal_wrap(text):
