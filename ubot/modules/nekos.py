@@ -50,13 +50,18 @@ async def eightball(event):
             await event.reply(f"An error occurred, response code: **{response.status}**")
             return
 
+    try:
+        await event.reply(file=await ldr.run_async(eightballsync, image_data))
+    except:
+        await event.reply("Failed to send 8ball! :(")
+
+
+def eightballsync(image_data):
     sticker_image = Image.open(io.BytesIO(image_data))
+    sticker_image = sticker_image.resize((512, 512), Image.BILINEAR)
     sticker_io = io.BytesIO()
     sticker_image.save(sticker_io, "WebP", quality=99)
     sticker_io.seek(0)
     sticker_io.name = "sticker.webp"
 
-    try:
-        await event.reply(file=sticker_io)
-    except:
-        await event.reply("Failed to send 8ball! :(")
+    return sticker_io
