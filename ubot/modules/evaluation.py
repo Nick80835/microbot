@@ -96,7 +96,7 @@ async def userprofilegetter(event):
 async def stickertopng(event):
     reply = await event.get_reply_message()
 
-    if reply and reply.sticker:
+    if reply and await ldr.is_sticker(reply):
         sticker_webp_data = reply.sticker
     else:
         await event.reply("Reply to a sticker to get it as a PNG file!")
@@ -117,7 +117,7 @@ async def stickertopng(event):
 async def flipsticker(event):
     reply = await event.get_reply_message()
 
-    if reply and reply.sticker:
+    if reply and await ldr.is_sticker(reply):
         sticker_webp_data = reply.sticker
     else:
         await event.reply("Reply to a sticker to flip that bitch!")
@@ -186,7 +186,7 @@ async def compressor(event):
     except ValueError:
         compression_quality = 15
 
-    if reply and reply.sticker:
+    if reply and await ldr.is_sticker(reply):
         sticker_webp_data = reply.sticker
     else:
         await event.reply("Reply to a sticker to compress that bitch!")
