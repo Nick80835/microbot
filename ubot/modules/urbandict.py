@@ -1,9 +1,13 @@
 import io
+from re import findall
+from urllib.parse import quote_plus
 
 from ubot import ldr
 
 UD_QUERY_URL = 'http://api.urbandictionary.com/v0/define'
 UD_RANDOM_URL = 'http://api.urbandictionary.com/v0/random'
+UD_TERM_URL = 'https://www.urbandictionary.com/define.php?term={0}'
+UD_AUTHOR_URL = 'https://www.urbandictionary.com/author.php?author={0}'
 
 
 @ldr.add("ud", help="Fetches words from Urban Dictionary, takes an optional word as an argument.")
@@ -30,19 +34,33 @@ async def urban_dict(event):
         await event.edit(f"`No results for query:` **{udquery}**")
         return
 
-    definition = f"**{response_word['word']}**: `{response_word['definition']}`"
+    word = response_word['word']
+    author = response_word['author']
+    definition = response_word['definition']
+    example = response_word['example']
 
-    if response_word['example']:
-        definition += f"\n\n**Example**: `{response_word['example']}`"
+    for match in findall(r'\[([A-Za-z0-9 _\-]+)\]', definition):
+        definition = definition.replace(f"[{match}]", f'<a href="{UD_TERM_URL.format(quote_plus(match))}">{match}</a>')
 
-    definition = definition.replace("[", "").replace("]", "")
+    if example:
+        for match in findall(r'\[([A-Za-z0-9 _\-]+)\]', example):
+            example = example.replace(f"[{match}]", f'<a href="{UD_TERM_URL.format(quote_plus(match))}">{match}</a>')
 
-    if len(definition) >= 4096:
+        full_definition = f'<b>{word}</b> by <a href="{UD_AUTHOR_URL.format(quote_plus(author))}">{author}</a>: <i>{definition}</i>\n\n<b>Example</b>: <i>{example}</i>'
+    else:
+        full_definition = f'<b>{word}</b> by <a href="{UD_AUTHOR_URL.format(quote_plus(author))}">{author}</a>: <i>{definition}</i>'
+
+    if len(full_definition) >= 4096:
+        if example:
+            bare_definition = f"{word}: {definition}\n\nExample: {example}"
+        else:
+            bare_definition = f"{word}: {definition}"
+
         file_io = io.BytesIO()
-        file_io.write(bytes(definition.encode('utf-8')))
-        file_io.name = f"definition of {response_word['word']}.txt"
+        file_io.write(bytes(bare_definition.replace("[", "").replace("]", "").encode('utf-8')))
+        file_io.name = f"definition of {word}.txt"
         await event.respond("`Output was too large, sent it as a file.`", file=file_io)
         await event.delete()
         return
 
-    await event.edit(definition)
+    await event.edit(full_definition, parse_mode="html")
