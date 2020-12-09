@@ -37,6 +37,7 @@ class InlinePhotoCommand:
         self.pattern_extra = args.get("pattern_extra", "")
         self.default = args.get("default", None)
         self.extra = args.get("extra", None)
+        self.parse_mode = args.get("parse_mode", "md")
 
 
 class InlineArticleCommand:
@@ -49,6 +50,7 @@ class InlineArticleCommand:
         self.default = args.get("default", None)
         self.extra = args.get("extra", None)
         self.link_preview = args.get("link_preview", True)
+        self.parse_mode = args.get("parse_mode", "md")
 
 
 class CallbackQueryCommand:
