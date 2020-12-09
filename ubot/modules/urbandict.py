@@ -39,11 +39,11 @@ async def urban_dict(event):
     definition = response_word['definition']
     example = response_word['example']
 
-    for match in findall(r'\[([A-Za-z0-9 _\-]+)\]', definition):
+    for match in findall(r'\[(.*?)\]', definition):
         definition = definition.replace(f"[{match}]", f'<a href="{UD_TERM_URL.format(quote_plus(match))}">{match}</a>')
 
     if example:
-        for match in findall(r'\[([A-Za-z0-9 _\-]+)\]', example):
+        for match in findall(r'\[(.*?)\]', example):
             example = example.replace(f"[{match}]", f'<a href="{UD_TERM_URL.format(quote_plus(match))}">{match}</a>')
 
         full_definition = f'<b>{word}</b> by <a href="{UD_AUTHOR_URL.format(quote_plus(author))}">{author}</a>: <i>{definition}</i>\n\n<b>Example</b>: <i>{example}</i>'
@@ -63,4 +63,4 @@ async def urban_dict(event):
         await event.delete()
         return
 
-    await event.edit(full_definition, parse_mode="html")
+    await event.edit(full_definition, parse_mode="html", link_preview=False)
