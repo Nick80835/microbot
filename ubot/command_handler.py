@@ -102,6 +102,7 @@ class CommandHandler():
         event.command = pattern_match.groups()[0]
         event.extra = command.extra
         event.object = command
+        event.parse_mode = command.parse_mode
 
         photo_list = await command.function(event)
 
@@ -113,7 +114,14 @@ class CommandHandler():
         for photo in photo_list:
             try:
                 if isinstance(photo, list):
-                    photo_coros += [self.try_coro(inline_photos.photo(event.client, photo[0], text=photo[1]))]
+                    photo_coros += [
+                        self.try_coro(inline_photos.photo(
+                            event.client,
+                            photo[0],
+                            text=photo[1],
+                            parse_mode=event.parse_mode
+                        ))
+                    ]
                 else:
                     photo_coros += [self.try_coro(builder.photo(photo))]
             except:
@@ -138,6 +146,7 @@ class CommandHandler():
         event.extra = command.extra
         event.object = command
         event.link_preview = command.link_preview
+        event.parse_mode = command.parse_mode
 
         result_list = await command.function(event)
 
@@ -148,7 +157,15 @@ class CommandHandler():
 
         for result in result_list:
             try:
-                articles += [await builder.article(title=result["title"], description=result["description"], text=result["text"], link_preview=event.link_preview)]
+                articles += [
+                    await builder.article(
+                        title=result["title"],
+                        description=result["description"],
+                        text=result["text"],
+                        link_preview=event.link_preview,
+                        parse_mode=event.parse_mode
+                    )
+                ]
             except:
                 print_exc()
 
