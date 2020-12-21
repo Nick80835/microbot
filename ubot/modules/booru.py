@@ -52,7 +52,7 @@ async def booru(event):
         await event.reply(f"No results for query: {event.args}")
         return
 
-    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
+    images = [[post.file_url, post.sauce, post.source] for post in posts if post.file_url]
 
     if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
@@ -60,7 +60,7 @@ async def booru(event):
 
     for image in images:
         try:
-            await event.reply(f"[sauce]({image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]}) [original sauce]({image[2]})" if image[2] else f"[sauce]({image[1]})", file=image[0], force_document=as_file)
             return
         except:
             pass
@@ -75,7 +75,7 @@ async def booru(event):
 @ldr.add_inline_photo("yan(s|x|q|)", default="yan", extra=yan_api)
 async def booru_inline(event):
     posts = await event.extra.get_random_posts(event.args, 3, event.other_args[0])
-    return [[post.file_url, f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
+    return [[post.file_url, f"[sauce]({post.sauce}) [original sauce]({post.source})" if post.source else f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
 @ldr.add_dict(commands_butt, help=help_str, userlocking=True, nsfw=True)
@@ -86,7 +86,7 @@ async def booru_buttons(event):
         await event.reply(f"No results for query: {event.args}")
         return
 
-    images = [[post.file_url, post.sauce] for post in posts if post.file_url]
+    images = [[post.file_url, post.sauce, post.source] for post in posts if post.file_url]
 
     if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
@@ -95,7 +95,7 @@ async def booru_buttons(event):
     event.extra[1][f"{event.chat.id}_{event.id}"] = [0, images]
 
     await event.reply(
-        f"[sauce]({images[0][1]})",
+        f"[sauce]({images[0][1]}) [original sauce]({images[0][2]})" if images[0][2] else f"[sauce]({images[0][1]})",
         file=images[0][0],
         buttons=[Button.inline('➡️', f'{event.extra[2]}*{event.chat.id}_{event.id}*r')]
     )
@@ -142,7 +142,7 @@ async def booru_buttons_callback(event):
 
     try:
         await event.edit(
-            f"[sauce]({this_image[1]})",
+            f"[sauce]({this_image[1]}) [original sauce]({this_image[2]})" if this_image[2] else f"[sauce]({this_image[1]})",
             file=this_image[0],
             buttons=buttons
         )
