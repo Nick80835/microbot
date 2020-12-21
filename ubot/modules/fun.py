@@ -93,3 +93,13 @@ async def unbab(event):
 @ldr.add("(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)
 async def moo(event):
     await event.reply(choice(moo_answers))
+
+
+@ldr.add("kickme")
+async def kickme(event):
+    await event.reply("LOLE")
+
+    try:
+        await event.client.kick_participant(event.chat, await event.get_sender())
+    except:
+        pass
