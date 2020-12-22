@@ -1,14 +1,11 @@
 import io
 import re
-from time import time_ns
 
 import pafy
 from gtts import gTTS
 from PIL import Image
-from telethon.tl.types import DocumentAttributeVideo
 
 from ubot.fixes.fast_telethon import upload_file
-from ubot.fixes.parallel_download import download
 from ubot import ldr
 
 
@@ -243,46 +240,9 @@ async def youtube_cmd(event):
     video_stream = video.getbest(preftype="mp4")
 
     try:
-        cache_required, file_size = await ldr.cache.is_cache_required(video_stream.url)
-
-        if cache_required:
-            if file_size >= 1000000000:
-                await event.reply(f"File too large to send ({int(file_size / 1000000)}MB), sorry about that.")
-                return
-
-            wait_msg = await event.reply(f"Large file detected ({int(file_size / 1000000)}MB), this may take some time…")
-
-            start_time = time_ns()
-            file_path = await download(video_stream.url, f"{event.sender_id}_{event.id}", ldr.aioclient)
-            end_time = time_ns()
-
-            time_taken_seconds = int((end_time - start_time) / 1000000000) or 1
-            speed = int(int(file_size / 1000000) / time_taken_seconds)
-
-            await wait_msg.edit(f"Download complete, took {time_taken_seconds} seconds at ~{speed}MB/s")
-
-            file_handle = await upload_file(event.client, file_path)
-
-            await event.client.send_file(event.chat, file=file_handle, reply_to=event, attributes=[
-                DocumentAttributeVideo(
-                    duration=video.length,
-                    w=video_stream.dimensions[0],
-                    h=video_stream.dimensions[1],
-                    supports_streaming=True
-                )])
-
-            await wait_msg.delete()
-
-            ldr.cache.remove_cache(file_path)
-        else:
-            await event.reply(file=video_stream.url)
+        await event.reply(file=video_stream.url)
     except:
-        try:
-            ldr.cache.remove_cache(file_path)
-        except:
-            pass
-
-        await event.reply(f"Download failed: [URL]({video_stream.url})")
+        await event.reply(f"Download failed, the video was probably over 20MB, use other bots for this shit: [URL]({video_stream.url})")
 
 
 @ldr.add("yta", userlocking=True)
@@ -293,7 +253,7 @@ async def youtube_audio_cmd(event):
     try:
         async with ldr.aioclient.get(audio_stream.url) as response:
             if response.status == 200:
-                if int(response.headers["content-length"]) >= 40000000:
+                if int(response.headers["content-length"]) >= 20000000:
                     await event.reply("Fuck off.")
                     return
 
