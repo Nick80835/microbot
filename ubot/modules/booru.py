@@ -32,12 +32,20 @@ commands_nsfw = {
     ("yan", "yanx", "yanq"): yan_api
 }
 
-commands_butt = {
-    "danb": [dan_api, dan_butt, "dan"],
-    "gelb": [gel_api, gel_butt, "gel"],
-    "konb": [kon_api, kon_butt, "kon"],
-    "sanb": [san_api, san_butt, "san"],
-    "yanb": [yan_api, yan_butt, "yan"]
+commands_butt_sfw = {
+    "danbs": [dan_api, dan_butt, "dan"],
+    "gelbs": [gel_api, gel_butt, "gel"],
+    "konbs": [kon_api, kon_butt, "kon"],
+    "sanbs": [san_api, san_butt, "san"],
+    "yanbs": [yan_api, yan_butt, "yan"]
+}
+
+commands_butt_nsfw = {
+    ("danb", "danbx", "danbq"): [dan_api, dan_butt, "dan"],
+    ("gelb", "gelbx", "gelbq"): [gel_api, gel_butt, "gel"],
+    ("konb", "konbx", "konbq"): [kon_api, kon_butt, "kon"],
+    ("sanb", "sanbx", "sanbq"): [san_api, san_butt, "san"],
+    ("yanb", "yanbx", "yanbq"): [yan_api, yan_butt, "yan"]
 }
 
 
@@ -78,9 +86,11 @@ async def booru_inline(event):
     return [[post.file_url, f"[sauce]({post.sauce}) [original sauce]({post.source})" if post.source else f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
-@ldr.add_dict(commands_butt, help=help_str, userlocking=True, nsfw=True)
+@ldr.add_dict(commands_butt_sfw, help=help_str, userlocking=True)
+@ldr.add_dict(commands_butt_nsfw, help=help_str, userlocking=True, nsfw=True)
 async def booru_buttons(event):
-    posts = await event.extra[0].get_random_posts(event.args, 30)
+    safety_arg = event.command[-1]
+    posts = await event.extra[0].get_random_posts(event.args, 30, safety_arg)
 
     if not posts:
         await event.reply(f"No results for query: {event.args}")
