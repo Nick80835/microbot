@@ -6,6 +6,7 @@ from os.path import basename, dirname, isfile
 
 from aiohttp import ClientSession
 from telethon.tl.types import (DocumentAttributeFilename,
+                               DocumentAttributeImageSize,
                                DocumentAttributeSticker)
 
 from .cache import Cache
@@ -174,9 +175,12 @@ class Loader():
 
     async def is_sticker(self, event) -> bool:
         if event and event.sticker:
-            attrs = [i.alt for i in event.sticker.attributes if isinstance(i, DocumentAttributeSticker)]
+            stick_attr = [i.alt for i in event.sticker.attributes if isinstance(i, DocumentAttributeSticker)]
+            size_attr = [i for i in event.sticker.attributes if isinstance(i, DocumentAttributeImageSize)]
 
-            if attrs and attrs[0]:
+            if stick_attr and stick_attr[0]:
+                return True
+            elif size_attr and ((size_attr[0].w == 512 and size_attr[0].h <= 512) or (size_attr[0].w <= 512 and size_attr[0].h == 512)):
                 return True
 
         return False
