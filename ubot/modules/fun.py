@@ -74,6 +74,11 @@ async def bruh_moment(event):
     await event.reply("moment")
 
 
+@ldr.add("^ayaya$", raw_pattern=True, hide_help=True, fun=True)
+async def ayaya(event):
+    await event.reply("AYAYA")
+
+
 @ldr.add("bab", hide_help=True, fun=True)
 async def bab(event):
     if event.is_reply:
