@@ -202,6 +202,22 @@ async def wiki_cmd(event):
     await event.edit(text)
 
 
+@ldr.add("deldog", help="Pastes the supplied text or a replied messages text to del.dog.")
+async def deldog(event):
+    text = await ldr.get_text(event)
+
+    if not text:
+        await event.edit("`Reply to a message with text or supply text as an argument to paste it to dogbin!`")
+        return
+
+    async with ldr.aioclient.post("https://del.dog/documents", data=text.encode("utf-8")) as response:
+        if response.status == 200:
+            json = await response.json()
+            await event.edit(f"[Pasted to dogbin!](https://del.dog/{json.get('key')})")
+        else:
+            await event.edit(f"An error occurred: status {response.status}")
+
+
 @ldr.add("trt", pattern_extra=f"( {'| '.join(constants.LANGUAGES.keys())}|)", help="Translates text to the given language code appended to the trt command, defaults to English.")
 async def translate(event):
     text_arg = await ldr.get_text(event)
