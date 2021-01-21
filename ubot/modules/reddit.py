@@ -143,7 +143,8 @@ reddit_images = {
     "meme": "DankMemes",
     "okbr": "OKBuddyRetard",
     "comedy": "ComedyNecrophilia",
-    "reddit": "RedditMoment"
+    "reddit": "RedditMoment",
+    "heartdisease": "Chonkers"
 }
 
 reddit_bodies = {
