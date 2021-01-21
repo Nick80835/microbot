@@ -144,7 +144,8 @@ reddit_images = {
     "okbr": "OKBuddyRetard",
     "comedy": "ComedyNecrophilia",
     "reddit": "RedditMoment",
-    "heartdisease": "Chonkers"
+    "heartdisease": "Chonkers",
+    "smolcat": "IllegallySmolCats"
 }
 
 reddit_bodies = {
