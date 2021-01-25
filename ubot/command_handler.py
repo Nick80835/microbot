@@ -61,7 +61,11 @@ class CommandHandler():
 
                 if not command.raw_pattern:
                     event.args = pattern_match.groups()[-1].strip()
-                    event.other_args = pattern_match.groups()[2:-1]
+
+                    if command.simple_pattern:
+                        event.other_args = pattern_match.groups()[1:-1]
+                    else:
+                        event.other_args = pattern_match.groups()[2:-1]
 
                 event.pattern_match = pattern_match
                 event.extra = command.extra
