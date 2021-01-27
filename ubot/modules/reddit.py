@@ -138,7 +138,11 @@ reddit_images = {
     "pourn": "PourPainting",
     "monke": "Ape",
     "meme": "DankMemes",
-    "okbr": "OKBuddyRetard"
+    "okbr": "OKBuddyRetard",
+    "comedy": "ComedyNecrophilia",
+    "reddit": "RedditMoment",
+    "heartdisease": "Chonkers",
+    "smolcat": "IllegallySmolCats"
 }
 
 reddit_bodies = {
