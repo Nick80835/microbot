@@ -22,7 +22,7 @@ class CommandHandler():
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.settings = settings
         self.loader = loader
-        client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, func=lambda e: e.raw_text and not e.fwd_from))
+        client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
 
