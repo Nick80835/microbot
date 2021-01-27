@@ -13,7 +13,7 @@ class CommandHandler():
 
     def __init__(self, client, settings):
         self.settings = settings
-        client.add_event_handler(self.handle_outgoing, events.NewMessage(outgoing=True, func=lambda e: not e.via_bot_id and e.raw_text))
+        client.add_event_handler(self.handle_outgoing, events.NewMessage(outgoing=True, forwards=False, func=lambda e: not e.via_bot_id and e.raw_text))
 
     async def handle_outgoing(self, event):
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
