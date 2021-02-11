@@ -16,45 +16,29 @@ kon_butt = {}
 san_butt = {}
 yan_butt = {}
 
-commands_sfw = {
-    "dans": dan_api,
-    "gels": gel_api,
-    "kons": kon_api,
-    "sans": san_api,
-    "yans": yan_api
+normal_commands = {
+    "dan": dan_api,
+    "gel": gel_api,
+    "kon": kon_api,
+    "san": san_api,
+    "yan": yan_api
 }
 
-commands_nsfw = {
-    ("dan", "danx", "danq"): dan_api,
-    ("gel", "gelx", "gelq"): gel_api,
-    ("kon", "konx", "konq"): kon_api,
-    ("san", "sanx", "sanq"): san_api,
-    ("yan", "yanx", "yanq"): yan_api
-}
-
-commands_butt_sfw = {
-    "danbs": [dan_api, dan_butt, "dan"],
-    "gelbs": [gel_api, gel_butt, "gel"],
-    "konbs": [kon_api, kon_butt, "kon"],
-    "sanbs": [san_api, san_butt, "san"],
-    "yanbs": [yan_api, yan_butt, "yan"]
-}
-
-commands_butt_nsfw = {
-    ("danb", "danbx", "danbq"): [dan_api, dan_butt, "dan"],
-    ("gelb", "gelbx", "gelbq"): [gel_api, gel_butt, "gel"],
-    ("konb", "konbx", "konbq"): [kon_api, kon_butt, "kon"],
-    ("sanb", "sanbx", "sanbq"): [san_api, san_butt, "san"],
-    ("yanb", "yanbx", "yanbq"): [yan_api, yan_butt, "yan"]
+button_commands = {
+    "danb": [dan_api, dan_butt, "dan"],
+    "gelb": [gel_api, gel_butt, "gel"],
+    "konb": [kon_api, kon_butt, "kon"],
+    "sanb": [san_api, san_butt, "san"],
+    "yanb": [yan_api, yan_butt, "yan"]
 }
 
 
-@ldr.add_dict(commands_sfw, pattern_extra="(f|)", help=help_str, userlocking=True)
-@ldr.add_dict(commands_nsfw, pattern_extra="(f|)", help=help_str, userlocking=True, nsfw=True)
+@ldr.add_dict(normal_commands, pattern_extra="(s)(f|)", help=help_str, userlocking=True)
+@ldr.add_dict(normal_commands, pattern_extra="(x|q|)(f|)", help=help_str, userlocking=True, nsfw=True, nsfw_warning="NSFW commands are disabled in this chat, add 's' to the end of the command for SFW images.")
 async def booru(event):
     safety_arg = event.command[-1]
-    as_file = bool(event.other_args[0])
-    posts = await event.extra.get_random_posts(event.args, 3, safety_arg)
+    as_file = bool(event.other_args[1])
+    posts = await event.extra.get_random_posts(event.other_args[0], 3, safety_arg)
 
     if not posts:
         await event.reply(f"No results for query: {event.args}")
@@ -86,8 +70,8 @@ async def booru_inline(event):
     return [[post.file_url, f"[sauce]({post.sauce}) [original sauce]({post.source})" if post.source else f"[sauce]({post.sauce})"] for post in posts if post.file_url] if posts else None
 
 
-@ldr.add_dict(commands_butt_sfw, help=help_str, userlocking=True)
-@ldr.add_dict(commands_butt_nsfw, help=help_str, userlocking=True, nsfw=True)
+@ldr.add_dict(button_commands, pattern_extra="(s)", help=help_str, userlocking=True)
+@ldr.add_dict(button_commands, pattern_extra="(x|q|)", help=help_str, userlocking=True, nsfw=True, nsfw_warning="NSFW commands are disabled in this chat, add 's' to the end of the command for SFW images.")
 async def booru_buttons(event):
     safety_arg = event.command[-1]
     posts = await event.extra[0].get_random_posts(event.args, 30, safety_arg)
