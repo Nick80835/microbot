@@ -223,7 +223,7 @@ class CommandHandler():
                     command.lock_reason = None
             elif command.user_locking:
                 if event.sender_id in command.locked_users:
-                    await event.reply(f"Please don't spam that command.")
+                    await event.reply("Please don't spam that command.")
                     return
 
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
@@ -269,7 +269,7 @@ class CommandHandler():
                     return False
 
         if event.chat and command.nsfw and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
-            await event.reply("NSFW commands are disabled in this chat!")
+            await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
