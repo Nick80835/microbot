@@ -73,7 +73,7 @@ async def booru_inline(event):
 @ldr.add_dict(button_commands, pattern_extra="(s)", help=help_str, userlocking=True)
 @ldr.add_dict(button_commands, pattern_extra="(x|q|)", help=help_str, userlocking=True, nsfw=True, nsfw_warning="NSFW commands are disabled in this chat, add 's' to the end of the command for SFW images.")
 async def booru_buttons(event):
-    safety_arg = event.command[-1]
+    safety_arg = event.other_args[0]
     posts = await event.extra[0].get_random_posts(event.args, 30, safety_arg)
 
     if not posts:
