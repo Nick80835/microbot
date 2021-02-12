@@ -36,9 +36,7 @@ button_commands = {
 @ldr.add_dict(normal_commands, pattern_extra="(s)(f|)", help=help_str, userlocking=True)
 @ldr.add_dict(normal_commands, pattern_extra="(x|q|)(f|)", userlocking=True, nsfw=True, nsfw_warning="NSFW commands are disabled in this chat, add 's' to the end of the command for SFW images.", hide_help=True)
 async def booru(event):
-    safety_arg = event.command[-1]
-    as_file = bool(event.other_args[1])
-    posts = await event.extra.get_random_posts(event.other_args[0], 3, safety_arg)
+    posts = await event.extra.get_random_posts(event.args, 3, event.other_args[0])
 
     if not posts:
         await event.reply(f"No results for query: {event.args}")
@@ -52,7 +50,7 @@ async def booru(event):
 
     for image in images:
         try:
-            await event.reply(f"[sauce]({image[1]}) [original sauce]({image[2]})" if image[2] else f"[sauce]({image[1]})", file=image[0], force_document=as_file)
+            await event.reply(f"[sauce]({image[1]}) [original sauce]({image[2]})" if image[2] else f"[sauce]({image[1]})", file=image[0], force_document=bool(event.other_args[1]))
             return
         except:
             pass
@@ -73,8 +71,7 @@ async def booru_inline(event):
 @ldr.add_dict(button_commands, pattern_extra="(s)", help=help_str, userlocking=True)
 @ldr.add_dict(button_commands, pattern_extra="(x|q|)", userlocking=True, nsfw=True, nsfw_warning="NSFW commands are disabled in this chat, add 's' to the end of the command for SFW images.", hide_help=True)
 async def booru_buttons(event):
-    safety_arg = event.other_args[0]
-    posts = await event.extra[0].get_random_posts(event.args, 30, safety_arg)
+    posts = await event.extra[0].get_random_posts(event.args, 30, event.other_args[0])
 
     if not posts:
         await event.reply(f"No results for query: {event.args}")
