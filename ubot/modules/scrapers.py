@@ -98,7 +98,7 @@ def pokemon_image_sync(sprite_io):
 
 @ldr.add("tts", help="Text to speech.")
 async def text_to_speech(event):
-    text, reply = await ldr.get_text(event, return_msg=True)
+    text, reply = await event.get_text(return_msg=True)
 
     if not text:
         await event.reply("Give me text or reply to text to use TTS.")
@@ -123,7 +123,7 @@ async def text_to_speech(event):
 
 @ldr.add("ip", help="IP lookup.")
 async def ip_lookup(event):
-    ip = await ldr.get_text(event)
+    ip = await event.get_text()
 
     if not ip:
         await event.reply("Provide an IP!")
