@@ -186,18 +186,16 @@ def stickertopngsync(sticker_webp_io):
 @ldr.add("stickflip", help="Flips stickers horizontally.")
 async def flipsticker(event):
     await event.edit("`Flipping this bitch…`")
-    reply = await event.get_reply_message()
+    sticker = await event.get_sticker()
 
-    if reply and reply.sticker:
-        sticker_webp_data = reply.sticker
-    else:
+    if not sticker:
         await event.edit("`Reply to a sticker to flip that bitch!`")
         return
 
     sticker_webp_io = io.BytesIO()
-    await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    await event.client.download_media(sticker, sticker_webp_io)
     await event.delete()
-    await reply.reply(file=await ldr.run_async(flipstickersync, sticker_webp_io))
+    await event.respond(file=await ldr.run_async(flipstickersync, sticker_webp_io))
 
 
 def flipstickersync(sticker_webp_io):
@@ -214,20 +212,11 @@ def flipstickersync(sticker_webp_io):
 @ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
 async def createsticker(event):
     await event.edit("`Creating sticker PNG…`")
+    data = await event.get_image()
 
-    if event.is_reply:
-        reply_message = await event.get_reply_message()
-        data = await ldr.get_image(reply_message)
-
-        if not data:
-            await event.edit("`Reply to or caption an image to make it sticker-sized!`")
-            return
-    else:
-        data = await ldr.get_image(event)
-
-        if not data:
-            await event.edit("`Reply to or caption an image to make it sticker-sized!`")
-            return
+    if not data:
+        await event.edit("`Reply to or caption an image to make it sticker-sized!`")
+        return
 
     image_io = io.BytesIO()
     await event.client.download_media(data, image_io)

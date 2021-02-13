@@ -111,7 +111,7 @@ async def set_lang(event):
 @ldr.add("tts", help="Text to speech.")
 async def text_to_speech(event):
     await event.edit("`Processing…`")
-    text, reply = await ldr.get_text(event, return_msg=True)
+    text, reply = await event.get_text(return_msg=True)
 
     if not text:
         await event.edit("`Give me text or reply to text to use TTS.`")
@@ -142,7 +142,7 @@ async def text_to_speech(event):
 
 @ldr.add("ip", help="IP lookup.")
 async def ip_lookup(event):
-    ip = await ldr.get_text(event)
+    ip = await event.get_text()
 
     if not ip:
         await event.edit("`Provide an IP!`")
@@ -181,7 +181,7 @@ async def ip_lookup(event):
 
 @ldr.add("wiki")
 async def wiki_cmd(event):
-    query = await ldr.get_text(event)
+    query = await event.get_text()
 
     if not query:
         await event.edit("`You didn't specify what to search for!`")
@@ -204,7 +204,7 @@ async def wiki_cmd(event):
 
 @ldr.add("deldog", help="Pastes the supplied text or a replied messages text to del.dog.")
 async def deldog(event):
-    text = await ldr.get_text(event)
+    text = await event.get_text()
 
     if not text:
         await event.edit("`Reply to a message with text or supply text as an argument to paste it to dogbin!`")
@@ -220,7 +220,7 @@ async def deldog(event):
 
 @ldr.add("trt", pattern_extra=f"( {'| '.join(constants.LANGUAGES.keys())}|)", help="Translates text to the given language code appended to the trt command, defaults to English.")
 async def translate(event):
-    text_arg = await ldr.get_text(event)
+    text_arg = await event.get_text()
     lang = event.other_args[0].lower().strip() or "en"
     translation = translator.translate(text_arg, dest=lang)
     await event.edit(f"Translated from **{constants.LANGUAGES.get(translation.src.lower(), 'Unknown').title()}** to **{constants.LANGUAGES.get(translation.dest.lower(), 'Unknown').title()}**:\n\n__{translation.text}__")

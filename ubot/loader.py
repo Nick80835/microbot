@@ -96,53 +96,6 @@ class Loader():
     def get_cmds_by_func(self, func) -> list:
         return [i for i in self.command_handler.outgoing_commands if i.function == func]
 
-    async def get_text(self, event, with_reply=True, return_msg=False, default=None):
-        if event.args:
-            if return_msg:
-                if event.is_reply:
-                    return event.args, await event.get_reply_message()
-
-                return event.args, None
-
-            return event.args
-        elif event.is_reply and with_reply:
-            reply = await event.get_reply_message()
-
-            if return_msg:
-                return reply.raw_text, reply
-
-            return reply.raw_text
-        else:
-            if return_msg:
-                return default, None
-
-            return default
-
-    async def get_image(self, event):
-        if event and event.media:
-            if event.photo:
-                return event.photo
-            elif event.document:
-                if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
-                    return
-                if event.gif or event.video or event.audio or event.voice:
-                    return
-
-                return event.media.document
-            else:
-                return
-        else:
-            return
-
-    async def is_sticker(self, event) -> bool:
-        if event and event.sticker:
-            attrs = [i.alt for i in event.sticker.attributes if isinstance(i, DocumentAttributeSticker)]
-
-            if attrs and attrs[0]:
-                return True
-
-        return False
-
     async def run_async(self, function, *args):
         return await self.client.loop.run_in_executor(self.thread_pool, partial(function, *args))
 

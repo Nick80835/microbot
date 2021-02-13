@@ -18,7 +18,7 @@ async def kang(event):
     from_image = False
 
     if reply:
-        kang_image_data = await ldr.get_image(reply)
+        kang_image_data = await event.get_image(force_reply=True)
 
         if kang_image_data and not reply.document:
             from_image = True

@@ -32,6 +32,12 @@ from ubot import ldr
 
 @ldr.add("deepfry", pattern_extra="(f|)", help="Deepfries images, takes a number of passes as an argument.")
 async def deepfryer(event):
+    data = await event.get_image()
+
+    if not data:
+        await event.edit("`Reply to an image or sticker or caption an image to deep fry it!`")
+        return
+
     as_file = bool(event.other_args[0])
 
     try:
@@ -40,20 +46,6 @@ async def deepfryer(event):
             raise ValueError
     except ValueError:
         frycount = 1
-
-    if event.is_reply:
-        reply_message = await event.get_reply_message()
-        data = await ldr.get_image(reply_message)
-
-        if not data:
-            await event.edit("`I can't deep fry that!`")
-            return
-    else:
-        data = await ldr.get_image(event)
-
-        if not data:
-            await event.edit("`Reply to an image or sticker or caption an image to deep fry it!`")
-            return
 
     # Download photo (highres) as byte array
     await event.edit("`Downloading media…`")

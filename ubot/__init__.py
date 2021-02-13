@@ -1,11 +1,12 @@
 import sys
 from logging import INFO, basicConfig, getLogger
 
-import telethon as tt
+import telethon
 from telethon.errors.rpcerrorlist import PhoneNumberInvalidError
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
+from .custom import ExtendedEvent
 from .loader import Loader
 from .settings import Settings
 
@@ -62,7 +63,7 @@ class MicroBot():
     def start_client(self):
         api_key, api_hash, session_name = self._check_config()
 
-        self.client = tt.TelegramClient(session_name, api_key, api_hash, connection=CTA)
+        self.client = telethon.TelegramClient(session_name, api_key, api_hash, connection=CTA)
 
         try:
             self.client.start()
@@ -79,6 +80,8 @@ class MicroBot():
         await self.loader.aioclient.close()
         await self.client.disconnect()
 
+
+telethon.events.NewMessage.Event = ExtendedEvent
 
 micro_bot = MicroBot()
 ldr = micro_bot.loader

@@ -40,7 +40,7 @@ def stickcolorsync(color):
 
 @ldr.add("slet")
 async def sticklet(event):
-    sticktext = await ldr.get_text(event)
+    sticktext = await event.get_text()
 
     if not sticktext:
         await event.edit("`I need text to sticklet!`")
