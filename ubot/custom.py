@@ -8,15 +8,15 @@ class ExtendedEvent(NewMessage.Event):
     async def get_text(self, return_msg=False, default=""):
         if self.args:
             if return_msg:
-                return self.args, await self.get_reply_message() if self.is_reply else self.args, self
+                return (self.args, await self.get_reply_message()) if self.is_reply else (self.args, self)
 
             return self.args
 
         if self.is_reply:
             reply = await self.get_reply_message()
-            return reply.raw_text, reply if return_msg else reply.raw_text
+            return (reply.raw_text, reply) if return_msg else reply.raw_text
 
-        return default, self if return_msg else default
+        return (default, self) if return_msg else default
 
     async def get_image(self, event=None, with_reply=True, force_reply=False):
         event = event or self
