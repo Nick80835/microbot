@@ -18,22 +18,24 @@ class ExtendedEvent(NewMessage.Event):
 
         return default, self if return_msg else default
 
-    async def get_image(self, with_reply=True):
-        if self and self.media:
-            if self.photo:
-                return self.photo
+    async def get_image(self, event=None, with_reply=True, force_reply=False):
+        event = event or self
 
-            if self.document:
-                if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in self.media.document.attributes:
+        if event and event.media and not force_reply:
+            if event.photo:
+                return event.photo
+
+            if event.document:
+                if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
                     return
 
-                if self.gif or self.video or self.audio or self.voice:
+                if event.gif or event.video or event.audio or event.voice:
                     return
 
-                return self.media.document
+                return event.media.document
 
-        if with_reply and self.is_reply:
-            return await (await self.get_reply_message()).get_image(with_reply=False)
+        if with_reply and event.is_reply:
+            return await event.get_image(event=await event.get_reply_message(), with_reply=False)
 
     async def get_sticker(self):
         reply = await self.get_reply_message()
