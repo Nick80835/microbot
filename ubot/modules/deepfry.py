@@ -62,10 +62,7 @@ async def deepfryer(event):
     image.save(fried_io, "PNG")
     fried_io.seek(0)
 
-    if event.is_reply:
-        await reply_message.reply(file=fried_io, force_document=as_file)
-    else:
-        await event.reply(file=fried_io, force_document=as_file)
+    await event.respond(file=fried_io, force_document=as_file, reply_to=event.reply_to_msg_id or event.id)
 
 
 def deepfrysync(img):
