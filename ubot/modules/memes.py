@@ -17,7 +17,7 @@ zal_chars = " ̷̡̛̮͇̝͉̫̭͈͗͂̎͌̒̉̋́͜ ̵̠͕͍̌́̀̑̐̇̎̚͝�
 
 @ldr.add("cp")
 async def copypasta(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     text_arg = await shitpostify(text_arg)
     text_arg = await mockify(text_arg)
@@ -32,7 +32,7 @@ async def copypasta(event):
 
 @ldr.add("mock")
 async def mock(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     mock_text = await mockify(text_arg)
 
@@ -44,7 +44,7 @@ async def mock(event):
 
 @ldr.add("vap")
 async def vapor(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     vapor_text = await vaporize(text_arg)
 
@@ -56,7 +56,7 @@ async def vapor(event):
 
 @ldr.add("pop")
 async def popifycmd(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     pop_text = await popify(text_arg)
 
@@ -68,7 +68,7 @@ async def popifycmd(event):
 
 @ldr.add("cheem")
 async def cheemifycmd(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     cheems_text = await cheemify(text_arg)
 
@@ -80,7 +80,7 @@ async def cheemifycmd(event):
 
 @ldr.add("zal")
 async def zalgo(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     zalgo_text = await zalgofy(text_arg)
 
@@ -92,7 +92,7 @@ async def zalgo(event):
 
 @ldr.add("owo")
 async def owo(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     owo_text = await owoify(text_arg)
 
@@ -104,7 +104,7 @@ async def owo(event):
 
 @ldr.add("yoda")
 async def yodafy(event):
-    text_arg, reply = await ldr.get_text(event, default=filler, return_msg=True)
+    text_arg, reply = await event.get_text(default=filler, return_msg=True)
 
     async with ldr.aioclient.get("http://yoda-api.appspot.com/api/v1/yodish", params={"text": text_arg}) as response:
         if response.status == 200:

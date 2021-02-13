@@ -5,9 +5,6 @@ from importlib import import_module, reload
 from os.path import basename, dirname, isfile
 
 from aiohttp import ClientSession
-from telethon.tl.types import (DocumentAttributeFilename,
-                               DocumentAttributeImageSize,
-                               DocumentAttributeSticker)
 
 from .cache import Cache
 from .command import (CallbackQueryCommand, Command, InlineArticleCommand,
@@ -134,56 +131,6 @@ class Loader():
 
     def get_cbs_by_func(self, func) -> list:
         return [i for i in self.command_handler.callback_queries if i.function == func]
-
-    async def get_text(self, event, with_reply=True, return_msg=False, default=None):
-        if event.args:
-            if return_msg:
-                if event.is_reply:
-                    return event.args, await event.get_reply_message()
-
-                return event.args, event
-
-            return event.args
-        elif event.is_reply and with_reply:
-            reply = await event.get_reply_message()
-
-            if return_msg:
-                return reply.raw_text, reply
-
-            return reply.raw_text
-        else:
-            if return_msg:
-                return default, event
-
-            return default
-
-    async def get_image(self, event):
-        if event and event.media:
-            if event.photo:
-                return event.photo
-            elif event.document:
-                if DocumentAttributeFilename(file_name='AnimatedSticker.tgs') in event.media.document.attributes:
-                    return
-                if event.gif or event.video or event.audio or event.voice:
-                    return
-
-                return event.media.document
-            else:
-                return
-        else:
-            return
-
-    async def is_sticker(self, event) -> bool:
-        if event and event.sticker:
-            stick_attr = [i.alt for i in event.sticker.attributes if isinstance(i, DocumentAttributeSticker)]
-            size_attr = [i for i in event.sticker.attributes if isinstance(i, DocumentAttributeImageSize)]
-
-            if stick_attr and stick_attr[0]:
-                return True
-            elif size_attr and ((size_attr[0].w == 512 and size_attr[0].h <= 512) or (size_attr[0].w <= 512 and size_attr[0].h == 512)):
-                return True
-
-        return False
 
     async def run_async(self, function, *args):
         return await self.client.loop.run_in_executor(self.thread_pool, partial(function, *args))

@@ -94,16 +94,14 @@ async def userprofilegetter(event):
 
 @ldr.add("stickpng", help="Converts stickers to PNG files.")
 async def stickertopng(event):
-    reply = await event.get_reply_message()
+    sticker = await event.get_sticker()
 
-    if reply and await ldr.is_sticker(reply):
-        sticker_webp_data = reply.sticker
-    else:
+    if not sticker:
         await event.reply("Reply to a sticker to get it as a PNG file!")
         return
 
     sticker_webp_io = io.BytesIO()
-    await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    await event.client.download_media(sticker, sticker_webp_io)
     await event.reply(file=await ldr.run_async(stickertopngsync, sticker_webp_io), force_document=True)
 
 
@@ -119,16 +117,14 @@ def stickertopngsync(sticker_webp_io):
 
 @ldr.add("stickflip", help="Flips stickers horizontally.")
 async def flipsticker(event):
-    reply = await event.get_reply_message()
+    sticker = await event.get_sticker()
 
-    if reply and await ldr.is_sticker(reply):
-        sticker_webp_data = reply.sticker
-    else:
+    if not sticker:
         await event.reply("Reply to a sticker to flip that bitch!")
         return
 
     sticker_webp_io = io.BytesIO()
-    await event.client.download_media(sticker_webp_data, sticker_webp_io)
+    await event.client.download_media(sticker, sticker_webp_io)
     await event.reply(file=await ldr.run_async(flipstickersync, sticker_webp_io))
 
 
@@ -145,19 +141,11 @@ def flipstickersync(sticker_webp_io):
 
 @ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
 async def createsticker(event):
-    if event.is_reply:
-        reply_message = await event.get_reply_message()
-        data = await ldr.get_image(reply_message)
+    data = await event.get_image()
 
-        if not data:
-            await event.reply("Reply to or caption an image to make it sticker-sized!")
-            return
-    else:
-        data = await ldr.get_image(event)
-
-        if not data:
-            await event.reply("Reply to or caption an image to make it sticker-sized!")
-            return
+    if not data:
+        await event.reply("Reply to or caption an image to make it sticker-sized!")
+        return
 
     image_io = io.BytesIO()
     await event.client.download_media(data, image_io)
@@ -187,7 +175,11 @@ def createstickersync(image_io):
 
 @ldr.add("compress")
 async def compressor(event):
-    reply = await event.get_reply_message()
+    sticker = await event.get_sticker()
+
+    if not sticker:
+        await event.reply("Reply to a sticker to compress that bitch!")
+        return
 
     try:
         compression_quality = int(event.args)
@@ -198,14 +190,8 @@ async def compressor(event):
     except ValueError:
         compression_quality = 15
 
-    if reply and await ldr.is_sticker(reply):
-        sticker_webp_data = reply.sticker
-    else:
-        await event.reply("Reply to a sticker to compress that bitch!")
-        return
-
     sticker_io = io.BytesIO()
-    await event.client.download_media(sticker_webp_data, sticker_io)
+    await event.client.download_media(sticker, sticker_io)
     await event.reply(file=await ldr.run_async(compressorsync, sticker_io, compression_quality))
 
 
