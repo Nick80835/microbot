@@ -1,13 +1,13 @@
-from re import escape, search
+from re import DOTALL, IGNORECASE, escape, search
 from traceback import print_exc
 
 from telethon import events
 
 
 class CommandHandler():
-    pattern_template = "(?is)^({0})({1}){2}(?: |$)(.*)"
-    simple_pattern_template = "(?is)^({0}){1}(?: |$|_)(.*)"
-    raw_pattern_template = "(?is){0}"
+    pattern_template = "^({0})({1}){2}(?: |\n|$)(.*)"
+    simple_pattern_template = "^({0}){1}(?: |\n|$)(.*)"
+    raw_pattern_template = "{0}"
 
     outgoing_commands = []
 
@@ -20,11 +20,11 @@ class CommandHandler():
 
         for command in self.outgoing_commands:
             if command.simple_pattern:
-                pattern_match = search(self.simple_pattern_template.format(command.pattern, command.pattern_extra), event.raw_text)
+                pattern_match = search(self.simple_pattern_template.format(command.pattern, command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             elif command.raw_pattern:
-                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
+                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             else:
-                pattern_match = search(self.pattern_template.format(prefix, command.pattern, command.pattern_extra), event.raw_text)
+                pattern_match = search(self.pattern_template.format(prefix, command.pattern, command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if command.raw_pattern:
