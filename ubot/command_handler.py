@@ -9,9 +9,9 @@ from .fixes import inline_photos
 
 
 class CommandHandler():
-    pattern_template = "(?is)^{0}({1})(?: |\n|$|_|@{2}(?: |\n|$|_))(.*)"
-    simple_pattern_template = "(?is)^({0})(?: |\n|$)(.*)"
-    raw_pattern_template = "(?is){0}"
+    pattern_template = "^{0}({1})(?: |\n|$|_|@{2}(?: |\n|$|_))(.*)"
+    simple_pattern_template = "^({0})(?: |\n|$)(.*)"
+    raw_pattern_template = "{0}"
 
     incoming_commands = []
     inline_photo_commands = []
