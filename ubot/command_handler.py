@@ -1,6 +1,6 @@
 import asyncio
 from random import randint
-from re import escape, search
+from re import DOTALL, IGNORECASE, escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
@@ -9,8 +9,8 @@ from .fixes import inline_photos
 
 
 class CommandHandler():
-    pattern_template = "(?is)^{0}({1})(?: |$|_|@{2}(?: |$|_))(.*)"
-    inline_pattern_template = "(?is)^({0})(?: |$|_)(.*)"
+    pattern_template = "(?is)^{0}({1})(?: |\n|$|_|@{2}(?: |\n|$|_))(.*)"
+    simple_pattern_template = "(?is)^({0})(?: |\n|$)(.*)"
     raw_pattern_template = "(?is){0}"
 
     incoming_commands = []
@@ -37,11 +37,11 @@ class CommandHandler():
 
         for command in self.incoming_commands:
             if command.simple_pattern:
-                pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
+                pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             elif command.raw_pattern:
-                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text)
+                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             else:
-                pattern_match = search(self.pattern_template.format(f"({prefix})", command.pattern + command.pattern_extra, self.username), event.raw_text)
+                pattern_match = search(self.pattern_template.format(f"({prefix})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if not await self.check_privs(event, command):
@@ -75,7 +75,7 @@ class CommandHandler():
 
     async def handle_inline(self, event):
         for command in self.inline_photo_commands:
-            pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.text)
+            pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
@@ -86,7 +86,7 @@ class CommandHandler():
                 return
 
         for command in self.inline_article_commands:
-            pattern_match = search(self.inline_pattern_template.format(command.pattern + command.pattern_extra), event.text)
+            pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
