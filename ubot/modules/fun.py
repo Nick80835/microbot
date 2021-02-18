@@ -100,7 +100,7 @@ async def moo(event):
     await event.reply(choice(moo_answers))
 
 
-@ldr.add("kickme")
+@ldr.add("kickme", fun=True)
 async def kickme(event):
     await event.reply("LOLE")
 
@@ -108,3 +108,8 @@ async def kickme(event):
         await event.client.kick_participant(event.chat, await event.get_sender())
     except:
         pass
+
+
+@ldr.add("kys", fun=True)
+async def kys(event):
+    await event.reply("Keep yourself safe!")
