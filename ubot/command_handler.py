@@ -43,6 +43,9 @@ class CommandHandler():
                 event.object = command
 
                 try:
+                    if command.prep_func:
+                        await command.prep()
+
                     await command.function(event)
                 except Exception as exception:
                     await event.reply(f"`An error occurred in {command.function.__name__}: {exception}`")
