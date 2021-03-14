@@ -90,11 +90,6 @@ async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot/tree/bot")
 
 
-@ldr.add("support")
-async def support_link(event):
-    await event.reply("[μBot Support](https://t.me/joinchat/Ed1JxFLq3DtQSbBnyNRI7A)")
-
-
 @ldr.add("disable", admin=True, help="Disables commands in the current chat, requires admin.")
 async def disable_command(event):
     if event.args:
