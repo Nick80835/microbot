@@ -79,6 +79,11 @@ async def ayaya(event):
     await event.reply("AYAYA")
 
 
+@ldr.add("^me too thanks$", raw_pattern=True, hide_help=True, fun=True)
+async def me_too_thanks(event):
+    await event.respond("me too thanks")
+
+
 @ldr.add("bab", hide_help=True, fun=True)
 async def bab(event):
     if event.is_reply:
