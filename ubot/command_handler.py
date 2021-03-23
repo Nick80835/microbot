@@ -22,6 +22,7 @@ class CommandHandler():
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.settings = settings
         self.loader = loader
+        self.db = loader.db
         client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
@@ -48,14 +49,14 @@ class CommandHandler():
                     return
 
                 if command.pass_nsfw:
-                    event.nsfw_disabled = str(event.chat.id) in self.settings.get_list("nsfw_blacklist")
+                    event.nsfw_disabled = not self.db.nsfw_enabled(event.chat.id)
 
                 if command.raw_pattern:
                     event.command = command.pattern
                 else:
                     event.command = pattern_match.groups()[1]
 
-                if event.chat and not command.not_disableable and event.command in self.loader.db.get_disabled_commands(event.chat.id):
+                if event.chat and not command.not_disableable and event.command in self.db.disabled_commands(event.chat.id):
                     print(f"Attempted command ({event.raw_text}) in chat which disabled it ({event.chat.id}) from ID {event.sender_id}")
                     return
 
@@ -268,22 +269,22 @@ class CommandHandler():
                     print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
                     return False
 
-        if event.chat and command.nsfw and str(event.chat.id) in self.settings.get_list("nsfw_blacklist"):
+        if event.chat and command.nsfw and not self.db.nsfw_enabled(event.chat.id):
             await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
-        if event.chat and command.fun and str(event.chat.id) in self.settings.get_list("fun_blacklist"):
+        if event.chat and command.fun and not self.db.fun_enabled(event.chat.id):
             print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
         return True
 
     def is_owner(self, event):
-        return bool(str(event.sender_id) in self.settings.get_list("owner_id"))
+        return str(event.sender_id) in self.settings.get_list("owner_id")
 
     def is_sudo(self, event):
-        return bool(str(event.sender_id) in self.settings.get_list("sudo_users"))
+        return event.sender_id in self.db.get_sudo_list()
 
     def is_blacklisted(self, event, inline=False):
         if inline:
@@ -291,4 +292,4 @@ class CommandHandler():
         else:
             user_id = event.sender_id
 
-        return bool(str(user_id) in self.settings.get_list("blacklisted_users"))
+        return user_id in self.db.get_blacklist_list()

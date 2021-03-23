@@ -101,7 +101,7 @@ async def add_blacklist(event):
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
-    ldr.settings.add_to_list("blacklisted_users", userid)
+    ldr.db.blacklist_user(userid)
     await event.reply(f"Successfully blacklisted **{userfullname}** (`{userid}`)")
 
 
@@ -115,18 +115,15 @@ async def rem_blacklist(event):
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
-    ldr.settings.remove_from_list("blacklisted_users", userid)
+    ldr.db.unblacklist_user(userid)
     await event.reply(f"Successfully unblacklisted **{userfullname}** (`{userid}`)")
 
 
 @ldr.add("showblacklist", sudo=True, hide_help=True)
 async def show_blacklist(event):
-    blacklist_string = ""
+    blacklist_string = "\n".join([str(user_id) for user_id in ldr.db.get_blacklist_list()])
 
-    for i in ldr.settings.get_list('blacklisted_users'):
-        blacklist_string += f"\n{i}"
-
-    await event.reply(f"**Blacklisted users:**\n{blacklist_string}")
+    await event.reply(f"**Blacklisted users:**\n\n{blacklist_string}")
 
 
 @ldr.add("sudo", owner=True, hide_help=True)
@@ -139,7 +136,7 @@ async def add_sudo(event):
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
-    ldr.settings.add_to_list("sudo_users", userid)
+    ldr.db.sudo_user(userid)
     await event.reply(f"Successfully sudo'd **{userfullname}** (`{userid}`)")
 
 
@@ -153,18 +150,14 @@ async def rem_sudo(event):
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
-    ldr.settings.remove_from_list("sudo_users", userid)
+    ldr.db.unsudo_user(userid)
     await event.reply(f"Successfully unsudo'd **{userfullname}** (`{userid}`)")
 
 
 @ldr.add("showsudo", sudo=True, hide_help=True)
 async def show_sudo(event):
-    sudo_string = ""
-
-    for i in ldr.settings.get_list("sudo_users"):
-        sudo_string += f"\n{i}"
-
-    await event.reply(f"**Sudo users:**\n{sudo_string}")
+    sudo_string = "\n".join([str(user_id) for user_id in ldr.db.get_sudo_list()])
+    await event.reply(f"**Sudo users:**\n\n{sudo_string}")
 
 
 async def get_user(event):

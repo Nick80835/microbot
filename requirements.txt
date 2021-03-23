@@ -4,13 +4,15 @@ aiohttp[speedups]
 asyncbooru>=0.0.5
 asyncpraw
 cchardet
+cython
 gTTS
 hachoir
+peewee
 pillow
 psutil
 speedtest-cli
-sqlalchemy
 tgcrypto
+ujson
 Pafy
 youtube-dl
 https://github.com/Nick80835/Telethon/archive/master.zip
