@@ -124,10 +124,10 @@ async def enable_command(event):
 
 @ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")
 async def show_disabled(event):
-    disabled_list = ldr.db.get_disabled_commands(event.chat.id)
+    disabled_list = ldr.db.disabled_commands(event.chat.id)
 
     if disabled_list:
-        disabled_commands = "\n".join(ldr.db.get_disabled_commands(event.chat.id))
+        disabled_commands = "\n".join(disabled_list)
         await event.reply(f"Disabled commands in **{event.chat.id}**:\n\n{disabled_commands}")
     else:
         await event.reply(f"There are no disabled commands in **{event.chat.id}**!")
@@ -135,8 +135,8 @@ async def show_disabled(event):
 
 @ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
-    if not event.args or event.args not in ("on", "off"):
-        if str(event.chat.id) not in ldr.settings.get_list("nsfw_blacklist"):
+    if event.args.lower() not in ("on", "off"):
+        if ldr.db.nsfw_enabled(event.chat.id):
             current_config = 'On'
         else:
             current_config = 'Off'
@@ -145,17 +145,17 @@ async def nsfw_toggle(event):
         return
 
     if event.args == "on":
-        ldr.settings.remove_from_list("nsfw_blacklist", event.chat.id)
+        ldr.db.set_nsfw(event.chat.id, True)
         await event.reply("NSFW commands enabled for this chat!")
     elif event.args == "off":
-        ldr.settings.add_to_list("nsfw_blacklist", event.chat.id)
+        ldr.db.set_nsfw(event.chat.id, False)
         await event.reply("NSFW commands disabled for this chat!")
 
 
 @ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
 async def fun_toggle(event):
-    if not event.args or event.args not in ("on", "off"):
-        if str(event.chat.id) not in ldr.settings.get_list("fun_blacklist"):
+    if event.args.lower() not in ("on", "off"):
+        if ldr.db.fun_enabled(event.chat.id):
             current_config = 'On'
         else:
             current_config = 'Off'
@@ -163,9 +163,9 @@ async def fun_toggle(event):
         await event.reply(f"Syntax: {ldr.prefix()}fun (on|off)\nCurrent config for this chat: {current_config}")
         return
 
-    if event.args == "on":
-        ldr.settings.remove_from_list("fun_blacklist", event.chat.id)
+    if event.args.lower() == "on":
+        ldr.db.set_fun(event.chat.id, True)
         await event.reply("Fun commands enabled for this chat!")
-    elif event.args == "off":
-        ldr.settings.add_to_list("fun_blacklist", event.chat.id)
+    elif event.args.lower() == "off":
+        ldr.db.set_fun(event.chat.id, False)
         await event.reply("Fun commands disabled for this chat!")
