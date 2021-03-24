@@ -45,7 +45,7 @@ async def help_cmd(event):
 
     help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
-    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {event.chat_db.get_prefix()}\n\n"
+    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {event.chat_db.prefix}\n\n"
 
     await event.reply(f"{prefix_help}**Available commands:**\n\n{help_string}")
 
@@ -53,14 +53,14 @@ async def help_cmd(event):
 @ldr.add("prefix", admin=True, no_private=True)
 async def set_group_prefix(event):
     if not event.args:
-        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{event.chat_db.get_prefix()}` and this bot will always respond to `{ldr.prefix()}`")
+        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{event.chat_db.prefix}` and this bot will always respond to `{ldr.prefix()}`")
         return
 
     if len(event.args) > 3:
         await event.reply("Custom prefixes must be at most 3 characters long!")
         return
 
-    event.chat_db.set_prefix(event.args)
+    event.chat_db.prefix = event.args
     await event.reply(f"Successfully set this groups prefix to `{event.args}`!")
 
 
@@ -150,36 +150,36 @@ async def show_disabled(event):
 @ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
     if event.args.lower() not in ("on", "off"):
-        if event.chat_db.nsfw_enabled():
+        if event.chat_db.nsfw_enabled:
             current_config = 'On'
         else:
             current_config = 'Off'
 
-        await event.reply(f"Syntax: {ldr.prefix()}nsfw (on|off)\nCurrent config for this chat: {current_config}")
+        await event.reply(f"Syntax: {event.prefix}nsfw (on|off)\nCurrent config for this chat: {current_config}")
         return
 
     if event.args == "on":
-        event.chat_db.set_nsfw(True)
+        event.chat_db.nsfw_enabled = True
         await event.reply("NSFW commands enabled for this chat!")
     elif event.args == "off":
-        event.chat_db.set_nsfw(False)
+        event.chat_db.nsfw_enabled = False
         await event.reply("NSFW commands disabled for this chat!")
 
 
 @ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
 async def fun_toggle(event):
     if event.args.lower() not in ("on", "off"):
-        if event.chat_db.fun_enabled():
+        if event.chat_db.fun_enabled:
             current_config = 'On'
         else:
             current_config = 'Off'
 
-        await event.reply(f"Syntax: {ldr.prefix()}fun (on|off)\nCurrent config for this chat: {current_config}")
+        await event.reply(f"Syntax: {event.prefix}fun (on|off)\nCurrent config for this chat: {current_config}")
         return
 
     if event.args.lower() == "on":
-        event.chat_db.set_fun(True)
+        event.chat_db.fun_enabled = True
         await event.reply("Fun commands enabled for this chat!")
     elif event.args.lower() == "off":
-        event.chat_db.set_fun(False)
+        event.chat_db.fun_enabled = False
         await event.reply("Fun commands disabled for this chat!")

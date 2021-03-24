@@ -12,7 +12,7 @@ NSFW_BOARDS = ['aco', 'b', 'bant', 'd', 'e', 'f', 'gif', 'h', 'hc', 'hm', 'hr', 
 @ldr.add("4c", pattern_extra="(f|)", userlocking=True, pass_nsfw=True, help="Fetches images from 4chan, requires a board name as an argument.")
 async def fourchan(event):
     if not event.args:
-        await event.reply(f"Syntax: {ldr.prefix()}4c(f|) <board name>")
+        await event.reply(f"Syntax: {event.prefix}4c(f|) <board name>")
         return
 
     board = event.args.lower()

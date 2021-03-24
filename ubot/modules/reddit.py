@@ -120,7 +120,7 @@ async def redimg(event):
     fetch_type = event.command[-1]
 
     if not sub:
-        await event.reply(f"Syntax: {ldr.prefix()}red(i|t|b) <subreddit name>")
+        await event.reply(f"Syntax: {event.prefix}red(i|t|b) <subreddit name>")
         return
 
     if fetch_type == "i":

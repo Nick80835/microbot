@@ -42,26 +42,32 @@ class ChatWrapper():
         self.chat = chat
 
     # custom prefix functions
-    def get_prefix(self) -> str:
+    @property
+    def prefix(self) -> str:
         return self.chat.custom_prefix
 
-    def set_prefix(self, prefix: str):
+    @prefix.setter
+    def prefix(self, prefix: str):
         self.chat.custom_prefix = prefix
         self.chat.save()
 
     # fun command functions
+    @property
     def fun_enabled(self) -> bool:
         return self.chat.fun_enabled
 
-    def set_fun(self, enabled: bool):
+    @fun_enabled.setter
+    def fun_enabled(self, enabled: bool):
         self.chat.fun_enabled = enabled
         self.chat.save()
 
     # nsfw command functions
+    @property
     def nsfw_enabled(self) -> bool:
         return self.chat.nsfw_enabled
 
-    def set_nsfw(self, enabled: bool):
+    @nsfw_enabled.setter
+    def nsfw_enabled(self, enabled: bool):
         self.chat.nsfw_enabled = enabled
         self.chat.save()
 

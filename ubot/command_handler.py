@@ -37,7 +37,7 @@ class CommandHandler():
 
     async def handle_incoming(self, event):
         chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
-        chat_prefix = chat_db.get_prefix()
+        chat_prefix = chat_db.prefix
 
         for command in self.incoming_commands:
             if command.simple_pattern:
@@ -57,7 +57,7 @@ class CommandHandler():
                     return
 
                 if command.pass_nsfw:
-                    event.nsfw_disabled = not chat_db.nsfw_enabled()
+                    event.nsfw_disabled = not chat_db.nsfw_enabled
 
                 if command.raw_pattern:
                     event.command = command.pattern
@@ -283,12 +283,12 @@ class CommandHandler():
                     print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
                     return False
 
-        if event.chat and command.nsfw and not chat_db.nsfw_enabled():
+        if event.chat and command.nsfw and not chat_db.nsfw_enabled:
             await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
-        if event.chat and command.fun and not chat_db.fun_enabled():
+        if event.chat and command.fun and not chat_db.fun_enabled:
             print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
