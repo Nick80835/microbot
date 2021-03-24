@@ -53,7 +53,7 @@ async def help_cmd(event):
 @ldr.add("prefix", admin=True, no_private=True)
 async def set_group_prefix(event):
     if not event.args:
-        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{event.chat_db.prefix}` and this bot will always respond to `{ldr.prefix()}`")
+        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix for this group is `{event.chat_db.prefix}` and this bot will always respond to `{ldr.prefix()}`")
         return
 
     if len(event.args) > 3:
@@ -61,7 +61,7 @@ async def set_group_prefix(event):
         return
 
     event.chat_db.prefix = event.args
-    await event.reply(f"Successfully set this groups prefix to `{event.args}`!")
+    await event.reply(f"Successfully set this group's prefix to `{event.args}`!")
 
 
 @ldr.add("sudohelp", sudo=True)
