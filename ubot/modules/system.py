@@ -77,15 +77,14 @@ async def sudohelp(event):
                     await event.reply(f"**{command.pattern}** doesn't have a help string.")
                     return
 
-    prefix = ldr.prefix()
     help_dict = {}
 
     for command in ldr.command_handler.incoming_commands:
         if command.hide_help:
             if command.module in help_dict:
-                help_dict[command.module].append(prefix + command.pattern)
+                help_dict[command.module].append(command.pattern)
             else:
-                help_dict[command.module] = [prefix + command.pattern]
+                help_dict[command.module] = [command.pattern]
 
     help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
