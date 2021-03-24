@@ -23,6 +23,7 @@ class CommandHandler():
         self.settings = settings
         self.loader = loader
         self.db = loader.db
+        self.hard_prefix = self.settings.get_list("hard_cmd_prefix") or ["/"]
         client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
         client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
@@ -35,8 +36,16 @@ class CommandHandler():
 
     async def handle_incoming(self, event):
         prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
+        chat_prefix = self.db.get_prefix(event.chat.id)
 
         for command in self.incoming_commands:
+            if command.not_disableable:
+                prefix_list = self.hard_prefix + [chat_prefix] + ["/"]
+            else:
+                prefix_list = self.hard_prefix + [chat_prefix]
+
+            prefix = "|".join([escape(i) for i in prefix_list])
+
             if command.simple_pattern:
                 pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             elif command.raw_pattern:
@@ -250,6 +259,10 @@ class CommandHandler():
     async def check_privs(self, event, command):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
             print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.sender_id}")
+            return False
+
+        if command.no_private and event.is_private:
+            await event.reply("That command can't be used in private!")
             return False
 
         if command.owner and not self.is_owner(event):

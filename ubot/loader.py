@@ -136,7 +136,7 @@ class Loader():
         return await self.client.loop.run_in_executor(self.thread_pool, partial(function, *args))
 
     def prefix(self):
-        return (self.settings.get_list('cmd_prefix') or ['.'])[0]
+        return ", ".join(self.settings.get_list("hard_cmd_prefix") or ["/"])
 
     def _find_all_modules(self):
         module_paths = glob.glob(dirname(__file__) + "/modules/*.py")

@@ -4,7 +4,7 @@ from telethon import Button
 from ubot import ldr
 
 
-@ldr.add("del", help="Deletes messages from this bot, it's a safety feature.")
+@ldr.add("del", no_disable=True, help="Deletes messages from this bot, it's a safety feature.")
 async def delete_message(event):
     message_to_delete = await event.get_reply_message()
 
@@ -12,16 +12,16 @@ async def delete_message(event):
         await message_to_delete.delete()
 
 
-@ldr.add("start", help="A start command to start the bot so you know what this bot is capable of when you start it, dumbass.")
+@ldr.add("start", no_disable=True, help="A start command to start the bot so you know what this bot is capable of when you start it, dumbass.")
 async def start_cmd(event):
     await event.reply(
-        f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use {ldr.prefix()}help to see what commands I have!",
+        f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use /help to see what commands I have!",
         buttons=[Button.url("Creator", "https://t.me/Nick80835"), Button.url("Source", "https://github.com/Nick80835/microbot/tree/bot")],
         link_preview=False
     )
 
 
-@ldr.add("help")
+@ldr.add("help", no_disable=True)
 async def help_cmd(event):
     if event.args:
         for command in ldr.command_handler.incoming_commands:
@@ -47,6 +47,20 @@ async def help_cmd(event):
     help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
     await event.reply(f"**Available commands:**\n\n{help_string}")
+
+
+@ldr.add("prefix", admin=True, no_private=True)
+async def set_group_prefix(event):
+    if not event.args:
+        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{ldr.db.get_prefix(event.chat.id)}` and this bot will always respond to `{ldr.prefix()}`")
+        return
+
+    if len(event.args) > 2:
+        await event.reply("Custom prefixes must be 1 or 2 characters long!")
+        return
+
+    ldr.db.set_prefix(event.chat.id, event.args)
+    await event.reply(f"Successfully set this groups prefix to `{event.args}`!")
 
 
 @ldr.add("sudohelp", sudo=True)
