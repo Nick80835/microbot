@@ -1,6 +1,6 @@
 import ujson
-from peewee import (BigIntegerField, BooleanField, Model, SqliteDatabase,
-                    TextField)
+from peewee import (BigIntegerField, BooleanField, IntegrityError, Model,
+                    SqliteDatabase, TextField)
 
 DATABASE = SqliteDatabase("database.sqlite", pragmas={
     "journal_mode": "wal",
@@ -119,7 +119,10 @@ class Database():
 
     @staticmethod
     def sudo_user(user_id: int):
-        SudoUser.create(user_id=user_id)
+        try:
+            SudoUser.create(user_id=user_id)
+        except IntegrityError:
+            pass
 
     @staticmethod
     def unsudo_user(user_id: int):
@@ -135,7 +138,10 @@ class Database():
 
     @staticmethod
     def blacklist_user(user_id: int):
-        BlacklistedUser.create(user_id=user_id)
+        try:
+            BlacklistedUser.create(user_id=user_id)
+        except IntegrityError:
+            pass
 
     @staticmethod
     def unblacklist_user(user_id: int):
