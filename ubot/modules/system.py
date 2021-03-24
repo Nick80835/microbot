@@ -56,8 +56,8 @@ async def set_group_prefix(event):
         await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{event.chat_db.get_prefix()}` and this bot will always respond to `{ldr.prefix()}`")
         return
 
-    if len(event.args) > 2:
-        await event.reply("Custom prefixes must be 1 or 2 characters long!")
+    if len(event.args) > 3:
+        await event.reply("Custom prefixes must be at most 3 characters long!")
         return
 
     event.chat_db.set_prefix(event.args)
