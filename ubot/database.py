@@ -100,59 +100,6 @@ class Database():
             chat.save()
             return chat
 
-    # custom prefix functions
-    def get_prefix(self, chat_id: int) -> str:
-        return self.get_chat(chat_id).custom_prefix
-
-    def set_prefix(self, chat_id: int, prefix: str):
-        chat = self.get_chat(chat_id)
-        chat.custom_prefix = prefix
-        chat.save()
-
-    # fun command functions
-    def fun_enabled(self, chat_id: int) -> bool:
-        return self.get_chat(chat_id).fun_enabled
-
-    def set_fun(self, chat_id: int, enabled: bool):
-        chat = self.get_chat(chat_id)
-        chat.fun_enabled = enabled
-        chat.save()
-
-    # nsfw command functions
-    def nsfw_enabled(self, chat_id: int) -> bool:
-        return self.get_chat(chat_id).nsfw_enabled
-
-    def set_nsfw(self, chat_id: int, enabled: bool):
-        chat = self.get_chat(chat_id)
-        chat.nsfw_enabled = enabled
-        chat.save()
-
-    # disable/enable command functions
-    @staticmethod
-    def _get_disabled_commands(chat: Chat) -> list:
-        return ujson.loads(chat.disabled_commands)
-
-    def disabled_commands(self, chat_id: int) -> list:
-        return self._get_disabled_commands(self.get_chat(chat_id))
-
-    def enable_command(self, chat_id: int, command: str):
-        chat = self.get_chat(chat_id)
-        disabled_commands = self._get_disabled_commands(chat)
-
-        if command in disabled_commands:
-            disabled_commands.remove(command)
-            chat.disabled_commands = ujson.dumps(disabled_commands)
-            chat.save()
-
-    def disable_command(self, chat_id: int, command: str):
-        chat = self.get_chat(chat_id)
-        disabled_commands = self._get_disabled_commands(chat)
-
-        if command not in disabled_commands:
-            disabled_commands.append(command)
-            chat.disabled_commands = ujson.dumps(disabled_commands)
-            chat.save()
-
     # sudo functions
     @staticmethod
     def get_sudo_list() -> list:
