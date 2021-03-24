@@ -1,6 +1,6 @@
 import ujson
-from peewee import (BooleanField, FloatField, IntegerField, Model,
-                    SqliteDatabase, TextField)
+from peewee import (BigIntegerField, BooleanField, Model, SqliteDatabase,
+                    TextField)
 
 DATABASE = SqliteDatabase("database.sqlite")
 
@@ -11,15 +11,15 @@ class BaseDB(Model):
 
 
 class BlacklistedUser(BaseDB):
-    user_id = IntegerField(unique=True, primary_key=True)
+    user_id = BigIntegerField(unique=True, primary_key=True)
 
 
 class SudoUser(BaseDB):
-    user_id = IntegerField(unique=True, primary_key=True)
+    user_id = BigIntegerField(unique=True, primary_key=True)
 
 
 class Chat(BaseDB):
-    chat_id = FloatField(unique=True, primary_key=True)
+    chat_id = BigIntegerField(unique=True, primary_key=True)
     fun_enabled = BooleanField(default=True)
     nsfw_enabled = BooleanField(default=True)
     disabled_commands = TextField(default="[]")
