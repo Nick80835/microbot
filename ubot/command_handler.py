@@ -5,6 +5,7 @@ from traceback import format_exc, print_exc
 
 from telethon import events
 
+from .database import ChatWrapper
 from .fixes import inline_photos
 
 
@@ -35,7 +36,8 @@ class CommandHandler():
             await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
-        chat_prefix = self.db.get_prefix(event.chat.id)
+        chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
+        chat_prefix = chat_db.get_prefix()
 
         for command in self.incoming_commands:
             if command.not_disableable:
@@ -53,18 +55,18 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(f"({prefix})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
-                if not await self.check_privs(event, command):
+                if not await self.check_privs(event, command, chat_db):
                     return
 
                 if command.pass_nsfw:
-                    event.nsfw_disabled = not self.db.nsfw_enabled(event.chat.id)
+                    event.nsfw_disabled = not chat_db.nsfw_enabled()
 
                 if command.raw_pattern:
                     event.command = command.pattern
                 else:
                     event.command = pattern_match.groups()[1]
 
-                if event.chat and not command.not_disableable and event.command in self.db.disabled_commands(event.chat.id):
+                if event.chat and not command.not_disableable and event.command in chat_db.disabled_commands():
                     print(f"Attempted command ({event.raw_text}) in chat which disabled it ({event.chat.id}) from ID {event.sender_id}")
                     return
 
@@ -80,6 +82,7 @@ class CommandHandler():
                 event.pattern_match = pattern_match
                 event.extra = command.extra
                 event.object = command
+                event.chat_db = chat_db
 
                 await self.execute_command(event, command)
 
@@ -256,7 +259,7 @@ class CommandHandler():
 
             print_exc()
 
-    async def check_privs(self, event, command):
+    async def check_privs(self, event, command, chat_db):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
             print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.sender_id}")
             return False
@@ -282,12 +285,12 @@ class CommandHandler():
                     print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
                     return False
 
-        if event.chat and command.nsfw and not self.db.nsfw_enabled(event.chat.id):
+        if event.chat and command.nsfw and not chat_db.nsfw_enabled():
             await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
             print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
-        if event.chat and command.fun and not self.db.fun_enabled(event.chat.id):
+        if event.chat and command.fun and not chat_db.fun_enabled():
             print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 

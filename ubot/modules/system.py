@@ -45,7 +45,7 @@ async def help_cmd(event):
 
     help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
-    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {ldr.db.get_prefix(event.chat.id)}\n\n"
+    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {event.chat_db.get_prefix()}\n\n"
 
     await event.reply(f"{prefix_help}**Available commands:**\n\n{help_string}")
 
@@ -53,14 +53,14 @@ async def help_cmd(event):
 @ldr.add("prefix", admin=True, no_private=True)
 async def set_group_prefix(event):
     if not event.args:
-        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{ldr.db.get_prefix(event.chat.id)}` and this bot will always respond to `{ldr.prefix()}`")
+        await event.reply(f"With this command you can set a custom prefix to replace `/`, the current prefix is `{event.chat_db.get_prefix()}` and this bot will always respond to `{ldr.prefix()}`")
         return
 
     if len(event.args) > 2:
         await event.reply("Custom prefixes must be 1 or 2 characters long!")
         return
 
-    ldr.db.set_prefix(event.chat.id, event.args)
+    event.chat_db.set_prefix(event.args)
     await event.reply(f"Successfully set this groups prefix to `{event.args}`!")
 
 
@@ -115,7 +115,7 @@ async def disable_command(event):
                     return
 
                 await event.reply(f"Disabling **{command.pattern}** in chat **{event.chat.id}**!")
-                ldr.db.disable_command(event.chat.id, command.pattern)
+                event.chat_db.disable_command(command.pattern)
                 return
 
         await event.reply(f"**{event.args}** is not a command!")
@@ -129,7 +129,7 @@ async def enable_command(event):
         for command in ldr.command_handler.incoming_commands:
             if event.args == command.pattern:
                 await event.reply(f"Enabling **{command.pattern}** in chat **{event.chat.id}**!")
-                ldr.db.enable_command(event.chat.id, command.pattern)
+                event.chat_db.enable_command(command.pattern)
                 return
 
         await event.reply(f"**{event.args}** is not a command!")
@@ -139,7 +139,7 @@ async def enable_command(event):
 
 @ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")
 async def show_disabled(event):
-    disabled_list = ldr.db.disabled_commands(event.chat.id)
+    disabled_list = event.chat_db.disabled_commands()
 
     if disabled_list:
         disabled_commands = "\n".join(disabled_list)
@@ -151,7 +151,7 @@ async def show_disabled(event):
 @ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
     if event.args.lower() not in ("on", "off"):
-        if ldr.db.nsfw_enabled(event.chat.id):
+        if event.chat_db.nsfw_enabled():
             current_config = 'On'
         else:
             current_config = 'Off'
@@ -160,17 +160,17 @@ async def nsfw_toggle(event):
         return
 
     if event.args == "on":
-        ldr.db.set_nsfw(event.chat.id, True)
+        event.chat_db.set_nsfw(True)
         await event.reply("NSFW commands enabled for this chat!")
     elif event.args == "off":
-        ldr.db.set_nsfw(event.chat.id, False)
+        event.chat_db.set_nsfw(False)
         await event.reply("NSFW commands disabled for this chat!")
 
 
 @ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
 async def fun_toggle(event):
     if event.args.lower() not in ("on", "off"):
-        if ldr.db.fun_enabled(event.chat.id):
+        if event.chat_db.fun_enabled():
             current_config = 'On'
         else:
             current_config = 'Off'
@@ -179,8 +179,8 @@ async def fun_toggle(event):
         return
 
     if event.args.lower() == "on":
-        ldr.db.set_fun(event.chat.id, True)
+        event.chat_db.set_fun(True)
         await event.reply("Fun commands enabled for this chat!")
     elif event.args.lower() == "off":
-        ldr.db.set_fun(event.chat.id, False)
+        event.chat_db.set_fun(False)
         await event.reply("Fun commands disabled for this chat!")
