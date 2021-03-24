@@ -40,19 +40,17 @@ class CommandHandler():
         chat_prefix = chat_db.get_prefix()
 
         for command in self.incoming_commands:
-            if command.not_disableable:
-                prefix_list = self.hard_prefix + [chat_prefix] + ["/"]
-            else:
-                prefix_list = self.hard_prefix + [chat_prefix]
-
-            prefix = "|".join([escape(i) for i in prefix_list])
-
             if command.simple_pattern:
                 pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             elif command.raw_pattern:
                 pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             else:
-                pattern_match = search(self.pattern_template.format(f"({prefix})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
+                if command.not_disableable:
+                    prefix_list = self.hard_prefix + [chat_prefix] + ["/"]
+                else:
+                    prefix_list = self.hard_prefix + [chat_prefix]
+
+                pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if not await self.check_privs(event, command, chat_db):
