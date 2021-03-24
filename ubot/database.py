@@ -2,7 +2,10 @@ import ujson
 from peewee import (BigIntegerField, BooleanField, Model, SqliteDatabase,
                     TextField)
 
-DATABASE = SqliteDatabase("database.sqlite")
+DATABASE = SqliteDatabase("database.sqlite", pragmas={
+    "journal_mode": "wal",
+    "cache_size": -1024 * 16}
+)
 
 
 class BaseDB(Model):
