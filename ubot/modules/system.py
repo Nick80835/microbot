@@ -39,13 +39,15 @@ async def help_cmd(event):
     for command in ldr.command_handler.incoming_commands:
         if not command.hide_help:
             if command.module in help_dict:
-                help_dict[command.module].append(event.prefix + command.pattern)
+                help_dict[command.module].append(command.pattern)
             else:
-                help_dict[command.module] = [event.prefix + command.pattern]
+                help_dict[command.module] = [command.pattern]
 
     help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
-    await event.reply(f"**Available commands:**\n\n{help_string}")
+    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {ldr.db.get_prefix(event.chat.id)}\n\n"
+
+    await event.reply(f"{prefix_help}**Available commands:**\n\n{help_string}")
 
 
 @ldr.add("prefix", admin=True, no_private=True)
