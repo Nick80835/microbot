@@ -23,6 +23,7 @@ class Chat(BaseDB):
     fun_enabled = BooleanField(default=True)
     nsfw_enabled = BooleanField(default=True)
     disabled_commands = TextField(default="[]")
+    custom_prefix = TextField(default="/")
 
 
 DATABASE.connect()
@@ -45,6 +46,15 @@ class Database():
             chat = Chat.create(chat_id=chat_id)
             chat.save()
             return chat
+
+    # custom prefix functions
+    def get_prefix(self, chat_id: int) -> str:
+        return self.get_chat(chat_id).custom_prefix
+
+    def set_prefix(self, chat_id: int, prefix: str):
+        chat = self.get_chat(chat_id)
+        chat.custom_prefix = prefix
+        chat.save()
 
     # fun command functions
     def fun_enabled(self, chat_id: int) -> bool:
