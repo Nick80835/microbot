@@ -34,6 +34,59 @@ DATABASE.create_tables([
 ])
 
 
+class ChatWrapper():
+    def __init__(self, chat: Chat):
+        self.chat = chat
+
+    # custom prefix functions
+    def get_prefix(self) -> str:
+        return self.chat.custom_prefix
+
+    def set_prefix(self, prefix: str):
+        self.chat.custom_prefix = prefix
+        self.chat.save()
+
+    # fun command functions
+    def fun_enabled(self) -> bool:
+        return self.chat.fun_enabled
+
+    def set_fun(self, enabled: bool):
+        self.chat.fun_enabled = enabled
+        self.chat.save()
+
+    # nsfw command functions
+    def nsfw_enabled(self) -> bool:
+        return self.chat.nsfw_enabled
+
+    def set_nsfw(self, enabled: bool):
+        self.chat.nsfw_enabled = enabled
+        self.chat.save()
+
+    # disable/enable command functions
+    @staticmethod
+    def _get_disabled_commands(chat: Chat) -> list:
+        return ujson.loads(chat.disabled_commands)
+
+    def disabled_commands(self) -> list:
+        return self._get_disabled_commands(self.chat)
+
+    def enable_command(self, command: str):
+        disabled_commands = self._get_disabled_commands(self.chat)
+
+        if command in disabled_commands:
+            disabled_commands.remove(command)
+            self.chat.disabled_commands = ujson.dumps(disabled_commands)
+            self.chat.save()
+
+    def disable_command(self, command: str):
+        disabled_commands = self._get_disabled_commands(self.chat)
+
+        if command not in disabled_commands:
+            disabled_commands.append(command)
+            self.chat.disabled_commands = ujson.dumps(disabled_commands)
+            self.chat.save()
+
+
 class Database():
     db = DATABASE
 
@@ -115,7 +168,7 @@ class Database():
     @staticmethod
     def unsudo_user(user_id: int):
         SudoUser.delete_by_id(user_id)
-    
+
     #blacklist functions
     @staticmethod
     def get_blacklist_list() -> list:
