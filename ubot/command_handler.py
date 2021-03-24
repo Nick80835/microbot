@@ -76,6 +76,7 @@ class CommandHandler():
                         event.other_args = pattern_match.groups()[1:-1]
                     else:
                         event.other_args = pattern_match.groups()[2:-1]
+                        event.prefix = pattern_match.groups()[0]
 
                 event.pattern_match = pattern_match
                 event.extra = command.extra
