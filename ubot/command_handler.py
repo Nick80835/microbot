@@ -35,7 +35,6 @@ class CommandHandler():
             await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
-        prefix = "|".join([escape(i) for i in (self.settings.get_list("cmd_prefix") or ['.'])])
         chat_prefix = self.db.get_prefix(event.chat.id)
 
         for command in self.incoming_commands:
