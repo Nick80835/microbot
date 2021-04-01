@@ -198,3 +198,26 @@ async def get_user(event):
     else:
         await event.reply("Give me a user ID, username or reply!")
         return
+
+
+if ldr.settings.get_config("owner_name") and ldr.settings.get_config("owner_id"):
+    @ldr.add(ldr.settings.get_config("owner_name"), raw_pattern=True, hide_help=True, no_disable=True)
+    async def report_mention(event):
+        try:
+            owner_id = int(ldr.settings.get_config("owner_id"))
+            sender = await event.get_sender()
+            sender_username = sender.username if sender else None
+            chat = await event.get_chat()
+            chat_username = chat.username if chat and isinstance(chat, Channel) else None
+
+            if chat_username:
+                message_link = f"https://t.me/{chat_username}/{event.id}"
+            elif chat and event.is_channel:
+                message_link = f"https://t.me/c/{chat.id}/{event.id}"
+            else:
+                message_link = None
+
+            await event.client.send_message(owner_id, f"Mention in {chat.title}!\nChat uname: {chat_username}\nChat ID: {chat.id}\nSender uname: {sender_username}\nLink: {message_link}", link_preview=False)
+            await event.forward_to(int(ldr.settings.get_config("owner_id")))
+        except:
+            pass
