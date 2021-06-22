@@ -65,7 +65,6 @@ class CommandHandler():
                     event.command = pattern_match.groups()[1]
 
                 if event.chat and not command.not_disableable and event.command in chat_db.disabled_commands():
-                    print(f"Attempted command ({event.raw_text}) in chat which disabled it ({event.chat.id}) from ID {event.sender_id}")
                     return
 
                 if not command.raw_pattern:
@@ -90,7 +89,6 @@ class CommandHandler():
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.sender_id}")
                     return
 
                 await self.handle_inline_photo(event, pattern_match, command)
@@ -101,7 +99,6 @@ class CommandHandler():
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
-                    print(f"Attempted command ({event.text}) from blacklisted ID {event.sender_id}")
                     return
 
                 await self.handle_inline_article(event, pattern_match, command)
@@ -260,7 +257,6 @@ class CommandHandler():
 
     async def check_privs(self, event, command, chat_db):
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
-            print(f"Attempted command ({event.raw_text}) from blacklisted ID {event.sender_id}")
             return False
 
         if command.no_private and event.is_private:
@@ -268,29 +264,32 @@ class CommandHandler():
             return False
 
         if command.owner and not self.is_owner(event):
-            await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted owner command ({event.raw_text}) from ID {event.sender_id}")
+            if not command.silent_bail:
+                await event.reply("You lack the permissions to use that command!")
+
             return False
 
         if command.sudo and not self.is_sudo(event) and not self.is_owner(event):
-            await event.reply("You lack the permissions to use that command!")
-            print(f"Attempted sudo command ({event.raw_text}) from ID {event.sender_id}")
+            if not command.silent_bail:
+                await event.reply("You lack the permissions to use that command!")
+
             return False
 
         if command.admin:
             if event.chat and event.sender_id:
                 if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
-                    await event.reply("You lack the permissions to use that command!")
-                    print(f"Attempted admin command ({event.raw_text}) from ID {event.sender_id}")
+                    if not command.silent_bail:
+                        await event.reply("You lack the permissions to use that command!")
+
                     return False
 
         if event.chat and command.nsfw and not chat_db.nsfw_enabled:
-            await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
-            print(f"Attempted NSFW command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
+            if not command.silent_bail:
+                await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
+
             return False
 
         if event.chat and command.fun and not chat_db.fun_enabled:
-            print(f"Attempted fun command ({event.raw_text}) in blacklisted chat ({event.chat.id}) from ID {event.sender_id}")
             return False
 
         return True
