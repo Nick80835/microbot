@@ -58,7 +58,7 @@ class ChatWrapper():
     def lang(self) -> str:
         return self.chat.lang
 
-    @prefix.setter
+    @lang.setter
     def lang(self, lang: str):
         self.chat.lang = lang
         self.chat.save()
@@ -68,7 +68,7 @@ class ChatWrapper():
     def modmode_enabled(self) -> str:
         return self.chat.modmode_enabled
 
-    @prefix.setter
+    @modmode_enabled.setter
     def modmode_enabled(self, enabled: bool):
         self.chat.modmode_enabled = enabled
         self.chat.save()
