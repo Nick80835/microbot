@@ -43,11 +43,11 @@ async def help_cmd(event):
             else:
                 help_dict[command.module] = [command.pattern]
 
-    help_string = "\n".join([f"**{module}**: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
+    help_string = "\n".join([f"<u>{module}</u>: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
-    prefix_help = f"**Bot prefix:** {ldr.prefix()}\n**Group prefix:** {event.chat_db.prefix}\n\n"
+    prefix_help = f"<b>Bot prefix:</b> {ldr.prefix()}\n<b>Group prefix:</b> {event.chat_db.prefix}\n\n"
 
-    await event.reply(f"{prefix_help}**Available commands:**\n\n{help_string}")
+    await event.reply(f"{prefix_help}<b>Available commands:</b>\n\n{help_string}", parse_mode="html")
 
 
 @ldr.add("prefix", admin=True, no_private=True)
