@@ -12,7 +12,7 @@ class Command:
         self.raw_pattern = args.get("raw_pattern", False)
         self.pattern_extra = args.get("pattern_extra", "")
         self.extra = args.get("extra", None)
-        self.help = args.get("help", None)
+        self.help = args.get("help", None) or func.__doc__
         self.hide_help = args.get("hide_help", False)
         self.owner = args.get("owner", False)
         self.sudo = args.get("sudo", False)
