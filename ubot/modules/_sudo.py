@@ -41,6 +41,39 @@ async def evaluate(event):
     await eval_msg.edit(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}")
 
 
+@ldr.add("exec", owner=True)
+async def execute(event):
+    exec_msg = await event.reply("Processing…")
+    reply = await event.get_reply_message()
+
+    if not event.args:
+        await event.edit("Give me code to run!")
+        return
+
+    temp_locals = {}
+
+    try:
+        exec(
+            f'async def __ex(event, reply): ' +
+            ''.join(f'\n {l}' for l in event.args.split('\n')),
+            globals(),
+            temp_locals
+        )
+
+        eval_ret = await temp_locals['__ex'](event, reply)
+    except Exception as exception:
+        eval_ret = exception
+
+    if len(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`") > 4096:
+        text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
+        text_io.name = "return.txt"
+        await exec_msg.edit("Output too large for a message, sending as a file…")
+        await event.respond(file=text_io)
+        return
+
+    await exec_msg.edit(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`")
+
+
 @ldr.add("reload", sudo=True, hide_help=True)
 async def reload_modules(event):
     reload_msg = await event.reply("Reloading modules…")
