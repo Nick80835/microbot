@@ -15,7 +15,7 @@ async def delete_message(event):
 @ldr.add("start", no_disable=True, help="A start command to start the bot so you know what this bot is capable of when you start it, dumbass.")
 async def start_cmd(event):
     await event.reply(
-        f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use /help to see what commands I have!",
+        f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use /help to see what commands I have!\nYou can also use /nsfw to toggle NSFW commands.",
         buttons=[Button.url("Creator", "https://t.me/Nick80835"), Button.url("Source", "https://github.com/Nick80835/microbot/tree/bot")],
         link_preview=False
     )
