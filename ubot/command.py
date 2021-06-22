@@ -28,6 +28,7 @@ class Command:
         self.fun = args.get("fun", False)
         self.not_disableable = args.get("no_disable", False) or self.owner or self.sudo or self.admin
         self.no_private = args.get("no_private", False)
+        self.silent_bail = args.get("silent_bail", False)
 
 
 class InlinePhotoCommand:

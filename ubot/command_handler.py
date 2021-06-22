@@ -250,10 +250,11 @@ class CommandHandler():
             if event.sender_id in command.locked_users:
                 command.locked_users.remove(event.sender_id)
 
-            try:
-                await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
-            except:
-                pass
+            if not command.silent_bail:
+                try:
+                    await event.reply(f"An error occurred in **{command.function.__name__}**: `{exception}`")
+                except:
+                    pass
 
             print_exc()
 
