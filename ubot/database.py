@@ -27,6 +27,8 @@ class Chat(BaseDB):
     nsfw_enabled = BooleanField(default=True)
     disabled_commands = TextField(default="[]")
     custom_prefix = TextField(default="/")
+    lang = TextField(default="en")
+    modmode_enabled = BooleanField(default=False)
 
 
 DATABASE.connect()
@@ -49,6 +51,26 @@ class ChatWrapper():
     @prefix.setter
     def prefix(self, prefix: str):
         self.chat.custom_prefix = prefix
+        self.chat.save()
+
+    # language functions
+    @property
+    def lang(self) -> str:
+        return self.chat.lang
+
+    @prefix.setter
+    def lang(self, lang: str):
+        self.chat.lang = lang
+        self.chat.save()
+
+    # modmode command functions
+    @property
+    def modmode_enabled(self) -> str:
+        return self.chat.modmode_enabled
+
+    @prefix.setter
+    def modmode_enabled(self, enabled: bool):
+        self.chat.modmode_enabled = enabled
         self.chat.save()
 
     # fun command functions
