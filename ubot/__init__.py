@@ -32,22 +32,16 @@ class MicroBot():
     loader = None
 
     def __init__(self):
-        self.start_logger()
+        basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
+        self.logger = getLogger(__name__)
         self.start_client()
-        self.start_loader()
+        self.loader = Loader(self.client, self.logger, self.settings)
 
     def run_until_done(self):
         self.loader.load_all_modules()
         self.logger.info("Client successfully started.")
         self.client.run_until_disconnected()
         self.client.loop.run_until_complete(self.loader.aioclient.close())
-
-    def start_loader(self):
-        self.loader = Loader(self.client, self.logger, self.settings)
-
-    def start_logger(self):
-        basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
-        self.logger = getLogger(__name__)
 
     def _check_config(self):
         api_key = self.settings.get_config("api_key")
@@ -74,10 +68,8 @@ class MicroBot():
     def start_client(self):
         api_key, api_hash, bot_token = self._check_config()
 
-        self.client = telethon.TelegramClient(self.settings.get_config("session_name", "bot0"), api_key, api_hash, connection=CTA)
-
         try:
-            self.client.start(bot_token=bot_token)
+            self.client = telethon.TelegramClient(self.settings.get_config("session_name", "bot0"), api_key, api_hash, connection=CTA).start(bot_token=bot_token)
         except (TokenInvalidError, AccessTokenExpiredError, AccessTokenInvalidError):
             self.logger.error("The bot token provided is invalid, exiting.")
             sys.exit(2)
