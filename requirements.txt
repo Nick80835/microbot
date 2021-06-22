@@ -4,6 +4,7 @@ aiohttp[speedups]
 asyncbooru>=0.0.5
 asyncpraw
 cchardet
+cryptg
 cython
 gTTS
 hachoir
@@ -11,8 +12,7 @@ peewee
 pillow
 psutil
 speedtest-cli
-tgcrypto
+telethon
 ujson
 Pafy
 youtube-dl
-https://github.com/Nick80835/Telethon/archive/master.zip
