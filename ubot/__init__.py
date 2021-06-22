@@ -1,4 +1,11 @@
 import asyncio
+
+try:
+    import uvloop
+    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
+except ImportError:
+    pass
+
 import sys
 from logging import INFO, basicConfig, getLogger
 
@@ -16,12 +23,6 @@ from .settings import Settings
 if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 6):
     print("This program requires at least Python 3.6.0 to work correctly, exiting.")
     sys.exit(1)
-
-try:
-    import uvloop
-    asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
-except ImportError:
-    pass
 
 
 class MicroBot():
