@@ -21,7 +21,7 @@ async def start_cmd(event):
     )
 
 
-@ldr.add("help", no_disable=True)
+@ldr.add("help", no_disable=True, pass_nsfw=True)
 async def help_cmd(event):
     if event.args:
         for command in ldr.command_handler.incoming_commands:
@@ -38,10 +38,11 @@ async def help_cmd(event):
 
     for command in ldr.command_handler.incoming_commands:
         if not command.hide_help:
-            if command.module in help_dict:
-                help_dict[command.module].append(command.pattern)
-            else:
-                help_dict[command.module] = [command.pattern]
+            if not event.nsfw_disabled or (event.nsfw_disabled and not command.nsfw):
+                if command.module in help_dict:
+                    help_dict[command.module].append(command.pattern)
+                else:
+                    help_dict[command.module] = [command.pattern]
 
     help_string = "\n".join([f"<u>{module}</u>: {', '.join(pattern_list)}" for module, pattern_list in help_dict.items()])
 
