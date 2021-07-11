@@ -41,7 +41,7 @@ async def evaluate(event):
     await eval_msg.edit(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}")
 
 
-@ldr.add("exec", owner=True)
+@ldr.add("exec", owner=True, hide_help=True)
 async def execute(event):
     exec_msg = await event.reply("Processing…")
     reply = await event.get_reply_message()
