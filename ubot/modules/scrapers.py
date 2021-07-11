@@ -2,7 +2,6 @@ import io
 import re
 
 import pafy
-from gtts import gTTS
 from PIL import Image
 
 from ubot.fixes.fast_telethon import upload_file
@@ -94,31 +93,6 @@ def pokemon_image_sync(sprite_io):
     sticker_io.name = "sticker.webp"
 
     return sticker_io
-
-
-@ldr.add("tts", help="Text to speech.")
-async def text_to_speech(event):
-    text, reply = await event.get_text(return_msg=True)
-
-    if not text:
-        await event.reply("Give me text or reply to text to use TTS.")
-        return
-
-    tts_bytesio = io.BytesIO()
-    tts_bytesio.name = "tts.mp3"
-
-    try:
-        tts = gTTS(text, lang="EN")
-        tts.write_to_fp(tts_bytesio)
-        tts_bytesio.seek(0)
-    except AssertionError:
-        await event.reply('The text is empty.\nNothing left to speak after pre-precessing, tokenizing and cleaning.')
-        return
-    except RuntimeError:
-        await event.reply('Error loading the languages dictionary.')
-        return
-
-    await event.client.send_file(event.chat, file=tts_bytesio, voice_note=True, reply_to=reply)
 
 
 @ldr.add("ip", help="IP lookup.")
@@ -243,26 +217,3 @@ async def youtube_cmd(event):
         await event.reply(file=video_stream.url)
     except:
         await event.reply(f"Download failed, the video was probably over 20MB, use other bots for this shit: [URL]({video_stream.url})")
-
-
-@ldr.add("yta", userlocking=True)
-async def youtube_audio_cmd(event):
-    video = pafy.new(event.args)
-    audio_stream = video.getbestaudio(preftype="m4a")
-
-    try:
-        async with ldr.aioclient.get(audio_stream.url) as response:
-            if response.status == 200:
-                if int(response.headers["content-length"]) >= 20000000:
-                    await event.reply("Fuck off.")
-                    return
-
-                audio_data = io.BytesIO(await response.read())
-                audio_data.name = "audio.m4a"
-            else:
-                raise Exception
-
-        file_handle = await upload_file(event.client, audio_data)
-        await event.reply(file=file_handle)
-    except:
-        await event.reply(f"Download failed: [URL]({audio_stream.url})")

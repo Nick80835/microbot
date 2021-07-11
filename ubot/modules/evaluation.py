@@ -1,39 +1,8 @@
 import io
 
 from PIL import Image, ImageOps
-from speedtest import Speedtest
 
 from ubot import ldr
-
-
-@ldr.add("speed", owner=True, hide_help=True)
-async def iamspeed(event):
-    speed_message = await event.reply("Running speed test…")
-    test = Speedtest()
-
-    test.get_best_server()
-    test.download()
-    test.upload()
-    test.results.share()
-    result = test.results.dict()
-
-    await speed_message.edit(
-        f"**Started at:** {result['timestamp']}\n"
-        f"**Download:** {speed_convert(result['download'])}\n"
-        f"**Upload:** {speed_convert(result['upload'])}\n"
-        f"**Ping:** {result['ping']} milliseconds\n"
-        f"**ISP:** {result['client']['isp']}"
-    )
-
-
-def speed_convert(size):
-    power = 2**10
-    zero = 0
-    units = {0: '', 1: 'Kilobits/s', 2: 'Megabits/s', 3: 'Gigabits/s', 4: 'Terabits/s'}
-    while size > power:
-        size /= power
-        zero += 1
-    return f"{round(size, 2)} {units[zero]}"
 
 
 @ldr.add("chatid")
@@ -59,37 +28,6 @@ async def useridgetter(event):
         user_id = event.sender_id
 
     await event.reply(f"**User ID:** {user_id}")
-
-
-@ldr.add("profile")
-async def userprofilegetter(event):
-    if event.args:
-        try:
-            user_entity = await event.client.get_entity(event.args)
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.sender_id
-        if reply_id:
-            try:
-                user_entity = await event.client.get_entity(reply_id)
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user!")
-                return
-        else:
-            await event.reply("The user may have super sneaky privacy settings enabled!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
-        return
-
-    userid = user_entity.id
-    username = user_entity.username
-    userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}"
-
-    await event.reply(f"**Full Name:** {userfullname}\n**Username:** @{username}\n**User ID:** {userid}")
 
 
 @ldr.add("stickpng", help="Converts stickers to PNG files.")
@@ -171,39 +109,3 @@ def createstickersync(image_io):
     sticker_new_io.seek(0)
 
     return sticker_new_io
-
-
-@ldr.add("compress")
-async def compressor(event):
-    sticker = await event.get_sticker()
-
-    if not sticker:
-        await event.reply("Reply to a sticker to compress that bitch!")
-        return
-
-    try:
-        compression_quality = int(event.args)
-        if compression_quality < 0:
-            compression_quality = 0
-        elif compression_quality > 100:
-            compression_quality = 100
-    except ValueError:
-        compression_quality = 15
-
-    sticker_io = io.BytesIO()
-    await event.client.download_media(sticker, sticker_io)
-    await event.reply(file=await ldr.run_async(compressorsync, sticker_io, compression_quality))
-
-
-def compressorsync(sticker_io, compression_quality):
-    sticker_image = Image.open(sticker_io)
-    sticker_image = sticker_image.convert("RGB")
-    sticker_io = io.BytesIO()
-    sticker_image.save(sticker_io, "JPEG", quality=compression_quality)
-    sticker_image = Image.open(sticker_io)
-    sticker_io = io.BytesIO()
-    sticker_image.save(sticker_io, "WebP", quality=99)
-    sticker_io.seek(0)
-    sticker_io.name = "sticker.webp"
-
-    return sticker_io

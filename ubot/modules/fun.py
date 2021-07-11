@@ -63,41 +63,14 @@ async def edit_message(event):
                 pass
 
 
-@ldr.add("let the bodies hit the", simple_pattern=True, hide_help=True, fun=True)
-async def floor(event):
-    if not event.args:
-        await event.reply("FLOOOOOOOOOOOOOOOOOOR")
-
-
 @ldr.add("^bruh$", raw_pattern=True, hide_help=True, chance=15, fun=True)
 async def bruh_moment(event):
     await event.reply("moment")
 
 
-@ldr.add("^ayaya$", raw_pattern=True, hide_help=True, fun=True)
-async def ayaya(event):
-    await event.reply("AYAYA")
-
-
 @ldr.add("^me too thanks$", raw_pattern=True, hide_help=True, fun=True)
 async def me_too_thanks(event):
     await event.respond("me too thanks")
-
-
-@ldr.add("bab", hide_help=True, fun=True)
-async def bab(event):
-    if event.is_reply:
-        await (await event.get_reply_message()).reply("You've been babbed!")
-    else:
-        await event.reply("Who am I supposed to bab?")
-
-
-@ldr.add("unbab", hide_help=True, fun=True)
-async def unbab(event):
-    if event.is_reply:
-        await (await event.get_reply_message()).reply("You've been unbabbed!")
-    else:
-        await event.reply("Who am I supposed to unbab?")
 
 
 @ldr.add("(^| )moo( |$)", raw_pattern=True, hide_help=True, chance=25, fun=True)

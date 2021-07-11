@@ -6,12 +6,10 @@ asyncpraw
 cchardet
 cryptg
 cython
-gTTS
 hachoir
 peewee
 pillow
 psutil
-speedtest-cli
 telethon
 ujson
 Pafy
