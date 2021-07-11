@@ -54,18 +54,6 @@ async def vapor(event):
         await event.reply(vapor_text)
 
 
-@ldr.add("pop")
-async def popifycmd(event):
-    text_arg, reply = await event.get_text(default=filler, return_msg=True)
-
-    pop_text = await popify(text_arg)
-
-    if reply:
-        await reply.reply(pop_text)
-    else:
-        await event.reply(pop_text)
-
-
 @ldr.add("cheem")
 async def cheemifycmd(event):
     text_arg, reply = await event.get_text(default=filler, return_msg=True)
@@ -100,23 +88,6 @@ async def owo(event):
         await reply.reply(owo_text)
     else:
         await event.reply(owo_text)
-
-
-@ldr.add("yoda")
-async def yodafy(event):
-    text_arg, reply = await event.get_text(default=filler, return_msg=True)
-
-    async with ldr.aioclient.get("http://yoda-api.appspot.com/api/v1/yodish", params={"text": text_arg}) as response:
-        if response.status == 200:
-            yoda_text = (await response.json())["yodish"]
-        else:
-            await event.reply(f"An error occurred: **{response.status}**")
-            return
-
-    if reply:
-        await reply.reply(yoda_text)
-    else:
-        await event.reply(yoda_text)
 
 
 async def shitpostify(text):
