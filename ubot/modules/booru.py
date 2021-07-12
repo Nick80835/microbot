@@ -147,6 +147,6 @@ async def booru_buttons_callback(event):
 
 def gen_source_string(source: str, orig_source: str) -> str:
     if orig_source and orig_source.startswith("http"):
-        return f"[source]({source}) - [original source]({orig_source})"
+        return f"[source]({source}) - [original source]({orig_source.split()[0]})"
     else:
         return f"[source]({source})"
