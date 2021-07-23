@@ -1,7 +1,5 @@
 import schizogif
 import os
-import asyncio
-from concurrent.futures.thread import ThreadPoolExecutor
 from io import BytesIO
 from ubot import ldr
 
