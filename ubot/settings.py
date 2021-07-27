@@ -1,8 +1,8 @@
-from configparser import SafeConfigParser
+from configparser import ConfigParser
 
 
 class Settings():
-    config = SafeConfigParser()
+    config = ConfigParser()
     config.read("settings.ini")
 
     def write_changes(self):
