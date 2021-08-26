@@ -19,11 +19,12 @@ class CommandHandler():
     inline_article_commands = []
     callback_queries = []
 
-    def __init__(self, client, settings, loader):
+    def __init__(self, client, settings, loader, logger):
         self.username = client.loop.run_until_complete(client.get_me()).username
         self.settings = settings
         self.loader = loader
         self.db = loader.db
+        self.logger = logger
         self.hard_prefix = self.settings.get_list("hard_cmd_prefix") or ["/"]
         client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
         client.add_event_handler(self.handle_inline, events.InlineQuery())
@@ -81,6 +82,7 @@ class CommandHandler():
                 event.object = command
                 event.chat_db = chat_db
 
+                self.logger.info(f"Handling command '{event.command}' for {event.sender_id}")
                 await self.execute_command(event, command)
 
     async def handle_inline(self, event):

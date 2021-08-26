@@ -26,7 +26,7 @@ class Loader():
         self.client = client
         self.logger = logger
         self.settings = settings
-        self.command_handler = CommandHandler(client, settings, self)
+        self.command_handler = CommandHandler(client, settings, self, logger)
 
     def load_all_modules(self):
         self._find_all_modules()
