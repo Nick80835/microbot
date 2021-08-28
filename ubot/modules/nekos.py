@@ -1,19 +1,64 @@
 import io
+import random
 
 from PIL import Image
 
 from ubot import ldr
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'goose', 'waifu', 'gasm', 'slap', 'spank', 'pat', 'feet', 'woof', 'baka', 'blowjob']
-REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'blowjob']
+ES_NEKO_TYPES = ['tetas', 'acariciar', 'abrazar', 'abofetear', 'nalguear', 'pies', 'mamada', 'coño', 'concha',
+                 'besar', 'presumir', 'cosquillas']
+NEKO_TYPES = ['neko', 'lewd', 'smug', 'tits', 'trap', 'anal', 'cuddle', 'hug', 'slap', 'spank', 'pat', 'kuni', 'femdom',
+              'feet', 'baka', 'blowjob', 'Random_hentai_gif', 'erok', 'feetg', 'bj', 'erokemo', 'tickle', 'feed',
+              'futanari', 'poke', 'les', 'boobs', 'hentai', 'hololewd', 'ngif', 'fox_girl', 'wallpaper',
+              'lewdk', 'solog', 'pussy', 'yuri', 'lewdkemo', 'pwankg', 'eron', 'kiss', 'keta', 'eroyuri', 'cum_jpg',
+              'gecg', 'holoero', 'classic', 'kemonomimi', 'erofeet', 'ero', 'solo', 'cum', 'holo',
+              'nsfw_neko_gif']
+REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'blowjob', 'kiss', 'pussy_jpg', 'tickle', 'poke']
 
 
-@ldr.add_list(NEKO_TYPES, pattern_extra="(f|)")
+def spanishify(es_text):
+    """
+    Translate spanish commands to english
+    :param es_text:
+    :return:
+    """
+    if es_text == 'tetas':
+        return 'boobs'
+    elif es_text == 'acariciar':
+        return random.choice(['cuddle', 'pat'])
+    elif es_text == 'abrazar':
+        return 'hug'
+    elif es_text == 'abofetear':
+        return 'slap'
+    elif es_text == 'nalguear':
+        return 'spank'
+    elif es_text == 'pies':
+        return 'feet'
+    elif es_text == 'mamada':
+        return random.choice(['blowjob', 'bj'])
+    elif es_text in ['coño', 'concha']:
+        return 'pussy'
+    elif es_text == 'besar':
+        return 'kiss'
+    elif es_text == 'presumir':
+        return 'smug'
+    elif es_text == 'cosquillas':
+        return 'tickle'
+    else:
+        return es_text
+
+
+@ldr.add_list(NEKO_TYPES + ES_NEKO_TYPES, pattern_extra="(f|)")
 async def supernekoatsume(event):
     await event.edit("`Processing…`")
     nekotype = event.command.lower()
     as_file = bool(event.other_args[0])
+
+    if nekotype == 'random_hentai_gif':
+        nekotype = 'Random_hentai_gif'
+
+    nekotype = spanishify(nekotype)
 
     if nekotype in REPLY_TYPES:
         reply_to = await event.get_reply_message()

@@ -22,7 +22,7 @@ async def booru(event):
         return
 
     try:
-        await event.respond(f"[sauce]({post.sauce})", file=post.file_url, force_document=as_file)
+        await event.respond(f"[post]({post.sauce})", file=post.file_url, force_document=as_file)
         await event.delete()
     except:
         await event.edit(f"`Failed to fetch media for query: `**{event.args}**")
