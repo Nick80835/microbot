@@ -16,7 +16,7 @@ async def delete_message(event):
 async def start_cmd(event):
     await event.reply(
         f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use /help to see what commands I have!\n\n"
-        "You can toggle NSFW commands using /nsfw [on|off] and suggest new features using /suggest [suggestion].",
+        "You can toggle NSFW commands using /nsfw [on|off].",
         buttons=[Button.url("Creator", "https://t.me/Nick80835"), Button.url("Source", "https://github.com/Nick80835/microbot/tree/bot")]
     )
 
@@ -184,9 +184,3 @@ async def fun_toggle(event):
     elif event.args.lower() == "off":
         event.chat_db.fun_enabled = False
         await event.reply("Fun commands disabled for this chat!")
-
-
-if ldr.settings.get_config("owner_id"):
-    @ldr.add("suggest", no_disable=True)
-    async def suggestion(event):
-        await event.client.send_message(int(ldr.settings.get_config("owner_id")), f"**Suggestion:** {event.args}")
