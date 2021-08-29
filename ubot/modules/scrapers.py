@@ -3,8 +3,6 @@ import re
 
 import pafy
 from PIL import Image
-
-from ubot.fixes.fast_telethon import upload_file
 from ubot import ldr
 
 
@@ -206,14 +204,3 @@ async def corona_inline(event):
         ]
 
         return [{"title": "Corona Stats", "description": "Global", "text": "\n".join(response_list)}]
-
-
-@ldr.add("yt", userlocking=True)
-async def youtube_cmd(event):
-    video = pafy.new(event.args)
-    video_stream = video.getbest(preftype="mp4")
-
-    try:
-        await event.reply(file=video_stream.url)
-    except:
-        await event.reply(f"Download failed, the video was probably over 20MB, use other bots for this shit: [URL]({video_stream.url})")
