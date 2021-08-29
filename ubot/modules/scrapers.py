@@ -1,7 +1,6 @@
 import io
 import re
 
-import pafy
 from PIL import Image
 from ubot import ldr
 
