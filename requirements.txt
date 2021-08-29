@@ -12,5 +12,3 @@ pillow
 psutil
 telethon
 ujson
-Pafy
-youtube-dl
