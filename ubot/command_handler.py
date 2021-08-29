@@ -4,6 +4,7 @@ from re import DOTALL, IGNORECASE, escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
+from telethon.errors import ChatWriteForbiddenError
 
 from .database import ChatWrapper
 from .fixes import inline_photos
@@ -243,6 +244,11 @@ class CommandHandler():
             else:
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
                     await command.function(event)
+        except ChatWriteForbiddenError:
+            command.lock_reason = None
+
+            if event.sender_id in command.locked_users:
+                command.locked_users.remove(event.sender_id)
         except Exception as exception:
             command.lock_reason = None
 
