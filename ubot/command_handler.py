@@ -83,7 +83,6 @@ class CommandHandler():
                 event.object = command
                 event.chat_db = chat_db
 
-                self.logger.info(f"Handling command '{event.command}' for {event.sender_id}")
                 await self.execute_command(event, command)
 
     async def handle_inline(self, event):
