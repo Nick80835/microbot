@@ -4,7 +4,7 @@ from re import DOTALL, IGNORECASE, escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
-from telethon.errors import ChatWriteForbiddenError
+from telethon.errors.rpcerrorlist import ChatWriteForbiddenError
 
 from .database import ChatWrapper
 from .fixes import inline_photos
