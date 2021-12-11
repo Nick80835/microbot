@@ -5,7 +5,6 @@
 import asyncio
 import hashlib
 import inspect
-import logging
 import math
 import os
 from collections import defaultdict
@@ -320,7 +319,7 @@ async def download_file(client: TelegramClient, location: TypeLocation, out: Bin
     return out
 
 
-async def upload_file(client: TelegramClient, file: Union[BinaryIO, BytesIO, str], progress_callback: callable = None) -> TypeInputFile:
+async def upload_file(client: TelegramClient, file: Union [BytesIO, str], progress_callback: callable = None) -> TypeInputFile:
     if isinstance(file, str):
         with open(file, mode="rb") as fh:
             res = (await _internal_transfer_to_telegram(client, fh, progress_callback, file))[0]
