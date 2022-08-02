@@ -1,4 +1,5 @@
 import asyncio
+from inspect import isawaitable
 from random import randint
 from re import DOTALL, IGNORECASE, escape, search
 from traceback import format_exc, print_exc
@@ -56,7 +57,14 @@ class CommandHandler():
 
             if pattern_match:
                 if not await self.check_privs(event, command, chat_db):
-                    return
+                    continue
+
+                if command.filter:
+                    if isawaitable(command.filter):
+                        if not await command.filter(event):
+                            continue
+                    elif not command.filter(event):
+                        continue
 
                 if command.pass_nsfw:
                     event.nsfw_disabled = not chat_db.nsfw_enabled
@@ -67,7 +75,7 @@ class CommandHandler():
                     event.command = pattern_match.groups()[1]
 
                 if event.chat and not command.not_disableable and event.command in chat_db.disabled_commands():
-                    return
+                    continue
 
                 if not command.raw_pattern:
                     event.args = pattern_match.groups()[-1].strip()
