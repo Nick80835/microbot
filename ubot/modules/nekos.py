@@ -5,9 +5,9 @@ from PIL import Image
 from ubot import ldr
 
 NEKO_URL = "https://nekos.life/api/v2/img/"
-NEKO_TYPES_NSFW = ['lewd', 'tits', 'trap', 'anal', 'gasm', 'spank', 'feet', 'blowjob']
-NEKO_TYPES = ['neko', 'smug', 'cuddle', 'hug', 'goose', 'waifu', 'slap', 'pat', 'woof', 'baka', 'kiss']
-REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'baka', 'kiss', 'blowjob']
+NEKO_TYPES_NSFW = ['lewd', 'gasm', 'spank']
+NEKO_TYPES = ['neko', 'smug', 'cuddle', 'hug', 'goose', 'waifu', 'slap', 'pat', 'woof', 'kiss']
+REPLY_TYPES = ['cuddle', 'hug', 'slap', 'spank', 'pat', 'kiss']
 
 
 @ldr.add_list(NEKO_TYPES_NSFW, nsfw=True, pattern_extra="(f|)", userlocking=True)
