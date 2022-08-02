@@ -145,7 +145,8 @@ reddit_images = {
     "comedy": "ComedyNecrophilia",
     "reddit": "RedditMoment",
     "heartdisease": "Chonkers",
-    "smolcat": "IllegallySmolCats"
+    "smolcat": "IllegallySmolCats",
+    "ordinary": "AlzheimersGroup"
 }
 
 reddit_bodies = {
