@@ -16,8 +16,8 @@ async def supernekoatsume(event):
     nekotype = event.object.pattern
     as_file = bool(event.other_args[0])
 
-    if nekotype in REPLY_TYPES:
-        reply_to = await event.get_reply_message() or event
+    if nekotype in REPLY_TYPES and event.is_reply:
+        reply_to = await event.get_reply_message()
     else:
         reply_to = event
 

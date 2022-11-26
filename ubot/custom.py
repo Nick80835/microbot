@@ -49,3 +49,12 @@ class ExtendedEvent(NewMessage.Event):
 
             if size_attr and ((size_attr[0].w == 512 and size_attr[0].h <= 512) or (size_attr[0].w <= 512 and size_attr[0].h == 512)):
                 return reply.sticker
+
+    async def respond(self, *args, **kwargs):
+        if self.reply_to and self.reply_to.forum_topic and not kwargs.get("reply_to", None):
+            if self.reply_to.reply_to_top_id:
+                return await self.message.respond(*args, **kwargs|{"reply_to": self.reply_to.reply_to_top_id})
+            elif self.reply_to.reply_to_msg_id:
+                return await self.message.respond(*args, **kwargs|{"reply_to": self.reply_to.reply_to_msg_id})
+
+        return await self.message.respond(*args, **kwargs)
