@@ -4,6 +4,7 @@ aiohttp[speedups]
 asyncbooru>=0.0.6
 asyncpraw
 cchardet
+cryptg
 cython
 hachoir
 peewee
