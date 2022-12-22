@@ -10,5 +10,5 @@ hachoir
 peewee
 pillow
 psutil
-telethon==1.26.0
+telethon==1.26.1
 ujson
