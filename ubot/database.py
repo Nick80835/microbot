@@ -1,6 +1,7 @@
 import ujson
 from peewee import (BigIntegerField, BooleanField, IntegrityError, Model,
                     SqliteDatabase, TextField)
+from playhouse.migrate import SqliteMigrator, migrate
 
 DATABASE = SqliteDatabase("database.sqlite", pragmas={
     "journal_mode": "wal",
@@ -25,6 +26,7 @@ class Chat(BaseDB):
     chat_id = BigIntegerField(unique=True, primary_key=True)
     fun_enabled = BooleanField(default=True)
     nsfw_enabled = BooleanField(default=True)
+    spoiler_nsfw = BooleanField(default=False)
     disabled_commands = TextField(default="[]")
     custom_prefix = TextField(default="/")
     lang = TextField(default="en")
@@ -37,6 +39,15 @@ DATABASE.create_tables([
     BlacklistedUser,
     SudoUser
 ])
+
+
+# upgrade if necessary
+MIGRATOR = SqliteMigrator(DATABASE)
+
+if Chat.spoiler_nsfw not in DATABASE.get_columns("chat"):
+    migrate(
+        MIGRATOR.add_column("chat", "spoiler_nsfw", Chat.spoiler_nsfw)
+    )
 
 
 class ChatWrapper():
@@ -91,6 +102,15 @@ class ChatWrapper():
     @nsfw_enabled.setter
     def nsfw_enabled(self, enabled: bool):
         self.chat.nsfw_enabled = enabled
+        self.chat.save()
+
+    @property
+    def spoiler_nsfw(self) -> bool:
+        return self.chat.spoiler_nsfw
+
+    @spoiler_nsfw.setter
+    def spoiler_nsfw(self, enabled: bool):
+        self.chat.spoiler_nsfw = enabled
         self.chat.save()
 
     # disable/enable command functions
