@@ -1,7 +1,6 @@
 import ujson
 from peewee import (BigIntegerField, BooleanField, IntegrityError, Model,
                     SqliteDatabase, TextField)
-from playhouse.migrate import SqliteMigrator, migrate
 
 DATABASE = SqliteDatabase("database.sqlite", pragmas={
     "journal_mode": "wal",
@@ -39,14 +38,6 @@ DATABASE.create_tables([
     BlacklistedUser,
     SudoUser
 ])
-
-
-# upgrade if necessary
-MIGRATOR = SqliteMigrator(DATABASE)
-
-migrate(
-    MIGRATOR.add_column("chat", "spoiler_nsfw", Chat.spoiler_nsfw)
-)
 
 
 class ChatWrapper():
