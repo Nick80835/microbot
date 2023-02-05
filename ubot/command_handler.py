@@ -207,6 +207,7 @@ class CommandHandler():
                 event.args = data_data
                 event.extra = command.extra
                 event.object = command
+                event.chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
 
                 try:
                     await command.function(event)
