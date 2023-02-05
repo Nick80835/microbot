@@ -175,7 +175,7 @@ async def spoiler_nsfw_toggle(event):
         else:
             current_config = 'Off'
 
-        await event.reply(f"Syntax: {event.prefix}nsfw (on|off)\nCurrent config for this chat: {current_config}")
+        await event.reply(f"Syntax: {event.prefix}spoilernsfw (on|off)\nCurrent config for this chat: {current_config}\nDisclaimer: This may not always function as expected.")
         return
 
     if event.args == "on":
