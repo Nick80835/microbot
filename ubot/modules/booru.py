@@ -56,7 +56,7 @@ async def booru(event):
 
     for image in images:
         try:
-            if event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x") in image[3]:
+            if event.chat_db.spoiler_nsfw and event.extra._get_rating("x").lower() in image[3].lower():
                 if bool(event.other_args[1]):
                     file = InputMediaDocumentExternal(url=image[0], spoiler=True)
                 else:
@@ -103,7 +103,7 @@ async def booru_buttons(event):
 
     event.extra[1][f"{event.chat.id}_{event.id}"] = [0, images]
 
-    if event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x") in images[0][3]:
+    if event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x").lower() in images[0][3].lower():
         file = InputMediaPhotoExternal(url=images[0][0], spoiler=True)
     else:
         file = images[0][0]
@@ -156,7 +156,7 @@ async def booru_buttons_callback(event):
         buttons += [Button.inline('➡️', f'{event.command}*{dict_id}*r')]
 
     try:
-        if event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x") in this_image[3]:
+        if event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x").lower() in this_image[3].lower():
             file = InputMediaPhotoExternal(url=this_image[0], spoiler=True)
         else:
             file = this_image[0]
