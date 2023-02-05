@@ -167,6 +167,25 @@ async def nsfw_toggle(event):
         await event.reply("NSFW commands disabled for this chat!")
 
 
+@ldr.add("spoilernsfw", admin=True, help="Enables or disables spoilering NSFW media for a chat, requires admin.")
+async def spoiler_nsfw_toggle(event):
+    if event.args.lower() not in ("on", "off"):
+        if event.chat_db.spoiler_nsfw:
+            current_config = 'On'
+        else:
+            current_config = 'Off'
+
+        await event.reply(f"Syntax: {event.prefix}nsfw (on|off)\nCurrent config for this chat: {current_config}")
+        return
+
+    if event.args == "on":
+        event.chat_db.spoiler_nsfw = True
+        await event.reply("NSFW spoilers enabled for this chat!")
+    elif event.args == "off":
+        event.chat_db.spoiler_nsfw = False
+        await event.reply("NSFW spoilers disabled for this chat!")
+
+
 @ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
 async def fun_toggle(event):
     if event.args.lower() not in ("on", "off"):
