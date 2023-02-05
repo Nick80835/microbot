@@ -44,10 +44,9 @@ DATABASE.create_tables([
 # upgrade if necessary
 MIGRATOR = SqliteMigrator(DATABASE)
 
-if Chat.spoiler_nsfw not in DATABASE.get_columns("chat"):
-    migrate(
-        MIGRATOR.add_column("chat", "spoiler_nsfw", Chat.spoiler_nsfw)
-    )
+migrate(
+    MIGRATOR.add_column("chat", "spoiler_nsfw", Chat.spoiler_nsfw)
+)
 
 
 class ChatWrapper():
