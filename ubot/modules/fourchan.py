@@ -1,11 +1,14 @@
 from random import choice, shuffle
 
+from telethon.tl.types import (InputMediaDocumentExternal,
+                               InputMediaPhotoExternal)
+
 from ubot import ldr
 
 BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
 POST_URL = "https://a.4cdn.org/{0}/thread/{1}.json"
 CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
-VALID_ENDS = (".mp4", ".jpg", ".jpeg", ".png", ".gif")
+VALID_ENDS = (".webm", ".jpg", ".png", ".gif")
 NSFW_BOARDS = ['aco', 'b', 'bant', 'd', 'e', 'f', 'gif', 'h', 'hc', 'hm', 'hr', 'i', 'ic', 'pol', 'r', 'r9k', 's', 's4s', 'soc', 't', 'trash', 'u', 'wg', 'y']
 
 
@@ -50,7 +53,15 @@ async def fourchan(event):
         return
 
     try:
-        await event.reply(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=post_file_url, force_document=as_file, parse_mode="html")
+        if event.chat_db.spoiler_nsfw and board in NSFW_BOARDS:
+            if as_file:
+                file = InputMediaDocumentExternal(url=post_file_url, spoiler=True)
+            else:
+                file = InputMediaPhotoExternal(url=post_file_url, spoiler=True)
+        else:
+            file = post_file_url
+
+        await event.reply(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=file, force_document=as_file, parse_mode="html")
         return
     except:
         pass

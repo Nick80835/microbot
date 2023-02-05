@@ -1,6 +1,8 @@
 import io
 
 from PIL import Image
+from telethon.tl.types import (InputMediaDocumentExternal,
+                               InputMediaPhotoExternal)
 
 from ubot import ldr
 
@@ -29,7 +31,15 @@ async def supernekoatsume(event):
             return
 
     try:
-        await event.respond(file=image_url, force_document=as_file, reply_to=reply_to)
+        if event.chat_db.spoiler_nsfw and event.object.nsfw:
+            if as_file:
+                file = InputMediaDocumentExternal(url=image_url, spoiler=True)
+            else:
+                file = InputMediaPhotoExternal(url=image_url, spoiler=True)
+        else:
+            file = image_url
+
+        await event.respond(file=file, force_document=as_file, reply_to=reply_to)
     except:
         await event.reply(f"Failed to fetch media for query: **{nekotype}**")
 
