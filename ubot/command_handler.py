@@ -185,7 +185,8 @@ class CommandHandler():
                         description=result["description"],
                         text=result["text"],
                         link_preview=event.link_preview,
-                        parse_mode=event.parse_mode
+                        parse_mode=event.parse_mode,
+                        buttons=result.get("buttons", None)
                     )
                 ]
             except:
@@ -207,7 +208,9 @@ class CommandHandler():
                 event.args = data_data
                 event.extra = command.extra
                 event.object = command
-                event.chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
+
+                if not event.via_inline:
+                    event.chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
 
                 try:
                     await command.function(event)
