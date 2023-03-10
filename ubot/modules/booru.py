@@ -8,7 +8,7 @@ from telethon.tl.types import (InputMediaDocumentExternal,
 from ubot import ldr
 
 help_str = "Fetches images from Danbooru, Gelbooru, Konachan, Sankaku Complex and Yandere, takes tags as arguments."
-ext_regex = compile(r"\.(jpg|jpeg|png)$")
+ext_regex = compile(r"\.(jpg|jpeg|png|mp4|gif)$")
 
 dan_api = Danbooru(ldr.aioclient)
 gel_api = Gelbooru(ldr.aioclient)
