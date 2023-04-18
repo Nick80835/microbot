@@ -1,4 +1,4 @@
-import ujson
+import rapidjson
 from peewee import (BigIntegerField, BooleanField, IntegrityError, Model,
                     SqliteDatabase, TextField)
 
@@ -106,7 +106,7 @@ class ChatWrapper():
     # disable/enable command functions
     @staticmethod
     def _get_disabled_commands(chat: Chat) -> list:
-        return ujson.loads(chat.disabled_commands)
+        return rapidjson.loads(chat.disabled_commands)
 
     def disabled_commands(self) -> list:
         return self._get_disabled_commands(self.chat)
@@ -116,7 +116,7 @@ class ChatWrapper():
 
         if command in disabled_commands:
             disabled_commands.remove(command)
-            self.chat.disabled_commands = ujson.dumps(disabled_commands)
+            self.chat.disabled_commands = rapidjson.dumps(disabled_commands)
             self.chat.save()
 
     def disable_command(self, command: str):
@@ -124,7 +124,7 @@ class ChatWrapper():
 
         if command not in disabled_commands:
             disabled_commands.append(command)
-            self.chat.disabled_commands = ujson.dumps(disabled_commands)
+            self.chat.disabled_commands = rapidjson.dumps(disabled_commands)
             self.chat.save()
 
 
