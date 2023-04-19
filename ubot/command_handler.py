@@ -39,7 +39,7 @@ class CommandHandler():
             await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
-        chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
+        chat_db = ChatWrapper(self.db.get_chat((await event.get_chat()).id))
         chat_prefix = chat_db.prefix
 
         for command in self.incoming_commands:
