@@ -2,8 +2,6 @@ from re import compile
 
 import asyncpraw
 from asyncprawcore import exceptions as redex
-from telethon.tl.types import (InputMediaDocumentExternal,
-                               InputMediaPhotoExternal)
 
 from ubot import ldr
 
@@ -63,17 +61,7 @@ async def imagefetcher(event, sub):
         return
 
     try:
-        if event.chat_db.spoiler_nsfw and post.over_18:
-            if ext_regex_photo.search(image_url):
-                file = InputMediaPhotoExternal(url=image_url, spoiler=True)
-            elif ext_regex_video.search(image_url):
-                file = InputMediaDocumentExternal(url=image_url, spoiler=True)
-            else:
-                file = image_url
-        else:
-            file = image_url
-
-        await event.reply(title, file=file)
+        await event.reply(title, file=image_url, spoiler=event.chat_db.spoiler_nsfw and post.over_18)
     except:
         await event.reply(f"Failed to download content from **r/{sub}**!\nTitle: **{title}**\nURL: {image_url}")
 

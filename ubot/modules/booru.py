@@ -2,8 +2,6 @@ from re import compile
 
 from asyncbooru import Danbooru, Gelbooru, Konachan, Sankaku, Yandere
 from telethon import Button
-from telethon.tl.types import (InputMediaDocumentExternal,
-                               InputMediaPhotoExternal)
 
 from ubot import ldr
 
@@ -56,18 +54,11 @@ async def booru(event):
 
     for image in images:
         try:
-            if event.chat_db.spoiler_nsfw and event.extra._get_rating("x").lower() in image[3].lower():
-                if bool(event.other_args[1]):
-                    file = InputMediaDocumentExternal(url=image[0], spoiler=True)
-                else:
-                    file = InputMediaPhotoExternal(url=image[0], spoiler=True)
-            else:
-                file = image[0]
-
             await event.reply(
                 gen_source_string(image[1], image[2]),
-                file=file,
-                force_document=bool(event.other_args[1])
+                file=image[0],
+                force_document=bool(event.other_args[1]),
+                spoiler=event.chat_db.spoiler_nsfw and event.extra._get_rating("x").lower() in image[3].lower()
             )
             return
         except:
@@ -103,15 +94,11 @@ async def booru_buttons(event):
 
     event.extra[1][f"{event.chat.id}_{event.id}"] = [0, images]
 
-    if event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x").lower() in images[0][3].lower():
-        file = InputMediaPhotoExternal(url=images[0][0], spoiler=True)
-    else:
-        file = images[0][0]
-
     await event.reply(
         gen_source_string(images[0][1], images[0][2]),
-        file=file,
-        buttons=[Button.inline('➡️', f'{event.extra[2]}*{event.chat.id}_{event.id}*r')]
+        file=images[0][0],
+        buttons=[Button.inline('➡️', f'{event.extra[2]}*{event.chat.id}_{event.id}*r')],
+        spoiler=event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x").lower() in images[0][3].lower()
     )
 
 
@@ -156,15 +143,11 @@ async def booru_buttons_callback(event):
         buttons += [Button.inline('➡️', f'{event.command}*{dict_id}*r')]
 
     try:
-        if event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x").lower() in this_image[3].lower():
-            file = InputMediaPhotoExternal(url=this_image[0], spoiler=True)
-        else:
-            file = this_image[0]
-
         await event.edit(
             gen_source_string(this_image[1], this_image[2]),
-            file=file,
-            buttons=buttons
+            file=this_image[0],
+            buttons=buttons,
+            spoiler=event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x").lower() in this_image[3].lower()
         )
     except:
         pass

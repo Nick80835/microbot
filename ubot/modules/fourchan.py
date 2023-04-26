@@ -1,8 +1,5 @@
 from random import choice, shuffle
 
-from telethon.tl.types import (InputMediaDocumentExternal,
-                               InputMediaPhotoExternal)
-
 from ubot import ldr
 
 BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
@@ -53,15 +50,7 @@ async def fourchan(event):
         return
 
     try:
-        if event.chat_db.spoiler_nsfw and board in NSFW_BOARDS:
-            if as_file:
-                file = InputMediaDocumentExternal(url=post_file_url, spoiler=True)
-            else:
-                file = InputMediaPhotoExternal(url=post_file_url, spoiler=True)
-        else:
-            file = post_file_url
-
-        await event.reply(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=file, force_document=as_file, parse_mode="html")
+        await event.reply(post_info[2].replace("<br>", "\n") if post_info[2] else None, file=post_file_url, force_document=as_file, parse_mode="html", spoiler=event.chat_db.spoiler_nsfw and board in NSFW_BOARDS)
         return
     except:
         pass
