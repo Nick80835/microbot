@@ -10,5 +10,5 @@ hachoir
 peewee
 pillow
 psutil
-telethon==1.28.5
 python-rapidjson
+https://github.com/Nick80835/Telethon/archive/refs/heads/v1.zip
