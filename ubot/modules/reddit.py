@@ -7,7 +7,8 @@ from ubot import ldr
 
 REDDIT = asyncpraw.Reddit(client_id='-fmzwojFG6JkGg',
                           client_secret=None,
-                          user_agent='TG_Userbot')
+                          user_agent='TG_Userbot',
+                          requestor_kwargs={"session": ldr.aioclient})
 
 VALID_ENDS = (".mp4", ".jpg", ".jpeg", "jpe", ".png", ".gif")
 ext_regex_photo = compile(r"\.(jpg|jpeg|jpe|png)$")
