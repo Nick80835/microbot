@@ -5,7 +5,7 @@ from re import DOTALL, IGNORECASE, escape, search
 from traceback import format_exc, print_exc
 
 from telethon import events
-from telethon.errors.rpcerrorlist import ChatWriteForbiddenError
+from telethon.errors.rpcerrorlist import ChatWriteForbiddenError, ChatAdminRequiredError
 
 from .database import ChatWrapper
 from .fixes import inline_photos
@@ -35,8 +35,9 @@ class CommandHandler():
     async def report_incoming_excepts(self, event):
         try:
             await self.handle_incoming(event)
-        except:
-            await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
+        except Exception as exception:
+            if not isinstance(exception, (ChatAdminRequiredError, ChatWriteForbiddenError)):
+                await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
         chat_db = ChatWrapper(self.db.get_chat((await event.get_chat()).id))
@@ -255,11 +256,6 @@ class CommandHandler():
             else:
                 if command.chance and randint(0, 100) <= command.chance or not command.chance:
                     await command.function(event)
-        except ChatWriteForbiddenError:
-            command.lock_reason = None
-
-            if event.sender_id in command.locked_users:
-                command.locked_users.remove(event.sender_id)
         except Exception as exception:
             command.lock_reason = None
 
