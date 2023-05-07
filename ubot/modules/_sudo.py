@@ -4,6 +4,7 @@ import io
 import os
 from platform import python_version
 
+import git
 import psutil
 from telethon import version
 from telethon.tl.types import Channel, Chat
@@ -89,6 +90,14 @@ async def reload_modules(event):
             pass
 
 
+@ldr.add("update", owner=True, hide_help=True)
+async def update_bot(event):
+    update_msg = await event.reply("Pulling changes…")
+    repo = git.Repo(os.getcwd())
+    repo.remotes.origin.pull()
+    await update_msg.edit("Changes pulled successfully!")
+
+
 @ldr.add("sysd", sudo=True, hide_help=True)
 async def sysd(event):
     try:
@@ -118,10 +127,14 @@ async def alive(event):
     await event.reply(alive_format.format(version.__version__, python_version(), mem_usage))
 
 
-@ldr.add("shutdown", owner=True, hide_help=True)
+@ldr.add("shutdown", pattern_extra="(f|)", owner=True, hide_help=True)
 async def shutdown(event):
     await event.reply("Goodbye…")
-    await micro_bot.stop_client()
+
+    if event.other_args[0]:
+        await micro_bot.stop_client(reason="Shutdown command issued.", exit_code=1)
+    else:
+        await micro_bot.stop_client(reason="Shutdown command issued.")
 
 
 @ldr.add("blacklist", sudo=True, hide_help=True)

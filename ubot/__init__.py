@@ -29,11 +29,11 @@ class MicroBot():
         self.start_client()
         self.loader = Loader(self.client, self.logger, self.settings)
 
-    def run_until_done(self):
+    async def run_until_done(self):
         self.loader.load_all_modules()
         self.logger.info("Client successfully started.")
-        self.client.run_until_disconnected()
-        self.client.loop.run_until_complete(self.loader.aioclient.close())
+        await self.client.run_until_disconnected()
+        await self.stop_client(reason="Client disconnected.")
 
     def _check_config(self):
         api_key = self.settings.get_config("api_key")
@@ -64,16 +64,21 @@ class MicroBot():
             self.client = telethon.TelegramClient(self.settings.get_config("session_name", "bot0"), api_key, api_hash, connection=CTA).start(bot_token=bot_token)
         except (TokenInvalidError, AccessTokenExpiredError, AccessTokenInvalidError):
             self.logger.error("The bot token provided is invalid, exiting.")
-            sys.exit(2)
+            sys.exit(1)
 
-    async def stop_client(self, reason=None):
+    async def stop_client(self, reason=None, exit_code=None):
         if reason:
-            self.logger.info("Stopping client for reason: %s", reason)
+            self.logger.info("Stopping bot for reason: %s", reason)
         else:
-            self.logger.info("Stopping client.")
+            self.logger.info("Stopping bot.")
 
         await self.loader.aioclient.close()
-        await self.client.disconnect()
+
+        if exit_code is not None:
+            self.logger.info("Exiting with exit code: %i", exit_code)
+            sys.exit(exit_code)
+        else:
+            sys.exit(0)
 
 
 telethon.events.NewMessage.Event = ExtendedEvent
@@ -83,7 +88,4 @@ ldr = micro_bot.loader
 client = micro_bot.client
 logger = micro_bot.logger
 
-try:
-    micro_bot.run_until_done()
-except:
-    micro_bot.client.loop.run_until_complete(micro_bot.stop_client())
+client.loop.run_until_complete(micro_bot.run_until_done())

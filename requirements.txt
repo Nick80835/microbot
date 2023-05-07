@@ -6,6 +6,7 @@ asyncpraw
 cchardet
 cryptg
 cython
+gitpython
 hachoir
 peewee
 pillow
