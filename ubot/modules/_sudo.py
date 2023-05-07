@@ -2,14 +2,16 @@ import asyncio
 import inspect
 import io
 import os
+from datetime import timedelta
 from platform import python_version
+from time import time
 
 import git
 import psutil
 from telethon import version
 from telethon.tl.types import Channel, Chat
 
-from ubot import ldr, micro_bot
+from ubot import ldr, micro_bot, startup_time
 
 
 @ldr.add("eval", owner=True, hide_help=True)
@@ -120,11 +122,12 @@ async def sysd(event):
 async def alive(event):
     alive_format = "**Telethon version:** {0}\n" \
                    "**Python version:** {1}\n" \
-                   "**Memory usage:** {2}MiB"
+                   "**Memory usage:** {2}MiB\n" \
+                   "**Uptime:** {3}"
 
     mem_usage = int(psutil.Process(os.getpid()).memory_info().rss / 1048576)
 
-    await event.reply(alive_format.format(version.__version__, python_version(), mem_usage))
+    await event.reply(alive_format.format(version.__version__, python_version(), mem_usage, timedelta(seconds=int(time() - startup_time))))
 
 
 @ldr.add("shutdown", pattern_extra="(f|)", owner=True, hide_help=True)

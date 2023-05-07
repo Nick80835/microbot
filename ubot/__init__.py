@@ -1,5 +1,6 @@
 import sys
 from logging import INFO, basicConfig, getLogger
+from time import time
 
 import telethon
 from telethon.errors.rpcerrorlist import (AccessTokenExpiredError,
@@ -15,6 +16,8 @@ from .settings import Settings
 if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 6):
     print("This program requires at least Python 3.6.0 to work correctly, exiting.")
     sys.exit(1)
+
+startup_time = time()
 
 
 class MicroBot():
