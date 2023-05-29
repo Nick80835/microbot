@@ -34,9 +34,9 @@ class MicroBot():
 
     async def run_until_done(self):
         self.loader.load_all_modules()
-        self.logger.info("Client successfully started.")
+        self.logger.info("Bot successfully started.")
         await self.client.run_until_disconnected()
-        await self.stop_client(reason="Client disconnected.")
+        await self.stop_client(reason="Bot disconnected.")
 
     def _check_config(self):
         api_key = self.settings.get_config("api_key")
