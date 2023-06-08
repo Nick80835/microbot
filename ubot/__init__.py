@@ -38,33 +38,16 @@ class MicroBot():
         await self.client.run_until_disconnected()
         await self.stop_client(reason="Bot disconnected.")
 
-    def _check_config(self):
-        api_key = self.settings.get_config("api_key")
-        api_hash = self.settings.get_config("api_hash")
-        bot_token = self.settings.get_config("bot_token")
-
-        while not api_key:
-            api_key = input("Enter your API key: ")
-
-        self.settings.set_config("api_key", api_key)
-
-        while not api_hash:
-            api_hash = input("Enter your API hash: ")
-
-        self.settings.set_config("api_hash", api_hash)
-
-        while not bot_token:
-            bot_token = input("Enter your bot token: ")
-
-        self.settings.set_config("bot_token", bot_token)
-
-        return api_key, api_hash, bot_token
-
     def start_client(self):
-        api_key, api_hash, bot_token = self._check_config()
-
         try:
-            self.client = telethon.TelegramClient(self.settings.get_config("session_name", "bot0"), api_key, api_hash, connection=CTA).start(bot_token=bot_token)
+            self.client = telethon.TelegramClient(
+                self.settings.get_config("session_name", "bot0") or "bot0",
+                self.settings.get_config("api_id"),
+                self.settings.get_config("api_hash"),
+                connection=CTA
+                ).start(
+                    bot_token=self.settings.get_config("bot_token")
+                )
         except (TokenInvalidError, AccessTokenExpiredError, AccessTokenInvalidError):
             self.logger.error("The bot token provided is invalid, exiting.")
             sys.exit(1)
