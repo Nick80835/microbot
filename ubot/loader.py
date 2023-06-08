@@ -3,6 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from importlib import import_module, reload
 from os.path import basename, dirname, isfile
+from traceback import print_exc
 
 from aiohttp import ClientSession
 
@@ -36,6 +37,7 @@ class Loader():
                 self.loaded_modules.append(import_module("ubot.modules." + module_name))
             except Exception as exception:
                 self.logger.error(f"Error while loading {module_name}: {exception}")
+                print_exc()
 
     def reload_all_modules(self):
         self.command_handler.incoming_commands = []
