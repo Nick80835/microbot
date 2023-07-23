@@ -5,6 +5,7 @@ import os
 from datetime import timedelta
 from platform import python_version
 from time import time
+from traceback import print_exc
 
 import git
 import psutil
@@ -26,6 +27,7 @@ async def evaluate(event):
     try:
         eval_ret = eval(event.args)
     except Exception as exception:
+        print_exc()
         eval_ret = exception
 
     if inspect.isawaitable(eval_ret):
@@ -65,6 +67,7 @@ async def execute(event):
 
         eval_ret = await temp_locals['__ex'](event, reply)
     except Exception as exception:
+        print_exc()
         eval_ret = exception
 
     if len(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`") > 4096:
