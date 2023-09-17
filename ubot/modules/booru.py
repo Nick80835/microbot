@@ -6,7 +6,7 @@ from telethon import Button
 from ubot import ldr
 
 help_str = "Fetches images from Danbooru, Gelbooru, Konachan, Sankaku Complex and Yandere, takes tags as arguments."
-ext_regex = compile(r"\.(jpg|jpeg|png|mp4|gif)$")
+ext_regex = compile(r"\.(jpg|jpeg|png|mp4|gif)($|\?)")
 
 dan_api = Danbooru(ldr.aioclient)
 gel_api = Gelbooru(ldr.aioclient)
@@ -46,7 +46,7 @@ async def booru(event):
         await event.reply(f"No results for query: {event.args}")
         return
 
-    images = [[post.file_url, post.sauce, post.source, post.tags] for post in posts if post.file_url and ext_regex.search(post.file_url)]
+    images = [[post.file_url, post.sauce, post.source, post.rating] for post in posts if post.file_url and ext_regex.search(post.file_url)]
 
     if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
@@ -58,7 +58,7 @@ async def booru(event):
                 gen_source_string(image[1], image[2]),
                 file=image[0],
                 force_document=bool(event.other_args[1]),
-                spoiler=event.chat_db.spoiler_nsfw and event.extra._get_rating("x").lower() in image[3].lower()
+                spoiler=event.chat_db.spoiler_nsfw and event.extra._get_rating("x") == image[3]
             )
             return
         except:
