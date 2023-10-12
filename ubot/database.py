@@ -2,6 +2,7 @@ import rapidjson
 from peewee import (BigIntegerField, BooleanField, IntegrityError, Model,
                     SqliteDatabase, TextField)
 
+CHAT_WRAPPER_CACHE_LIMIT = 200
 DATABASE = SqliteDatabase("database.sqlite", pragmas={
     "journal_mode": "wal",
     "cache_size": -1024 * 16}
@@ -42,6 +43,7 @@ DATABASE.create_tables([
 
 class ChatWrapper():
     def __init__(self, chat: Chat):
+        self.disabled_commands: list = rapidjson.loads(chat.disabled_commands)
         self.chat = chat
 
     # custom prefix functions
@@ -104,42 +106,41 @@ class ChatWrapper():
         self.chat.save()
 
     # disable/enable command functions
-    @staticmethod
-    def _get_disabled_commands(chat: Chat) -> list:
-        return rapidjson.loads(chat.disabled_commands)
-
-    def disabled_commands(self) -> list:
-        return self._get_disabled_commands(self.chat)
-
     def enable_command(self, command: str):
-        disabled_commands = self._get_disabled_commands(self.chat)
-
-        if command in disabled_commands:
-            disabled_commands.remove(command)
-            self.chat.disabled_commands = rapidjson.dumps(disabled_commands)
+        if command in self.disabled_commands:
+            self.disabled_commands.remove(command)
+            self.chat.disabled_commands = rapidjson.dumps(self.disabled_commands)
             self.chat.save()
 
     def disable_command(self, command: str):
-        disabled_commands = self._get_disabled_commands(self.chat)
-
-        if command not in disabled_commands:
-            disabled_commands.append(command)
-            self.chat.disabled_commands = rapidjson.dumps(disabled_commands)
+        if command not in self.disabled_commands:
+            self.disabled_commands.append(command)
+            self.chat.disabled_commands = rapidjson.dumps(self.disabled_commands)
             self.chat.save()
 
 
 class Database():
+    cached_chat_wrappers = {}
     db = DATABASE
 
     # returns a ChatWrapper for a given chat ID
-    @staticmethod
-    def get_chat(chat_id: int) -> ChatWrapper:
+    def get_chat(self, chat_id: int) -> ChatWrapper:
+        if chat_id in self.cached_chat_wrappers:
+            # new events raise wrappers back to the top
+            self.cached_chat_wrappers[chat_id] = self.cached_chat_wrappers.pop(chat_id)
+            return self.cached_chat_wrappers[chat_id]
+
         try:
-            return ChatWrapper(Chat.get_by_id(chat_id))
+            chat = Chat.get_by_id(chat_id)
         except Chat.DoesNotExist:
             chat = Chat.create(chat_id=chat_id)
             chat.save()
-            return ChatWrapper(chat)
+
+        while len(self.cached_chat_wrappers) >= CHAT_WRAPPER_CACHE_LIMIT:
+            self.cached_chat_wrappers.pop(next(iter(self.cached_chat_wrappers)))
+
+        self.cached_chat_wrappers[chat_id] = (chat_db := ChatWrapper(chat))
+        return chat_db
 
     # sudo functions
     @staticmethod

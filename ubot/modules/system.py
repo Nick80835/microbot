@@ -139,7 +139,7 @@ async def enable_command(event):
 
 @ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")
 async def show_disabled(event):
-    disabled_list = event.chat_db.disabled_commands()
+    disabled_list = event.chat_db.disabled_commands
 
     if disabled_list:
         disabled_commands = "\n".join(disabled_list)

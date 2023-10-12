@@ -75,7 +75,7 @@ class CommandHandler():
                 else:
                     event.command = pattern_match.groups()[1]
 
-                if event.chat and not command.not_disableable and event.command in chat_db.disabled_commands():
+                if event.chat and not command.not_disableable and event.command in chat_db.disabled_commands:
                     continue
 
                 if not command.raw_pattern:
