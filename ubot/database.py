@@ -121,6 +121,9 @@ class ChatWrapper():
 
 class Database():
     cached_chat_wrappers = {}
+    chat_table = Chat
+    blacklisted_user_table = BlacklistedUser
+    sudo_user_table = SudoUser
     db = DATABASE
 
     # returns a ChatWrapper for a given chat ID

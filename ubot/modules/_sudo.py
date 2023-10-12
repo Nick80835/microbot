@@ -2,6 +2,7 @@ import asyncio
 import inspect
 import io
 import os
+import sys
 from datetime import timedelta
 from platform import python_version
 from time import time
@@ -125,12 +126,34 @@ async def sysd(event):
 async def alive(event):
     alive_format = "**Telethon version:** {0}\n" \
                    "**Python version:** {1}\n" \
-                   "**Memory usage:** {2}MiB\n" \
+                   "**Memory usage:** {2} MiB\n" \
                    "**Uptime:** {3}"
 
-    mem_usage = int(psutil.Process(os.getpid()).memory_info().rss / 1048576)
+    await event.reply(
+        alive_format.format(
+            version.__version__,
+            python_version(),
+            int(psutil.Process(os.getpid()).memory_info().rss / 1048576),
+            timedelta(seconds=int(time() - startup_time))
+        )
+    )
 
-    await event.reply(alive_format.format(version.__version__, python_version(), mem_usage, timedelta(seconds=int(time() - startup_time))))
+
+@ldr.add("dbstat", owner=True, hide_help=True)
+async def dbstat(event):
+    dbstat_format = "**Size on disk:** {0} MiB\n" \
+                    "**Chat count:** {1}\n" \
+                    "**Cache memory usage:** {2} MiB\n" \
+                    "**Cached chat count:** {3}"
+
+    await event.reply(
+        dbstat_format.format(
+            round(os.stat("database.sqlite").st_size / 1048576, 2),
+            ldr.db.chat_table.select().count(),
+            round(sys.getsizeof(ldr.db.cached_chat_wrappers) / 1048576, 2),
+            len(ldr.db.cached_chat_wrappers)
+        )
+    )
 
 
 @ldr.add("shutdown", pattern_extra="(f|)", owner=True, hide_help=True)
