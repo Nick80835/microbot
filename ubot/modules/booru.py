@@ -86,7 +86,7 @@ async def booru_buttons(event):
         await event.reply(f"No results for query: {event.args}")
         return
 
-    images = [[post.file_url, post.sauce, post.source, post.tags] for post in posts if post.file_url and ext_regex.search(post.file_url)]
+    images = [[post.file_url, post.sauce, post.source, post.rating] for post in posts if post.file_url and ext_regex.search(post.file_url)]
 
     if not images:
         await event.reply(f"Failed to find URLs for query: {event.args}")
@@ -98,7 +98,7 @@ async def booru_buttons(event):
         gen_source_string(images[0][1], images[0][2]),
         file=images[0][0],
         buttons=[Button.inline('➡️', f'{event.extra[2]}*{event.chat.id}_{event.id}*r')],
-        spoiler=event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x").lower() in images[0][3].lower()
+        spoiler=event.chat_db.spoiler_nsfw and event.extra[0]._get_rating("x") == images[0][3]
     )
 
 
@@ -147,7 +147,7 @@ async def booru_buttons_callback(event):
             gen_source_string(this_image[1], this_image[2]),
             file=this_image[0],
             buttons=buttons,
-            spoiler=event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x").lower() in this_image[3].lower()
+            spoiler=event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x") == this_image[3]
         )
     except:
         pass
