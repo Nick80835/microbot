@@ -201,7 +201,7 @@ class CommandHandler():
     async def handle_callback_query(self, event):
         data_str = event.data.decode("utf-8")
         data_id = data_str.split("*")[0]
-        data_data = data_str.lstrip(data_id + "*")
+        data_data = data_str.removeprefix(data_id + "*")
 
         for command in self.callback_queries:
             if command.data_id == data_id:
