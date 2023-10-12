@@ -8,7 +8,6 @@ from telethon import events
 from telethon.errors.rpcerrorlist import (ChatAdminRequiredError,
                                           ChatWriteForbiddenError)
 
-from .database import ChatWrapper
 from .fixes import inline_photos
 
 
@@ -41,7 +40,7 @@ class CommandHandler():
                 await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event):
-        chat_db = ChatWrapper(self.db.get_chat((await event.get_chat()).id))
+        chat_db = self.db.get_chat((await event.get_chat()).id)
         chat_prefix = chat_db.prefix
 
         for command in self.incoming_commands:
@@ -212,7 +211,7 @@ class CommandHandler():
                 event.object = command
 
                 if not event.via_inline:
-                    event.chat_db = ChatWrapper(self.db.get_chat(event.chat.id))
+                    event.chat_db = self.db.get_chat(event.chat.id)
 
                 try:
                     await command.function(event)

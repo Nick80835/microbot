@@ -131,15 +131,15 @@ class ChatWrapper():
 class Database():
     db = DATABASE
 
-    # returns a Chat row
+    # returns a ChatWrapper for a given chat ID
     @staticmethod
-    def get_chat(chat_id: int) -> Chat:
+    def get_chat(chat_id: int) -> ChatWrapper:
         try:
-            return Chat.get_by_id(chat_id)
+            return ChatWrapper(Chat.get_by_id(chat_id))
         except Chat.DoesNotExist:
             chat = Chat.create(chat_id=chat_id)
             chat.save()
-            return chat
+            return ChatWrapper(chat)
 
     # sudo functions
     @staticmethod
