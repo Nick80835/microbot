@@ -212,16 +212,14 @@ class CommandHandler():
                 event.args = data_data
                 event.extra = command.extra
                 event.object = command
-                chat_db = None
+                event.chat_db = None
 
                 if not event.via_inline:
-                    chat_db = self.db.get_chat((await event.get_chat()).id)
+                    event.chat_db = self.db.get_chat((await event.get_chat()).id)
 
-                if not (priv_resp := await self.check_privs(event, command, chat_db, True))[0]:
+                if not (priv_resp := await self.check_privs(event, command, event.chat_db, True))[0]:
                     await event.answer(priv_resp[1])
                     continue
-
-                event.chat_db = chat_db
 
                 try:
                     await command.function(event)
