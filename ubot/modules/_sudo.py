@@ -23,7 +23,10 @@ async def evaluate(event):
         return
 
     eval_msg = await event.reply("Processing…")
+
+    # helpful variables
     reply = await event.get_reply_message()
+    client = event.client
 
     try:
         eval_ret = eval(event.args)
@@ -51,6 +54,7 @@ async def evaluate(event):
 async def execute(event):
     exec_msg = await event.reply("Processing…")
     reply = await event.get_reply_message()
+    client = event.client
 
     if not event.args:
         await event.edit("Give me code to run!")
@@ -60,13 +64,13 @@ async def execute(event):
 
     try:
         exec(
-            f'async def __ex(event, reply): ' +
+            f'async def __ex(event, reply, client): ' +
             ''.join(f'\n {l}' for l in event.args.split('\n')),
             globals(),
             temp_locals
         )
 
-        eval_ret = await temp_locals['__ex'](event, reply)
+        eval_ret = await temp_locals['__ex'](event, reply, client)
     except Exception as exception:
         print_exc()
         eval_ret = exception
