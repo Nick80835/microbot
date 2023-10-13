@@ -1,5 +1,5 @@
 from re import compile
-
+from random import choice
 from asyncbooru import Danbooru, Gelbooru, Konachan, Sankaku, Yandere
 from telethon import Button
 
@@ -117,6 +117,7 @@ async def booru_buttons_callback(event):
     if dict_id in event.extra[0]:
         this_dict = event.extra[0][dict_id]
     else:
+        await event.answer("The bot was restarted and the buttons on this message can no longer be used.", alert=True)
         return
 
     if direction == "r":
@@ -150,7 +151,24 @@ async def booru_buttons_callback(event):
             spoiler=event.chat_db.spoiler_nsfw and event.extra[1]._get_rating("x") == this_image[3]
         )
     except:
-        pass
+        await event.answer(
+            choice(
+                [
+                    "I shidded myself on that one.",
+                    "Oopsie poopsies.",
+                    "Something went wrong, I don't know what it was though.",
+                    "Yikes, something broke!",
+                    "Nick can't code and something went wrong.",
+                    "Well, this is embarrassing.",
+                    "I tripped and fell trying to handle that button press.",
+                    "I've failed you for the last time! *dies*",
+                    "That shouldn't happen.",
+                    "Try again maybe? :(",
+                    "I broke.",
+                    "I've fallen and I can't handle that request!"
+                ]
+            )
+        )
 
 
 def gen_source_string(source: str, orig_source: str) -> str:
