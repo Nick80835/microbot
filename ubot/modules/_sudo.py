@@ -196,7 +196,7 @@ async def rem_blacklist(event):
 
 @ldr.add("showblacklist", sudo=True, hide_help=True)
 async def show_blacklist(event):
-    blacklist_string = "\n".join([str(user_id) for user_id in ldr.db.get_blacklist_list()])
+    blacklist_string = "\n".join([str(user_id) for user_id in ldr.db.blacklisted_users])
 
     await event.reply(f"**Blacklisted users:**\n\n{blacklist_string}")
 
@@ -231,7 +231,7 @@ async def rem_sudo(event):
 
 @ldr.add("showsudo", sudo=True, hide_help=True)
 async def show_sudo(event):
-    sudo_string = "\n".join([str(user_id) for user_id in ldr.db.get_sudo_list()])
+    sudo_string = "\n".join([str(user_id) for user_id in ldr.db.sudo_users])
     await event.reply(f"**Sudo users:**\n\n{sudo_string}")
 
 

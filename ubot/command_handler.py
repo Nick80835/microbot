@@ -313,7 +313,7 @@ class CommandHandler():
         return str(event.sender_id) in self.settings.get_list("owner_id")
 
     def is_sudo(self, event):
-        return event.sender_id in self.db.get_sudo_list()
+        return event.sender_id in self.db.sudo_users
 
     def is_blacklisted(self, event, inline=False):
         if inline:
@@ -321,4 +321,4 @@ class CommandHandler():
         else:
             user_id = event.sender_id
 
-        return user_id in self.db.get_blacklist_list()
+        return user_id in self.db.blacklisted_users

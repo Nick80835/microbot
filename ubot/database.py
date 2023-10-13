@@ -126,6 +126,16 @@ class Database():
     sudo_user_table = SudoUser
     db = DATABASE
 
+    try:
+        blacklisted_users = [user.user_id for user in BlacklistedUser.select().execute()]
+    except BlacklistedUser.DoesNotExist:
+        blacklisted_users = []
+
+    try:
+        sudo_users = [user.user_id for user in SudoUser.select().execute()]
+    except SudoUser.DoesNotExist:
+        sudo_users = []
+
     # returns a ChatWrapper for a given chat ID
     def get_chat(self, chat_id: int) -> ChatWrapper:
         if chat_id in self.cached_chat_wrappers:
@@ -146,39 +156,33 @@ class Database():
         return chat_db
 
     # sudo functions
-    @staticmethod
-    def get_sudo_list() -> list:
-        try:
-            return [user.user_id for user in SudoUser.select().execute()]
-        except SudoUser.DoesNotExist:
-            return []
-
-    @staticmethod
-    def sudo_user(user_id: int):
+    def sudo_user(self, user_id: int):
         try:
             SudoUser.create(user_id=user_id)
+
+            if user_id not in self.sudo_users:
+                self.sudo_users.append(user_id)
         except IntegrityError:
             pass
 
-    @staticmethod
-    def unsudo_user(user_id: int):
+    def unsudo_user(self, user_id: int):
         SudoUser.delete_by_id(user_id)
 
-    #blacklist functions
-    @staticmethod
-    def get_blacklist_list() -> list:
-        try:
-            return [user.user_id for user in BlacklistedUser.select().execute()]
-        except BlacklistedUser.DoesNotExist:
-            return []
+        if user_id in self.sudo_users:
+            self.sudo_users.remove(user_id)
 
-    @staticmethod
-    def blacklist_user(user_id: int):
+    # blacklist functions
+    def blacklist_user(self, user_id: int):
         try:
             BlacklistedUser.create(user_id=user_id)
+
+            if user_id not in self.blacklisted_users:
+                self.blacklisted_users.append(user_id)
         except IntegrityError:
             pass
 
-    @staticmethod
-    def unblacklist_user(user_id: int):
+    def unblacklist_user(self, user_id: int):
         BlacklistedUser.delete_by_id(user_id)
+
+        if user_id in self.blacklisted_users:
+            self.blacklisted_users.remove(user_id)
