@@ -299,8 +299,7 @@ class CommandHandler():
                     return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
         if not callback_query and event.chat and command.nsfw and not chat_db.nsfw_enabled:
-            if not command.silent_bail:
-                return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
+            return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
 
         if not callback_query and event.chat and command.fun and not chat_db.fun_enabled:
             return (False, None)
