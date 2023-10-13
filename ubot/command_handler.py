@@ -57,7 +57,10 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
-                if not await self.check_privs(event, command, chat_db):
+                if not (priv_resp := await self.check_privs(event, command, chat_db))[0]:
+                    if priv_resp[1]:
+                        await event.reply(priv_resp[1])
+
                     continue
 
                 if command.filter:
@@ -209,9 +212,16 @@ class CommandHandler():
                 event.args = data_data
                 event.extra = command.extra
                 event.object = command
+                chat_db = None
 
                 if not event.via_inline:
-                    event.chat_db = self.db.get_chat(event.chat.id)
+                    chat_db = self.db.get_chat((await event.get_chat()).id)
+
+                if not (priv_resp := await self.check_privs(event, command, chat_db, True))[0]:
+                    await event.answer(priv_resp[1])
+                    continue
+
+                event.chat_db = chat_db
 
                 try:
                     await command.function(event)
@@ -270,44 +280,34 @@ class CommandHandler():
 
             print_exc()
 
-    async def check_privs(self, event, command, chat_db):
+    # returns True if the command can be used, False if not, and an optional error string together in a tuple
+    # for normal commands, this will be passed to event.reply; for callback queries this will call event.answer
+    async def check_privs(self, event, command, chat_db = None, callback_query = False) -> tuple[bool, str|None]:
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
-            return False
+            return (False, None)
 
-        if command.no_private and event.is_private:
-            await event.reply("That command can't be used in private!")
-            return False
+        if not callback_query and command.no_private and event.is_private:
+            return (False, "That command can't be used in private!")
 
         if command.owner and not self.is_owner(event):
-            if not command.silent_bail:
-                await event.reply("You lack the permissions to use that command!")
-
-            return False
+            return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
         if command.sudo and not self.is_sudo(event) and not self.is_owner(event):
-            if not command.silent_bail:
-                await event.reply("You lack the permissions to use that command!")
-
-            return False
+            return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
         if command.admin:
             if event.chat and event.sender_id:
                 if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
-                    if not command.silent_bail:
-                        await event.reply("You lack the permissions to use that command!")
+                    return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
-                    return False
-
-        if event.chat and command.nsfw and not chat_db.nsfw_enabled:
+        if not callback_query and event.chat and command.nsfw and not chat_db.nsfw_enabled:
             if not command.silent_bail:
-                await event.reply(command.nsfw_warning or "NSFW commands are disabled in this chat!")
+                return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
 
-            return False
+        if not callback_query and event.chat and command.fun and not chat_db.fun_enabled:
+            return (False, None)
 
-        if event.chat and command.fun and not chat_db.fun_enabled:
-            return False
-
-        return True
+        return (True, None)
 
     def is_owner(self, event):
         return str(event.sender_id) in self.settings.get_list("owner_id")

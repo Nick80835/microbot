@@ -65,3 +65,7 @@ class CallbackQueryCommand:
 
         self.data_id = args.get("data_id")
         self.extra = args.get("extra", None)
+        self.owner = args.get("owner", False)
+        self.sudo = args.get("sudo", False)
+        self.admin = args.get("admin", False)
+        self.silent_bail = args.get("silent_bail", False)
