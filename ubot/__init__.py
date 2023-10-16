@@ -35,7 +35,6 @@ class MicroBot():
 
     async def _initialize_bot(self):
         global ldr
-        global micro_bot
 
         try:
             self.client = await telethon.TelegramClient(
@@ -55,7 +54,6 @@ class MicroBot():
         self.me = await self.client.get_me()
         self.loader = Loader(self)
         ldr = self.loader
-        micro_bot = self
         self.loader.load_all_modules()
         logger.info("Bot successfully started.")
 
@@ -79,4 +77,9 @@ class MicroBot():
 
 
 telethon.events.NewMessage.Event = ExtendedEvent
-loop.run_until_complete(MicroBot().run_until_done())
+micro_bot = MicroBot()
+
+try:
+    loop.run_until_complete(micro_bot.run_until_done())
+except KeyboardInterrupt:
+    loop.run_until_complete(micro_bot.stop_client())
