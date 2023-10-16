@@ -15,12 +15,7 @@ class ParallelDownload:
     async def download_chunk(self, chunk_start: int, chunk_end: int, chunk_number: int) -> str:
         async with self.aioclient.get(self.url, headers={"Range": f"bytes={chunk_start}-{chunk_end}"}) as response:
             async with aiofiles.open(f"ubot/cache/{self.file_name}.part{chunk_number}", mode="wb") as cache_file:
-                while True:
-                    chunk = await response.content.read(4096)
-
-                    if not chunk:
-                        break
-
+                while chunk := await response.content.read(4096):
                     await cache_file.write(chunk)
 
                 await cache_file.flush()
@@ -44,7 +39,7 @@ class ParallelDownload:
 
         return chunk_coros
 
-    async def get_download_info(self, threads) -> (int, int, str):
+    async def get_download_info(self, threads) -> tuple[int, int, str|None]:
         async with self.aioclient.get(self.url) as response:
             content_length = int(response.headers["content-length"])
             file_extension = mimetypes.guess_extension(response.headers["content-type"])
@@ -65,7 +60,7 @@ class ParallelDownload:
         return content_length, chunk_size, file_extension
 
 
-async def download(url: str, file_name: str, aioclient: ClientSession = ClientSession(), threads: int = None) -> str:
+async def download(url: str, file_name: str, aioclient: ClientSession = ClientSession(), threads: int|None = None) -> str:
     downloader = ParallelDownload(url, aioclient, file_name)
     content_length, chunk_size, file_extension = await downloader.get_download_info(threads)
     chunk_coros = await downloader.generate_chunk_coros(content_length, chunk_size)
