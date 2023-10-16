@@ -23,11 +23,11 @@ class Loader():
     loaded_modules = []
     all_modules = []
 
-    def __init__(self, client, logger, settings):
-        self.client = client
-        self.logger = logger
-        self.settings = settings
-        self.command_handler = CommandHandler(client, settings, self, logger)
+    def __init__(self, micro_bot):
+        self.micro_bot = micro_bot
+        self.settings = micro_bot.settings
+        self.logger = micro_bot.logger
+        self.command_handler = CommandHandler(self)
 
     def load_all_modules(self):
         self._find_all_modules()
@@ -135,10 +135,10 @@ class Loader():
         return [i for i in self.command_handler.callback_queries if i.function == func]
 
     async def run_async(self, function, *args):
-        return await self.client.loop.run_in_executor(self.thread_pool, partial(function, *args))
+        return await self.micro_bot.client.loop.run_in_executor(self.thread_pool, partial(function, *args))
 
     def prefix(self):
-        return ", ".join(self.settings.get_list("hard_cmd_prefix") or ["/"])
+        return ", ".join(self.micro_bot.settings.get_list("hard_cmd_prefix") or ["/"])
 
     def _find_all_modules(self):
         module_paths = glob.glob(dirname(__file__) + "/modules/*.py")

@@ -13,7 +13,7 @@ import psutil
 from telethon import version
 from telethon.tl.types import Channel, Chat
 
-from ubot import ldr, micro_bot, startup_time
+from ubot import ldr, startup_time
 
 
 @ldr.add("eval", owner=True, hide_help=True)
@@ -165,9 +165,9 @@ async def shutdown(event):
     await event.reply("Goodbye…")
 
     if event.other_args[0]:
-        await micro_bot.stop_client(reason="Shutdown command issued.", exit_code=1)
+        await ldr.micro_bot.stop_client(reason="Shutdown command issued.", exit_code=1)
     else:
-        await micro_bot.stop_client(reason="Shutdown command issued.")
+        await ldr.micro_bot.stop_client(reason="Shutdown command issued.")
 
 
 @ldr.add("blacklist", sudo=True, hide_help=True)

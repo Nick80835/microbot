@@ -21,16 +21,16 @@ class CommandHandler():
     inline_article_commands = []
     callback_queries = []
 
-    def __init__(self, client, settings, loader, logger):
-        self.username = client.loop.run_until_complete(client.get_me()).username
-        self.settings = settings
+    def __init__(self, loader):
         self.loader = loader
+        self.micro_bot = loader.micro_bot
+        self.settings = self.micro_bot.settings
+        self.logger = loader.logger
         self.db = loader.db
-        self.logger = logger
         self.hard_prefix = self.settings.get_list("hard_cmd_prefix") or ["/"]
-        client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
-        client.add_event_handler(self.handle_inline, events.InlineQuery())
-        client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
+        self.micro_bot.client.add_event_handler(self.report_incoming_excepts, events.NewMessage(incoming=True, forwards=False, func=lambda e: e.raw_text))
+        self.micro_bot.client.add_event_handler(self.handle_inline, events.InlineQuery())
+        self.micro_bot.client.add_event_handler(self.handle_callback_query, events.CallbackQuery())
 
     async def report_incoming_excepts(self, event):
         try:
@@ -54,7 +54,7 @@ class CommandHandler():
                 else:
                     prefix_list = self.hard_prefix + [chat_prefix]
 
-                pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.username), event.raw_text, IGNORECASE|DOTALL)
+                pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.micro_bot.me.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if not (priv_resp := await self.check_privs(event, command, chat_db))[0]:

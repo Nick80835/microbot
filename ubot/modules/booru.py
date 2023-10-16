@@ -1,5 +1,6 @@
-from re import compile
 from random import choice
+from re import compile
+
 from asyncbooru import Danbooru, Gelbooru, Konachan, Sankaku, Yandere
 from telethon import Button
 
