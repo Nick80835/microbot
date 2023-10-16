@@ -14,6 +14,10 @@ async def kick_user(event):
 
     try:
         if user_to_kick:
+            if user_to_kick.id == ldr.micro_bot.me.id:
+                await event.reply("I won't kick myself, idiot.")
+                return
+
             admin_perms = await event.client.get_permissions(event.chat, event.sender)
             target_perms = await event.client.get_permissions(event.chat, user_to_kick)
 
@@ -42,6 +46,10 @@ async def ban_user(event):
 
     try:
         if user_to_ban:
+            if user_to_ban.id == ldr.micro_bot.me.id:
+                await event.reply("I won't ban myself, idiot.")
+                return
+
             admin_perms = await event.client.get_permissions(event.chat, event.sender)
             target_perms = await event.client.get_permissions(event.chat, user_to_ban)
 
