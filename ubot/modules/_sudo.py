@@ -11,9 +11,9 @@ from traceback import print_exc
 import git
 import psutil
 from telethon import version
-from telethon.tl.types import Channel, Chat
 
 from ubot import ldr, startup_time
+from ubot.fixes.utils import get_user
 
 
 @ldr.add("eval", owner=True, hide_help=True)
@@ -237,43 +237,3 @@ async def rem_sudo(event):
 async def show_sudo(event):
     sudo_string = "\n".join([str(user_id) for user_id in ldr.db.sudo_users])
     await event.reply(f"**Sudo users:**\n\n{sudo_string}")
-
-
-async def get_user(event):
-    if event.args:
-        try:
-            event.args = int(event.args)
-        except:
-            pass
-
-        try:
-            user = await event.client.get_entity(event.args)
-
-            if isinstance(user, (Chat, Channel)):
-                raise TypeError
-
-            return user
-        except (ValueError, TypeError):
-            await event.reply("The ID or username you provided was invalid!")
-            return
-    elif event.is_reply:
-        reply = await event.get_reply_message()
-        reply_id = reply.sender_id
-
-        if reply_id:
-            try:
-                user = await event.client.get_entity(reply_id)
-
-                if isinstance(user, (Chat, Channel)):
-                    raise TypeError
-
-                return user
-            except (ValueError, TypeError):
-                await event.reply("There was an error getting the user's ID!")
-                return
-        else:
-            await event.reply("Sudoing failed!")
-            return
-    else:
-        await event.reply("Give me a user ID, username or reply!")
-        return

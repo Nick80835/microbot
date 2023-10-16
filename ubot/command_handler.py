@@ -57,6 +57,9 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.micro_bot.me.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
+                if command.moderation and not chat_db.modmode_enabled:
+                    continue
+
                 if not (priv_resp := await self.check_privs(event, command, chat_db))[0]:
                     if priv_resp[1]:
                         await event.reply(priv_resp[1])

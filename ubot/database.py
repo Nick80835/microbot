@@ -68,7 +68,7 @@ class ChatWrapper():
 
     # modmode command functions
     @property
-    def modmode_enabled(self) -> str:
+    def modmode_enabled(self) -> bool:
         return self.chat.modmode_enabled
 
     @modmode_enabled.setter

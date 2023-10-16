@@ -14,9 +14,10 @@ class Command:
         self.extra = args.get("extra", None)
         self.help = args.get("help", None) or func.__doc__
         self.hide_help = args.get("hide_help", False)
+        self.moderation = args.get("moderation", False)
         self.owner = args.get("owner", False)
         self.sudo = args.get("sudo", False)
-        self.admin = args.get("admin", False)
+        self.admin = args.get("admin", False) or self.moderation
         self.nsfw = args.get("nsfw", False)
         self.nsfw_warning = args.get("nsfw_warning", None)
         self.pass_nsfw = args.get("pass_nsfw", False)
