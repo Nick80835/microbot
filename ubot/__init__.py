@@ -18,9 +18,10 @@ if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_in
     print("This program requires at least Python 3.9.0 to work correctly, exiting.")
     sys.exit(1)
 
+basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
+logger = getLogger(__name__)
 startup_time = time()
 loop = asyncio.get_event_loop()
-logger = getLogger(__name__)
 
 
 class MicroBot():
@@ -30,7 +31,6 @@ class MicroBot():
     loader = None
 
     def __init__(self):
-        basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
         loop.run_until_complete(self._initialize_bot())
 
     async def _initialize_bot(self):
