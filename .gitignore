@@ -1,0 +1,5 @@
+__pycache__
+*.ini
+*.session
+*.session-journal
+*.db

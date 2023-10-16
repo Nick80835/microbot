@@ -1,0 +1,6 @@
+aiohttp
+databases[sqlite]
+pillow
+praw
+telethon
+speedtest-cli
