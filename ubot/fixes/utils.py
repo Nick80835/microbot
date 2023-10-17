@@ -1,17 +1,31 @@
 from datetime import timedelta
 
-from telethon.tl.types import Channel, Chat
+from telethon.tl.types import Channel, Chat, MessageEntityMentionName
 
 
 async def get_user(event, allow_channel=False):
-    if event.args:
+    if mention_entities := [i for i in event.get_entities_text() if isinstance(i, MessageEntityMentionName)]:
+        if len(mention_entities) > 1:
+            await event.reply("You provided too many arguments!")
+            return
+
+        try:
+            user = await event.client.get_input_entity(mention_entities[0].user_id)
+
+            if isinstance(user, Chat) or (isinstance(user, Channel) and not allow_channel):
+                raise TypeError
+
+            return user
+        except (ValueError, TypeError):
+            await event.reply("There was an error getting the user's ID!")
+    elif event.args:
         if event.args.isnumeric():
             user_id = int(event.args)
         else:
             user_id = None
 
         try:
-            user = await event.client.get_entity(user_id or event.args)
+            user = await event.client.get_input_entity(user_id or event.args)
 
             if isinstance(user, Chat) or (isinstance(user, Channel) and not allow_channel):
                 raise TypeError
@@ -19,13 +33,12 @@ async def get_user(event, allow_channel=False):
             return user
         except (ValueError, TypeError):
             await event.reply("The ID or username you provided was invalid!")
-            return
     elif event.is_reply:
         reply = await event.get_reply_message()
 
         if reply and reply.sender_id:
             try:
-                user = await event.client.get_entity(reply.sender_id)
+                user = await event.client.get_input_entity(reply.sender_id)
 
                 if isinstance(user, Chat) or (isinstance(user, Channel) and not allow_channel):
                     raise TypeError
@@ -39,7 +52,6 @@ async def get_user(event, allow_channel=False):
             return
     else:
         await event.reply("Give me a user ID, username or reply!")
-        return
 
 
 def parse_time(time_num: int, unit: str) -> timedelta:

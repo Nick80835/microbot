@@ -172,7 +172,7 @@ async def shutdown(event):
 
 @ldr.add("blacklist", sudo=True, hide_help=True)
 async def add_blacklist(event):
-    user_entity = await get_user(event)
+    user_entity = await event.client.get_entity(await get_user(event))
 
     if not user_entity:
         return
@@ -186,7 +186,7 @@ async def add_blacklist(event):
 
 @ldr.add("unblacklist", sudo=True, hide_help=True)
 async def rem_blacklist(event):
-    user_entity = await get_user(event)
+    user_entity = await event.client.get_entity(await get_user(event))
 
     if not user_entity:
         return
@@ -207,7 +207,7 @@ async def show_blacklist(event):
 
 @ldr.add("sudo", owner=True, hide_help=True)
 async def add_sudo(event):
-    user_entity = await get_user(event)
+    user_entity = await event.client.get_entity(await get_user(event))
 
     if not user_entity:
         return
@@ -221,7 +221,7 @@ async def add_sudo(event):
 
 @ldr.add("unsudo", owner=True, hide_help=True)
 async def rem_sudo(event):
-    user_entity = await get_user(event)
+    user_entity = await event.client.get_entity(await get_user(event))
 
     if not user_entity:
         return

@@ -17,7 +17,7 @@ class Command:
         self.moderation = args.get("moderation", False)
         self.owner = args.get("owner", False)
         self.sudo = args.get("sudo", False)
-        self.admin = args.get("admin", False) or self.moderation
+        self.admin = args.get("admin", False)
         self.nsfw = args.get("nsfw", False)
         self.nsfw_warning = args.get("nsfw_warning", None)
         self.pass_nsfw = args.get("pass_nsfw", False)
