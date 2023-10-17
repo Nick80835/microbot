@@ -2,6 +2,7 @@ from datetime import datetime, timezone
 from re import IGNORECASE, compile, sub
 
 from telethon.errors import UserAdminInvalidError
+from telethon.tl.types import InputPeerUser
 
 from ubot import ldr
 from ubot.fixes.utils import get_user, parse_time
@@ -26,7 +27,7 @@ async def kick_user(event):
 
     try:
         if user_to_kick:
-            if user_to_kick.id == ldr.micro_bot.me.id:
+            if isinstance(user_to_kick, InputPeerUser) and user_to_kick.user_id == ldr.micro_bot.me.id:
                 await event.reply("I won't kick myself, baka.")
                 return
 
@@ -43,7 +44,7 @@ async def kick_user(event):
 
             await event.client.edit_permissions(event.chat, user_to_kick, view_messages=False)
             await event.client.edit_permissions(event.chat, user_to_kick, view_messages=True)
-            await event.reply("Cya!" if self_harm else f"Successfully kicked {user_to_kick.id}!")
+            await event.reply("Cya!" if self_harm else f"Successfully kicked {user_to_kick.user_id if isinstance(user_to_kick, InputPeerUser) else user_to_kick.channel_id}!")
     except UserAdminInvalidError:
         await event.reply("I can't kick them!")
 
@@ -66,7 +67,7 @@ async def ban_user(event):
 
     try:
         if user_to_ban:
-            if user_to_ban.id == ldr.micro_bot.me.id:
+            if isinstance(user_to_ban, InputPeerUser) and user_to_ban.user_id == ldr.micro_bot.me.id:
                 await event.reply("I won't ban myself, baka.")
                 return
 
@@ -84,11 +85,11 @@ async def ban_user(event):
             if time_match:
                 mute_length = parse_time(int(time_match.group(1)), time_match.group(2)[0])
                 await event.client.edit_permissions(event.chat, user_to_ban, view_messages=False, until_date=mute_length)
-                await event.reply(f"Successfully banned {user_to_ban.id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
+                await event.reply(f"Successfully banned {user_to_ban.user_id if isinstance(user_to_ban, InputPeerUser) else user_to_ban.channel_id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
                 return
 
             await event.client.edit_permissions(event.chat, user_to_ban, view_messages=False)
-            await event.reply(f"Successfully banned {user_to_ban.id} for all of eternity!")
+            await event.reply(f"Successfully banned {user_to_ban.user_id if isinstance(user_to_ban, InputPeerUser) else user_to_ban.channel_id} for all of eternity!")
     except UserAdminInvalidError:
         await event.reply("I can't ban them!")
 
@@ -111,7 +112,7 @@ async def unban_user(event):
                 return
 
             await event.client.edit_permissions(event.chat, user_to_unban, view_messages=True)
-            await event.reply(f"Successfully unbanned {user_to_unban.id}!")
+            await event.reply(f"Successfully unbanned {user_to_unban.user_id if isinstance(user_to_unban, InputPeerUser) else user_to_unban.channel_id}!")
     except UserAdminInvalidError:
         await event.reply("I can't unban them!")
 
@@ -135,7 +136,7 @@ async def mute_user(event):
 
     try:
         if user_to_mute:
-            if user_to_mute.id == ldr.micro_bot.me.id:
+            if isinstance(user_to_mute, InputPeerUser) and user_to_mute.user_id == ldr.micro_bot.me.id:
                 await event.reply("I won't mute myself, baka.")
                 return
 
@@ -157,7 +158,7 @@ async def mute_user(event):
                 if self_harm:
                     await event.reply(f"Since you asked nicely, I've muted you until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
                 else:
-                    await event.reply(f"Successfully muted {user_to_mute.id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
+                    await event.reply(f"Successfully muted {user_to_mute.user_id if isinstance(user_to_mute, InputPeerUser) else user_to_mute.channel_id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
 
                 return
 
@@ -165,7 +166,7 @@ async def mute_user(event):
                 await event.reply("I don't think I should do that…")
             else:
                 await event.client.edit_permissions(event.chat, user_to_mute, send_messages=False)
-                await event.reply(f"Successfully muted {user_to_mute.id} for all of eternity!")
+                await event.reply(f"Successfully muted {user_to_mute.user_id if isinstance(user_to_mute, InputPeerUser) else user_to_mute.channel_id} for all of eternity!")
     except UserAdminInvalidError:
         await event.reply("I can't mute them!")
 
@@ -192,6 +193,6 @@ async def unmute_user(event):
                 return
 
             await event.client.edit_permissions(event.chat, user_to_unmute, send_messages=True)
-            await event.reply(f"Successfully unmuted {user_to_unmute.id}!")
+            await event.reply(f"Successfully unmuted {user_to_unmute.user_id if isinstance(user_to_unmute, InputPeerUser) else user_to_unmute.channel_id}!")
     except UserAdminInvalidError:
         await event.reply("I can't unmute them!")
