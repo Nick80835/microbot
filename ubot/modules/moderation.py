@@ -6,7 +6,7 @@ from telethon.errors import UserAdminInvalidError
 from ubot import ldr
 from ubot.fixes.utils import get_user, parse_time
 
-time_regex = compile(r"(\d+)([mhd])$", IGNORECASE)
+time_regex = compile(r"(?:^| )(\d+)([mhd])$", IGNORECASE)
 
 
 @ldr.add("kick", moderation=True, help="Kick a user.")
