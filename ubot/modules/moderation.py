@@ -6,7 +6,7 @@ from telethon.errors import UserAdminInvalidError
 from ubot import ldr
 from ubot.fixes.utils import get_user, parse_time
 
-time_regex = compile(r"(?:^| )(\d+)([mhd])$", IGNORECASE)
+time_regex = compile(r"(?:^| )(?:for )?(\d+) ?(m(?:ins?|inutes?)?|h(?:rs?|ours?)?|d(?:ays?)?)$", IGNORECASE)
 
 
 @ldr.add("kick", moderation=True, help="Kick a user.")
@@ -69,8 +69,8 @@ async def ban_user(event):
                 await event.reply("You don't have the rights to ban users.")
                 return
 
-            if time_match := time_regex.search(event.args):
-                mute_length = parse_time(int(time_match.group(1)), time_match.group(2))
+            if time_match:
+                mute_length = parse_time(int(time_match.group(1)), time_match.group(2)[0])
                 await event.client.edit_permissions(event.chat, user_to_ban, view_messages=False, until_date=mute_length)
                 await event.reply(f"Successfully banned {user_to_ban.id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
                 return
@@ -132,7 +132,7 @@ async def mute_user(event):
                 return
 
             if time_match:
-                mute_length = parse_time(int(time_match.group(1)), time_match.group(2))
+                mute_length = parse_time(int(time_match.group(1)), time_match.group(2)[0])
                 await event.client.edit_permissions(event.chat, user_to_mute, send_messages=False, until_date=mute_length)
                 await event.reply(f"Successfully muted {user_to_mute.id} until {(datetime.now(timezone.utc) + mute_length).strftime('%H:%M %b %d, %Y UTC')}!")
                 return
