@@ -1,7 +1,7 @@
 from datetime import datetime, timezone
 from re import IGNORECASE, compile, sub
 
-from telethon.errors import UserAdminInvalidError
+from telethon.errors import UserAdminInvalidError, UserNotParticipantError
 from telethon.tl.types import InputPeerUser
 
 from ubot import ldr
@@ -32,9 +32,13 @@ async def kick_user(event):
                 return
 
             admin_perms = await event.client.get_permissions(event.chat, event.sender)
-            target_perms = await event.client.get_permissions(event.chat, user_to_kick)
 
-            if target_perms.is_admin:
+            try:
+                target_perms = await event.client.get_permissions(event.chat, user_to_kick)
+            except UserNotParticipantError:
+                target_perms = None
+
+            if target_perms and target_perms.is_admin:
                 await event.reply("I won't kick an admin.")
                 return
 
@@ -72,9 +76,13 @@ async def ban_user(event):
                 return
 
             admin_perms = await event.client.get_permissions(event.chat, event.sender)
-            target_perms = await event.client.get_permissions(event.chat, user_to_ban)
 
-            if target_perms.is_admin:
+            try:
+                target_perms = await event.client.get_permissions(event.chat, user_to_ban)
+            except UserNotParticipantError:
+                target_perms = None
+
+            if target_perms and target_perms.is_admin:
                 await event.reply("I won't ban an admin.")
                 return
 
@@ -141,9 +149,13 @@ async def mute_user(event):
                 return
 
             admin_perms = await event.client.get_permissions(event.chat, event.sender)
-            target_perms = await event.client.get_permissions(event.chat, user_to_mute)
 
-            if target_perms.is_admin:
+            try:
+                target_perms = await event.client.get_permissions(event.chat, user_to_mute)
+            except UserNotParticipantError:
+                target_perms = None
+
+            if target_perms and target_perms.is_admin:
                 await event.reply("I won't mute an admin.")
                 return
 
