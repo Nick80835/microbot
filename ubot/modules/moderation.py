@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from re import IGNORECASE, compile, sub
+from re import IGNORECASE, compile
 
 from telethon.errors import UserAdminInvalidError, UserNotParticipantError
 from telethon.tl.types import InputPeerUser
