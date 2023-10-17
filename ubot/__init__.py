@@ -14,8 +14,8 @@ from .custom import ExtendedEvent
 from .loader import Loader
 from .settings import Settings
 
-if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 9):
-    print("This program requires at least Python 3.9.0 to work correctly, exiting.")
+if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_info.minor < 10):
+    print("This program requires at least Python 3.10.0 to work correctly, exiting.")
     sys.exit(1)
 
 basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
