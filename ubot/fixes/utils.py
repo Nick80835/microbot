@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from telethon.tl.types import Channel, Chat
 
 
@@ -38,3 +40,13 @@ async def get_user(event, allow_channel=False):
     else:
         await event.reply("Give me a user ID, username or reply!")
         return
+
+
+def parse_time(time_num: int, unit: str) -> timedelta:
+    match unit:
+        case "m":
+            return timedelta(seconds=time_num * 60)
+        case "h":
+            return timedelta(seconds=time_num * 60 * 60)
+        case "d":
+            return timedelta(seconds=time_num * 24 * 60 * 60)
