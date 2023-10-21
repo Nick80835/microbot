@@ -106,7 +106,7 @@ async def bot_repo(event):
     await event.reply("https://github.com/Nick80835/microbot/tree/bot")
 
 
-@ldr.add("disable", admin=True, help="Disables commands in the current chat, requires admin.")
+@ldr.add("disable", admin=True, no_private=True, help="Disables commands in the current chat, requires admin.")
 async def disable_command(event):
     if event.args:
         for command in ldr.command_handler.incoming_commands:
@@ -124,7 +124,7 @@ async def disable_command(event):
         await event.reply("Specify a command to disable!")
 
 
-@ldr.add("enable", admin=True, help="Enables commands in the current chat, requires admin.")
+@ldr.add("enable", admin=True, no_private=True, help="Enables commands in the current chat, requires admin.")
 async def enable_command(event):
     if event.args:
         for command in ldr.command_handler.incoming_commands:
@@ -138,7 +138,7 @@ async def enable_command(event):
         await event.reply("Specify a command to enable!")
 
 
-@ldr.add("showdisabled", admin=True, help="Shows disabled commands in the current chat.")
+@ldr.add("showdisabled", admin=True, no_private=True, help="Shows disabled commands in the current chat.")
 async def show_disabled(event):
     disabled_list = event.chat_db.disabled_commands
 
@@ -149,7 +149,7 @@ async def show_disabled(event):
         await event.reply(f"There are no disabled commands in **{event.chat.id}**!")
 
 
-@ldr.add("nsfw", admin=True, help="Enables or disables NSFW commands for a chat, requires admin.")
+@ldr.add("nsfw", admin=True, no_private=True, help="Enables or disables NSFW commands for a chat, requires admin.")
 async def nsfw_toggle(event):
     if event.args.lower() not in ("on", "off"):
         if event.chat_db.nsfw_enabled:
@@ -168,7 +168,7 @@ async def nsfw_toggle(event):
         await event.reply("NSFW commands disabled for this chat!")
 
 
-@ldr.add("spoilernsfw", admin=True, help="Enables or disables spoilering NSFW media for a chat, requires admin.")
+@ldr.add("spoilernsfw", admin=True, no_private=True, help="Enables or disables spoilering NSFW media for a chat, requires admin.")
 async def spoiler_nsfw_toggle(event):
     if event.args.lower() not in ("on", "off"):
         if event.chat_db.spoiler_nsfw:
@@ -187,7 +187,7 @@ async def spoiler_nsfw_toggle(event):
         await event.reply("NSFW spoilers disabled for this chat!")
 
 
-@ldr.add("fun", admin=True, help="Enables or disables fun commands for a chat, requires admin.")
+@ldr.add("fun", admin=True, no_private=True, help="Enables or disables fun commands for a chat, requires admin.")
 async def fun_toggle(event):
     if event.args.lower() not in ("on", "off"):
         if event.chat_db.fun_enabled:
@@ -206,7 +206,7 @@ async def fun_toggle(event):
         await event.reply("Fun commands disabled for this chat!")
 
 
-@ldr.add("modmode", sudo=True, admin=True, help="Enables or disables moderation commands for a chat, requires admin.")
+@ldr.add("modmode", sudo=True, admin=True, no_private=True, help="Enables or disables moderation commands for a chat, requires admin.")
 async def modmode_toggle(event):
     if event.args.lower() not in ("on", "off"):
         if event.chat_db.modmode_enabled:
