@@ -160,6 +160,11 @@ async def dbstat(event):
     )
 
 
+@ldr.add("usage", owner=True, hide_help=True)
+async def usagestat(event):
+    await event.reply("\n".join(f"{command.pattern}: {command.uses}" for command in ldr.command_handler.incoming_commands if command.uses))
+
+
 @ldr.add("shutdown", pattern_extra="(f|)", owner=True, hide_help=True)
 async def shutdown(event):
     await event.reply("Goodbye…")

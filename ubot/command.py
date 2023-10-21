@@ -6,6 +6,7 @@ class Command:
         self.module = func.__module__.split(".")[-1]
         self.function = func
         self.data = {}
+        self.uses = 0
 
         self.pattern = args.get("pattern")
         self.simple_pattern = args.get("simple_pattern", False)

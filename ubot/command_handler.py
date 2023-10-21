@@ -62,6 +62,8 @@ class CommandHandler():
                 pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.micro_bot.me.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
+                command.uses += 1
+
                 if command.moderation and not chat_db.modmode_enabled:
                     continue
 
