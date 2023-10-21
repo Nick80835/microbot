@@ -8,6 +8,11 @@ from telethon import events
 from telethon.errors.rpcerrorlist import (ChatAdminRequiredError,
                                           ChatWriteForbiddenError)
 
+from ubot.command import CallbackQueryCommand, Command
+from ubot.custom import (ExtendedCallbackQuery, ExtendedInlineQuery,
+                         ExtendedNewMessage)
+from ubot.database import ChatWrapper
+
 from .fixes import inline_photos
 
 
@@ -39,7 +44,7 @@ class CommandHandler():
             if not isinstance(exception, (ChatAdminRequiredError, ChatWriteForbiddenError)):
                 await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
-    async def handle_incoming(self, event):
+    async def handle_incoming(self, event: ExtendedNewMessage):
         chat_db = self.db.get_chat((await event.get_chat()).id)
         chat_prefix = chat_db.prefix
 
@@ -100,7 +105,7 @@ class CommandHandler():
 
                 await self.execute_command(event, command)
 
-    async def handle_inline(self, event):
+    async def handle_inline(self, event: ExtendedInlineQuery):
         for command in self.inline_photo_commands:
             pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
@@ -123,7 +128,7 @@ class CommandHandler():
 
         await self.fallback_inline(event)
 
-    async def handle_inline_photo(self, event, pattern_match, command):
+    async def handle_inline_photo(self, event: ExtendedInlineQuery, pattern_match, command):
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
@@ -166,7 +171,7 @@ class CommandHandler():
         except:
             print_exc()
 
-    async def handle_inline_article(self, event, pattern_match, command):
+    async def handle_inline_article(self, event: ExtendedInlineQuery, pattern_match, command):
         builder = event.builder
         event.pattern_match = pattern_match
         event.args = pattern_match.groups()[-1]
@@ -204,7 +209,7 @@ class CommandHandler():
         except:
             print_exc()
 
-    async def handle_callback_query(self, event):
+    async def handle_callback_query(self, event: ExtendedCallbackQuery):
         data_str = event.data.decode("utf-8")
         data_id = data_str.split("*")[0]
         data_data = data_str.removeprefix(data_id + "*")
@@ -283,7 +288,7 @@ class CommandHandler():
 
     # returns True if the command can be used, False if not, and an optional error string together in a tuple
     # for normal commands, this will be passed to event.reply; for callback queries this will call event.answer
-    async def check_privs(self, event, command, chat_db = None, callback_query = False) -> tuple[bool, str|None]:
+    async def check_privs(self, event, command: Command|CallbackQueryCommand, chat_db: ChatWrapper|None = None, callback_query = False) -> tuple[bool, str|None]:
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
             return (False, None)
 
@@ -301,10 +306,10 @@ class CommandHandler():
                 if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
                     return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
-        if not callback_query and event.chat and command.nsfw and not chat_db.nsfw_enabled:
+        if not callback_query and event.chat and command.nsfw and (chat_db and not chat_db.nsfw_enabled):
             return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
 
-        if not callback_query and event.chat and command.fun and not chat_db.fun_enabled:
+        if not callback_query and event.chat and command.fun and (chat_db and not chat_db.fun_enabled):
             return (False, None)
 
         return (True, None)

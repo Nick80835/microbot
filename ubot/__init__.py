@@ -4,13 +4,15 @@ from logging import INFO, basicConfig, getLogger
 from time import time
 
 import telethon
+from telethon import TelegramClient
 from telethon.errors.rpcerrorlist import (AccessTokenExpiredError,
                                           AccessTokenInvalidError,
                                           TokenInvalidError)
 from telethon.network.connection.tcpabridged import \
     ConnectionTcpAbridged as CTA
 
-from .custom import ExtendedEvent
+from .custom import (ExtendedCallbackQuery, ExtendedInlineQuery,
+                     ExtendedNewMessage)
 from .loader import Loader
 from .settings import Settings
 
@@ -26,9 +28,9 @@ loop = asyncio.get_event_loop()
 
 class MicroBot():
     settings = Settings()
-    client = None
-    logger = None
-    loader = None
+    logger = logger
+    client: TelegramClient
+    loader: Loader
 
     def __init__(self):
         loop.run_until_complete(self._initialize_bot())
@@ -37,7 +39,7 @@ class MicroBot():
         global ldr
 
         try:
-            self.client = await telethon.TelegramClient(
+            self.client = await TelegramClient(
                 self.settings.get_config("session_name", "bot0") or "bot0",
                 self.settings.get_config("api_id"),
                 self.settings.get_config("api_hash"),
@@ -76,7 +78,10 @@ class MicroBot():
             sys.exit(0)
 
 
-telethon.events.NewMessage.Event = ExtendedEvent
+telethon.events.NewMessage.Event = ExtendedNewMessage
+telethon.events.CallbackQuery.Event = ExtendedCallbackQuery
+telethon.events.InlineQuery.Event = ExtendedInlineQuery
+
 micro_bot = MicroBot()
 
 try:

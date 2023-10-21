@@ -1,10 +1,29 @@
+from re import Match
+from typing import Any
+
+from telethon.events.callbackquery import CallbackQuery
+from telethon.events.inlinequery import InlineQuery
 from telethon.events.newmessage import NewMessage
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeImageSize,
                                DocumentAttributeSticker)
 
+from ubot.command import (CallbackQueryCommand, Command, InlineArticleCommand,
+                          InlinePhotoCommand)
+from ubot.database import ChatWrapper
 
-class ExtendedEvent(NewMessage.Event):
+
+class ExtendedNewMessage(NewMessage.Event):
+    pattern_match: Match[str] # pattern match as returned by re.search when it's used in the command handler
+    chat_db: ChatWrapper # database reference for the chat this command was executed in
+    object: Command # the object constructed when the command associated with this event was added
+    command: str # the base command with no prefix, no args and no other_args; the whole pattern if raw_pattern is used
+    prefix: str # prefix used to call this command, such as "/" or "g."; not set if simple_pattern is used
+    extra: Any # any object you set to extra when registering the command associated with this event
+    args: str # anything after the command itself and any groups caught in other_args, such as booru tags
+    other_args: tuple # any groups between the args group and the command itself
+    nsfw_disabled: bool # only set if pass_nsfw is True; this value is the opposite of nsfw_enabled in chat_db
+
     async def get_text(self, return_msg=False, default=""):
         if self.args:
             if return_msg:
@@ -58,3 +77,23 @@ class ExtendedEvent(NewMessage.Event):
                 return await self.message.respond(*args, **kwargs|{"reply_to": self.reply_to.reply_to_msg_id})
 
         return await self.message.respond(*args, **kwargs)
+
+
+class ExtendedCallbackQuery(CallbackQuery.Event):
+    chat_db: ChatWrapper|None
+    object: CallbackQueryCommand
+    command: str
+    extra: Any
+    args: str
+
+
+class ExtendedInlineQuery(InlineQuery.Event):
+    pattern_match: Match[str]
+    parse_mode: str
+    object: InlineArticleCommand|InlinePhotoCommand
+    command: str
+    extra: Any
+    args: str
+    other_args: tuple
+    nsfw_disabled: bool
+    link_preview: bool
