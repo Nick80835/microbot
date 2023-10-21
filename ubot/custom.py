@@ -18,7 +18,7 @@ class ExtendedNewMessage(NewMessage.Event):
     chat_db: ChatWrapper # database reference for the chat this command was executed in
     object: Command # the object constructed when the command associated with this event was added
     command: str # the base command with no prefix, no args and no other_args; the whole pattern if raw_pattern is used
-    prefix: str # prefix used to call this command, such as "/" or "g."; not set if simple_pattern is used
+    prefix: str # prefix used to call this command, such as "/" or "g."; not set if simple_pattern/raw_pattern is used
     extra: Any # any object you set to extra when registering the command associated with this event
     args: str # anything after the command itself and any groups caught in other_args, such as booru tags
     other_args: tuple # any groups between the args group and the command itself
