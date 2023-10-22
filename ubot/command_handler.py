@@ -282,8 +282,9 @@ class CommandHandler():
                         command.mod_cooldown_chats.remove(event.chat.id)
                     except:
                         pass
-            elif command.chance and randint(0, 100) <= command.chance:
-                await command.function(event)
+            elif command.chance:
+                if randint(0, 100) <= command.chance:
+                    await command.function(event)
             else:
                 await command.function(event)
         except Exception as exception:
