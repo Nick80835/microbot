@@ -18,7 +18,7 @@ async def kick_user(event):
         await event.reply("I can't kick users in this chat.")
         return
 
-    if time_regex.sub("", event.args).strip().lower() == "me":
+    if time_regex.sub("", event.args).strip().lower() == "me" and not event.has_user_entities:
         self_harm = True
         user_to_kick = await event.get_sender()
     else:
@@ -63,7 +63,7 @@ async def ban_user(event):
     if time_match := time_regex.search(event.args):
         event.args = time_regex.sub("", event.args).strip()
 
-    if time_regex.sub("", event.args).strip().lower() == "me":
+    if time_regex.sub("", event.args).strip().lower() == "me" and not event.has_user_entities:
         await event.reply("I don't think I should do that…")
         return
 
@@ -105,6 +105,10 @@ async def ban_user(event):
 @ldr.add("unban", moderation=True, help="Unban a user.")
 @ldr.add(f"{bot_name}(,|) unban", moderation=True, simple_pattern=True, hide_help=True)
 async def unban_user(event):
+    if event.args.lower() == "me" and not event.has_user_entities:
+        await event.reply("You probably aren't banned.")
+        return
+
     if not (await event.client.get_permissions(event.chat, "me")).ban_users:
         await event.reply("I can't unban users in this chat.")
         return
@@ -135,7 +139,7 @@ async def mute_user(event):
     if time_match := time_regex.search(event.args):
         event.args = time_regex.sub("", event.args).strip()
 
-    if time_regex.sub("", event.args).strip().lower() == "me":
+    if time_regex.sub("", event.args).strip().lower() == "me" and not event.has_user_entities:
         self_harm = True
         user_to_mute = await event.get_sender()
     else:
@@ -186,7 +190,7 @@ async def mute_user(event):
 @ldr.add("unmute", moderation=True, help="Unmute a user.")
 @ldr.add(f"{bot_name}(,|) unmute", moderation=True, simple_pattern=True, hide_help=True)
 async def unmute_user(event):
-    if event.args.lower() == "me":
+    if event.args.lower() == "me" and not event.has_user_entities:
         await event.reply("You probably aren't muted.")
         return
 

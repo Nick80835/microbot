@@ -4,7 +4,7 @@ from telethon.tl.types import Channel, Chat, MessageEntityMentionName
 
 
 async def get_user(event, allow_channel=False):
-    if mention_entities := [i for i in event.get_entities_text() if isinstance(i, MessageEntityMentionName)]:
+    if mention_entities := [i for i in event.entities if isinstance(i, MessageEntityMentionName)] if event.entities else False:
         if len(mention_entities) > 1:
             await event.reply("You provided too many arguments!")
             return

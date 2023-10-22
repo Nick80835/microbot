@@ -6,7 +6,8 @@ from telethon.events.inlinequery import InlineQuery
 from telethon.events.newmessage import NewMessage
 from telethon.tl.types import (DocumentAttributeFilename,
                                DocumentAttributeImageSize,
-                               DocumentAttributeSticker)
+                               DocumentAttributeSticker,
+                               MessageEntityMentionName)
 
 from ubot.command import (CallbackQueryCommand, Command, InlineArticleCommand,
                           InlinePhotoCommand)
@@ -23,6 +24,10 @@ class ExtendedNewMessage(NewMessage.Event):
     args: str # anything after the command itself and any groups caught in other_args, such as booru tags
     other_args: tuple # any groups between the args group and the command itself
     nsfw_disabled: bool # only set if pass_nsfw is True; this value is the opposite of nsfw_enabled in chat_db
+
+    @property
+    def has_user_entities(self) -> bool:
+        return any([i for i in self.entities if isinstance(i, MessageEntityMentionName)]) if self.entities else False
 
     async def get_text(self, return_msg=False, default=""):
         if self.args:
