@@ -2,11 +2,15 @@ from types import FunctionType
 
 
 class Command:
+    mod_cooldown_chats = []
+    locked_users = []
+    lock_reason: str|None = None
+    data = {}
+    uses = 0
+
     def __init__(self, func: FunctionType, args: dict):
         self.module = func.__module__.split(".")[-1]
         self.function = func
-        self.data = {}
-        self.uses = 0
 
         self.pattern = args.get("pattern")
         self.simple_pattern = args.get("simple_pattern", False)
@@ -16,7 +20,6 @@ class Command:
         self.help = args.get("help", None) or func.__doc__
         self.hide_help = args.get("hide_help", False)
         self.moderation = args.get("moderation", False)
-        self.mod_cooldown_chats = []
         self.owner = args.get("owner", False)
         self.sudo = args.get("sudo", False)
         self.admin = args.get("admin", False)
@@ -24,9 +27,7 @@ class Command:
         self.nsfw_warning = args.get("nsfw_warning", None)
         self.pass_nsfw = args.get("pass_nsfw", False)
         self.locking = args.get("locking", False)
-        self.lock_reason = None
         self.user_locking = args.get("userlocking", False)
-        self.locked_users = []
         self.chance = args.get("chance", None)
         self.fun = args.get("fun", False)
         self.not_disableable = args.get("no_disable", False) or self.owner or self.sudo or self.admin
@@ -61,10 +62,11 @@ class InlineArticleCommand:
 
 
 class CallbackQueryCommand:
+    data = {}
+
     def __init__(self, func: FunctionType, args: dict):
         self.module = func.__module__.split(".")[-1]
         self.function = func
-        self.data = {}
 
         self.data_id = args.get("data_id")
         self.extra = args.get("extra", None)

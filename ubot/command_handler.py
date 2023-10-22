@@ -113,7 +113,7 @@ class CommandHandler():
             pattern_match = search(SIMPLE_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
-                if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
+                if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
                     return
 
                 await self.handle_inline_photo(event, pattern_match, command)
@@ -123,7 +123,7 @@ class CommandHandler():
             pattern_match = search(SIMPLE_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
-                if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
+                if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
                     return
 
                 await self.handle_inline_article(event, pattern_match, command)
@@ -228,7 +228,7 @@ class CommandHandler():
                 if not event.via_inline:
                     event.chat_db = self.db.get_chat((await event.get_chat()).id)
 
-                if not (priv_resp := await self.check_privs(event, command, event.chat_db, True))[0]:
+                if not (priv_resp := await self.check_privs(event, command, event.chat_db))[0]:
                     await event.answer(priv_resp[1])
                     continue
 
@@ -252,7 +252,7 @@ class CommandHandler():
         except:
             return
 
-    async def execute_command(self, event, command):
+    async def execute_command(self, event: ExtendedNewMessage, command: Command):
         try:
             if command.locking:
                 if command.lock_reason:
@@ -303,12 +303,20 @@ class CommandHandler():
 
     # returns True if the command can be used, False if not, and an optional error string together in a tuple
     # for normal commands, this will be passed to event.reply; for callback queries this will call event.answer
-    async def check_privs(self, event, command: Command|CallbackQueryCommand, chat_db: ChatWrapper|None = None, callback_query = False) -> tuple[bool, str|None]:
+    async def check_privs(self, event, command: Command|CallbackQueryCommand, chat_db: ChatWrapper|None = None) -> tuple[bool, str|None]:
         if self.is_blacklisted(event) and not self.is_owner(event) and not self.is_sudo(event):
             return (False, None)
 
-        if not callback_query and command.no_private and event.is_private:
-            return (False, "That command can't be used in private!")
+        if isinstance(command, Command):
+            if event.chat and chat_db:
+                if command.nsfw and not chat_db.nsfw_enabled:
+                    return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
+
+                if command.fun and not chat_db.fun_enabled:
+                    return (False, None)
+
+            if event.is_private and command.no_private:
+                return (False, "That command can't be used in private!")
 
         if command.owner and not self.is_owner(event):
             return (False, None if command.silent_bail else "You lack the permissions to use that command!")
@@ -321,24 +329,13 @@ class CommandHandler():
                 if event.is_private or not (await event.client.get_permissions(event.chat, event.sender_id)).is_admin and not self.is_sudo(event) and not self.is_owner(event):
                     return (False, None if command.silent_bail else "You lack the permissions to use that command!")
 
-        if not callback_query and event.chat and command.nsfw and (chat_db and not chat_db.nsfw_enabled):
-            return (False, None if command.silent_bail else command.nsfw_warning or "NSFW commands are disabled in this chat!")
-
-        if not callback_query and event.chat and command.fun and (chat_db and not chat_db.fun_enabled):
-            return (False, None)
-
         return (True, None)
 
-    def is_owner(self, event):
+    def is_owner(self, event: ExtendedNewMessage|ExtendedInlineQuery) -> bool:
         return str(event.sender_id) in self.settings.get_list("owner_id")
 
-    def is_sudo(self, event):
+    def is_sudo(self, event: ExtendedNewMessage|ExtendedInlineQuery) -> bool:
         return event.sender_id in self.db.sudo_users
 
-    def is_blacklisted(self, event, inline=False):
-        if inline:
-            user_id = event.query.user_id
-        else:
-            user_id = event.sender_id
-
-        return user_id in self.db.blacklisted_users
+    def is_blacklisted(self, event: ExtendedNewMessage|ExtendedInlineQuery) -> bool:
+        return event.query.user_id if isinstance(event, ExtendedInlineQuery) else event.sender_id in self.db.blacklisted_users
