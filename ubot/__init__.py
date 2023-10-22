@@ -25,6 +25,9 @@ logger = getLogger(__name__)
 startup_time = time()
 loop = asyncio.get_event_loop()
 
+client: TelegramClient
+ldr: Loader
+
 
 class MicroBot():
     settings = Settings()
@@ -36,6 +39,7 @@ class MicroBot():
         loop.run_until_complete(self._initialize_bot())
 
     async def _initialize_bot(self):
+        global client
         global ldr
 
         try:
@@ -53,6 +57,7 @@ class MicroBot():
 
         self.me = await self.client.get_me()
         self.loader = Loader(self)
+        client = self.client
         ldr = self.loader
         self.loader.load_all_modules()
         logger.info("Bot successfully started.")
