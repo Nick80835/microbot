@@ -47,8 +47,6 @@ class MicroBot():
             ).start(
                 bot_token=self.settings.get_config("bot_token")
             )
-
-            self.me = await self.client.get_me()
         except (TokenInvalidError, AccessTokenExpiredError, AccessTokenInvalidError):
             logger.error("The bot token provided is invalid, exiting.")
             sys.exit(1)
