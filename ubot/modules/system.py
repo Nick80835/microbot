@@ -206,7 +206,7 @@ async def fun_toggle(event):
         await event.reply("Fun commands disabled for this chat!")
 
 
-@ldr.add("modmode", sudo=True, admin=True, no_private=True, help="Enables or disables moderation commands for a chat, requires admin.")
+@ldr.add("modmode", admin=True, no_private=True, help="Enables or disables moderation commands for a chat, requires admin.\n**MAY BE UNSTABLE!**")
 async def modmode_toggle(event):
     if event.args.lower() not in ("on", "off"):
         if event.chat_db.modmode_enabled:
