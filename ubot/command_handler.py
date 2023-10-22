@@ -15,12 +15,13 @@ from ubot.database import ChatWrapper
 
 from .fixes import inline_photos
 
+PATTERN_TEMPLATE = "^{0}({1})(?: |\n|$|_|@{2}(?: |\n|$|_))(.*)"
+SIMPLE_PATTERN_TEMPLATE = "^({0})(?: |\n|$)(.*)"
+RAW_PATTERN_TEMPLATE = "{0}"
+MODERATION_COMMAND_COOLDOWN_SEC = 3
+
 
 class CommandHandler():
-    pattern_template = "^{0}({1})(?: |\n|$|_|@{2}(?: |\n|$|_))(.*)"
-    simple_pattern_template = "^({0})(?: |\n|$)(.*)"
-    raw_pattern_template = "{0}"
-
     incoming_commands = []
     inline_photo_commands = []
     inline_article_commands = []
@@ -50,16 +51,16 @@ class CommandHandler():
 
         for command in self.incoming_commands:
             if command.simple_pattern:
-                pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
+                pattern_match = search(SIMPLE_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             elif command.raw_pattern:
-                pattern_match = search(self.raw_pattern_template.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
+                pattern_match = search(RAW_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             else:
                 if command.not_disableable:
                     prefix_list = self.hard_prefix + [chat_prefix] + ["/"]
                 else:
                     prefix_list = self.hard_prefix + [chat_prefix]
 
-                pattern_match = search(self.pattern_template.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.micro_bot.me.username), event.raw_text, IGNORECASE|DOTALL)
+                pattern_match = search(PATTERN_TEMPLATE.format(f"({'|'.join([escape(i) for i in prefix_list])})", command.pattern + command.pattern_extra, self.micro_bot.me.username), event.raw_text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 command.uses += 1
@@ -109,7 +110,7 @@ class CommandHandler():
 
     async def handle_inline(self, event: ExtendedInlineQuery):
         for command in self.inline_photo_commands:
-            pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
+            pattern_match = search(SIMPLE_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
@@ -119,7 +120,7 @@ class CommandHandler():
                 return
 
         for command in self.inline_article_commands:
-            pattern_match = search(self.simple_pattern_template.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
+            pattern_match = search(SIMPLE_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.text, IGNORECASE|DOTALL)
 
             if pattern_match:
                 if self.is_blacklisted(event, True) and not self.is_owner(event) and not self.is_sudo(event):
@@ -271,9 +272,20 @@ class CommandHandler():
                     command.locked_users.append(event.sender_id)
                     await command.function(event)
                     command.locked_users.remove(event.sender_id)
-            else:
-                if command.chance and randint(0, 100) <= command.chance or not command.chance:
+            elif command.moderation:
+                if not event.chat.id in command.mod_cooldown_chats:
+                    command.mod_cooldown_chats.append(event.chat.id)
                     await command.function(event)
+                    await asyncio.sleep(MODERATION_COMMAND_COOLDOWN_SEC)
+
+                    try:
+                        command.mod_cooldown_chats.remove(event.chat.id)
+                    except:
+                        pass
+            elif command.chance and randint(0, 100) <= command.chance:
+                await command.function(event)
+            else:
+                await command.function(event)
         except Exception as exception:
             command.lock_reason = None
 

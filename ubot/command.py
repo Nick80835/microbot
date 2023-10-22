@@ -16,6 +16,7 @@ class Command:
         self.help = args.get("help", None) or func.__doc__
         self.hide_help = args.get("hide_help", False)
         self.moderation = args.get("moderation", False)
+        self.mod_cooldown_chats = []
         self.owner = args.get("owner", False)
         self.sudo = args.get("sudo", False)
         self.admin = args.get("admin", False)
