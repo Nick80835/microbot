@@ -57,8 +57,8 @@ async def get_user(event, allow_channel=False):
 def parse_time(time_num: int, unit: str) -> timedelta:
     match unit:
         case "m":
-            return timedelta(seconds=time_num * 60)
+            return timedelta(minutes=time_num)
         case "h":
-            return timedelta(seconds=time_num * 60 * 60)
+            return timedelta(minutes=time_num * 60)
         case "d":
-            return timedelta(seconds=time_num * 24 * 60 * 60)
+            return timedelta(minutes=time_num * 60 * 24)
