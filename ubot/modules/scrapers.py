@@ -93,7 +93,7 @@ def pokemon_image_sync(sprite_io):
     return sticker_io
 
 
-@ldr.add("ip", help="IP lookup.")
+#@ldr.add("ip", help="IP lookup.")
 async def ip_lookup(event):
     ip = await event.get_text()
 
