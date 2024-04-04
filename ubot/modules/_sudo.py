@@ -87,15 +87,16 @@ async def execute(event):
 
 @ldr.add("reload", sudo=True, hide_help=True)
 async def reload_modules(event):
-    reload_msg = await event.reply("Reloading modules…")
-
     errors = ldr.reload_all_modules()
 
     if errors:
-        await reload_msg.edit(errors)
+        await event.reply(errors)
     else:
         try:
-            await reload_msg.edit("Successfully reloaded.")
+            try:
+                await event.react("👍")
+            except:
+                await event.reply("Successfully reloaded.")
         except:
             pass
 
@@ -177,11 +178,12 @@ async def shutdown(event):
 
 @ldr.add("blacklist", sudo=True, hide_help=True)
 async def add_blacklist(event):
-    user_entity = await event.client.get_entity(await get_user(event))
+    user_entity = await get_user(event)
 
     if not user_entity:
         return
 
+    user_entity = await event.client.get_entity(user_entity)
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
@@ -191,11 +193,12 @@ async def add_blacklist(event):
 
 @ldr.add("unblacklist", sudo=True, hide_help=True)
 async def rem_blacklist(event):
-    user_entity = await event.client.get_entity(await get_user(event))
+    user_entity = await get_user(event)
 
     if not user_entity:
         return
 
+    user_entity = await event.client.get_entity(user_entity)
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
@@ -212,11 +215,12 @@ async def show_blacklist(event):
 
 @ldr.add("sudo", owner=True, hide_help=True)
 async def add_sudo(event):
-    user_entity = await event.client.get_entity(await get_user(event))
+    user_entity = await get_user(event)
 
     if not user_entity:
         return
 
+    user_entity = await event.client.get_entity(user_entity)
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
@@ -226,11 +230,12 @@ async def add_sudo(event):
 
 @ldr.add("unsudo", owner=True, hide_help=True)
 async def rem_sudo(event):
-    user_entity = await event.client.get_entity(await get_user(event))
+    user_entity = await get_user(event)
 
     if not user_entity:
         return
 
+    user_entity = await event.client.get_entity(user_entity)
     userid = user_entity.id
     userfullname = f"{user_entity.first_name} {user_entity.last_name or ''}".strip()
 
