@@ -40,32 +40,38 @@ async def evaluate(event):
     else:
         isawait = ""
 
-    if len(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}") > 4096:
+    if len(f"Evaluation:\n{event.args}\nReturn{isawait}:\n{eval_ret}") > 4096:
         text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
         text_io.name = "return.txt"
         await eval_msg.edit("Output too large for a message, sending as a file…")
         await eval_msg.reply(file=text_io)
         return
 
-    await eval_msg.edit(f"**Evaluation:**\n{event.args}\n**Return{isawait}:**\n{eval_ret}")
+    await eval_msg.edit(f"**Evaluation:**\n```{event.args}```\n**Return{isawait}:**\n```{eval_ret}```")
 
 
 @ldr.add("exec", owner=True, hide_help=True)
 async def execute(event):
+    if not event.args:
+        await event.reply("Give me code to run!")
+        return
+
     exec_msg = await event.reply("Processing…")
+
+    # helpful variables
     reply = await event.get_reply_message()
     client = event.client
 
-    if not event.args:
-        await event.edit("Give me code to run!")
-        return
-
-    temp_locals = {}
-
     try:
+        temp_locals = {}
+        exec_lines = [i for i in event.args.split('\n')]
+
+        if not exec_lines[-1].startswith("return "):
+            exec_lines[-1] = "return " + exec_lines[-1]
+
         exec(
             f'async def __ex(event, reply, client): ' +
-            ''.join(f'\n {l}' for l in event.args.split('\n')),
+            ''.join(f'\n {l}' for l in exec_lines),
             globals(),
             temp_locals
         )
@@ -75,14 +81,16 @@ async def execute(event):
         print_exc()
         eval_ret = exception
 
-    if len(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`") > 4096:
+    exec_text = '\n'.join(l for l in exec_lines)
+
+    if len(f"Execution:\n{exec_text}\nReturn:\n{eval_ret}") > 4096:
         text_io = io.BytesIO(str(eval_ret).encode("utf-8"))
         text_io.name = "return.txt"
         await exec_msg.edit("Output too large for a message, sending as a file…")
         await event.respond(file=text_io)
         return
 
-    await exec_msg.edit(f"**Execution:**\n`{event.args}`\n**Return:**\n`{eval_ret}`")
+    await exec_msg.edit(f"**Execution:**\n```{exec_text}```\n**Return:**\n```{eval_ret}```")
 
 
 @ldr.add("reload", sudo=True, hide_help=True)
