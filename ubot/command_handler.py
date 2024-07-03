@@ -316,7 +316,10 @@ class CommandHandler():
                     return (False, None)
 
             if event.is_private and command.no_private:
-                return (False, "That command can't be used in private!")
+                return (False, None if command.silent_bail else "That command can't be used in private!")
+
+            if not event.is_private and command.private_only:
+                return (False, None if command.silent_bail else "That command can only be used in private!")
 
         if command.owner and not self.is_owner(event):
             return (False, None if command.silent_bail else "You lack the permissions to use that command!")

@@ -4,6 +4,8 @@ from telethon import Button
 
 from ubot import ldr
 
+bot_name = ldr.settings.get_config("bot_name") or "bot"
+
 
 @ldr.add("del", no_disable=True, help="Deletes messages from this bot, it's a safety feature.")
 async def delete_message(event):
@@ -17,7 +19,7 @@ async def delete_message(event):
 async def start_cmd(event):
     await event.reply(
         f"Hi I'm {ldr.settings.get_config('bot_name') or 'μBot'}, use /help to see what commands I have!\n\n"
-        "You can toggle NSFW commands using /nsfw [on|off].",
+        "You can toggle NSFW commands using /nsfw [on|off] and view what I store using /privacy.",
         buttons=[Button.url("Creator", "https://t.me/Nick80835"), Button.url("Source", "https://github.com/Nick80835/microbot/tree/bot")]
     )
 
@@ -50,6 +52,28 @@ async def help_cmd(event):
     prefix_help = f"<b>Bot prefix:</b> {ldr.prefix()}\n<b>Group prefix:</b> {event.chat_db.prefix}\n\n"
 
     await event.reply(f"{prefix_help}<b>Available commands:</b>\n\n{help_string}", parse_mode="html")
+
+
+@ldr.add("privacy")
+async def privacy_policy(event):
+    await event.reply(
+        f"This bot (\"**{bot_name}**\") stores the IDs of chats in which it receives messages as well as configurations associated with those chats such as command prefixes and disabled commands. "
+         "This includes private 1-on-1 chats, private groups, public groups and channels.\n\n"
+        f"You may delete this chat (with ID `{event.chat.id}`) and data associated with it from my database using `{ldr.prefix()}clearconfig` if you have sufficient permissions. "
+        "If a message is received in this chat after the configuration for this chat is deleted, a new database entry for this chat will be created."
+    )
+
+
+@ldr.add("clearconfig", admin=True, hide_help=True, no_disable=True, no_private=True, silent_bail=True)
+async def clear_config(event):
+    ldr.db.del_chat(event.chat.id)
+    await event.reply("Group config cleared.")
+
+
+@ldr.add("clearconfig", no_disable=True, private_only=True, silent_bail=True)
+async def clear_config_private(event):
+    ldr.db.del_chat(event.chat.id)
+    await event.reply("Private config cleared.")
 
 
 @ldr.add("prefix", admin=True, no_private=True)

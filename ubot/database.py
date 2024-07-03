@@ -155,6 +155,13 @@ class Database():
         self.cached_chat_wrappers[chat_id] = (chat_db := ChatWrapper(chat))
         return chat_db
 
+    # deletes the database entry associated with a given chat ID
+    def del_chat(self, chat_id: int) -> None:
+        if chat_id in self.cached_chat_wrappers:
+            del self.cached_chat_wrappers[chat_id]
+
+        Chat.delete_by_id(chat_id)
+
     # sudo functions
     def sudo_user(self, user_id: int):
         try:
