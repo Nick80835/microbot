@@ -54,7 +54,7 @@ async def help_cmd(event):
     await event.reply(f"{prefix_help}<b>Available commands:</b>\n\n{help_string}", parse_mode="html")
 
 
-@ldr.add("privacy")
+@ldr.add("privacy", force_hard_prefix=True)
 async def privacy_policy(event):
     await event.reply(
         f"This bot (\"**{bot_name}**\") stores the IDs of chats in which it receives messages as well as configurations associated with those chats such as command prefixes and disabled commands. "
