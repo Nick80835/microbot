@@ -55,7 +55,7 @@ class CommandHandler():
             elif command.raw_pattern:
                 pattern_match = search(RAW_PATTERN_TEMPLATE.format(command.pattern + command.pattern_extra), event.raw_text, IGNORECASE|DOTALL)
             else:
-                if command.not_disableable or command.force_hard_prefix:
+                if command.not_disableable or command.force_standard_prefix:
                     prefix_list = self.hard_prefix + [chat_prefix] + ["/"]
                 else:
                     prefix_list = self.hard_prefix + [chat_prefix]

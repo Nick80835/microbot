@@ -31,7 +31,7 @@ class Command:
         self.chance = args.get("chance", None)
         self.fun = args.get("fun", False)
         self.not_disableable = args.get("no_disable", False) or self.owner or self.sudo or self.admin
-        self.force_hard_prefix = args.get("force_hard_prefix", False)
+        self.force_standard_prefix = args.get("force_standard_prefix", False)
         self.no_private = args.get("no_private", False)
         self.private_only = args.get("private_only", False)
         self.silent_bail = args.get("silent_bail", False)
