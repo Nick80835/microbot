@@ -16,9 +16,9 @@ from ubot.database import ChatWrapper
 from .fixes import inline_photos
 
 # 0 = command prefix, 1 = command, 2 = bot username
-PATTERN_TEMPLATE = "^{0}({1})(?:[ _]?|@{2}[ _]?)(.*)"
+PATTERN_TEMPLATE = "^{0}({1})(?:@{2})?(?:[ _]|\n+|$)(.*)?"
 # 0 = command
-SIMPLE_PATTERN_TEMPLATE = "^({0})[ _](.*)"
+SIMPLE_PATTERN_TEMPLATE = "^({0})(?:[ _]|\n+|$)(.*)?"
 RAW_PATTERN_TEMPLATE = "{0}"
 MODERATION_COMMAND_COOLDOWN_SEC = 3
 
