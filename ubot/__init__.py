@@ -57,6 +57,7 @@ class MicroBot():
 
         self.me = await self.client.get_me()
         self.loader = Loader(self)
+        await self.loader._initialize_loader()
         client = self.client
         ldr = self.loader
         self.loader.load_all_modules()

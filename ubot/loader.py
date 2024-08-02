@@ -2,10 +2,14 @@ import glob
 from concurrent.futures import ThreadPoolExecutor
 from functools import partial
 from importlib import import_module, reload
+from logging import Logger
 from os.path import basename, dirname, isfile
 from traceback import print_exc
+from typing import TYPE_CHECKING
 
 from aiohttp import ClientSession
+
+from ubot.settings import Settings
 
 from .cache import Cache
 from .command import (CallbackQueryCommand, Command, InlineArticleCommand,
@@ -13,12 +17,19 @@ from .command import (CallbackQueryCommand, Command, InlineArticleCommand,
 from .command_handler import CommandHandler
 from .database import Database
 
+if TYPE_CHECKING:
+    from ubot import MicroBot
+
 
 class Loader():
-    aioclient = ClientSession()
-    thread_pool = ThreadPoolExecutor()
-    cache = Cache(aioclient)
-    db = Database()
+    thread_pool: ThreadPoolExecutor = ThreadPoolExecutor()
+    db: Database = Database()
+    micro_bot: "MicroBot"
+    settings: Settings
+    logger: Logger
+    command_handler: CommandHandler
+    aioclient: ClientSession
+    cache: Cache
 
     loaded_modules = []
     all_modules = []
@@ -27,6 +38,10 @@ class Loader():
         self.micro_bot = micro_bot
         self.settings = micro_bot.settings
         self.logger = micro_bot.logger
+
+    async def _initialize_loader(self):
+        self.aioclient = ClientSession()
+        self.cache = Cache(self.aioclient)
         self.command_handler = CommandHandler(self)
 
     def load_all_modules(self):
