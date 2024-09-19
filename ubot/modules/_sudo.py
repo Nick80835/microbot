@@ -93,7 +93,7 @@ async def execute(event):
     await exec_msg.edit(f"**Execution:**\n```{exec_text}```\n**Return:**\n```{eval_ret}```")
 
 
-@ldr.add("reload", sudo=True, hide_help=True)
+@ldr.add("reload", owner=True, hide_help=True)
 async def reload_modules(event):
     errors = ldr.reload_all_modules()
 
