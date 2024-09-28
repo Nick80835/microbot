@@ -5,6 +5,7 @@ import os
 import sys
 from datetime import timedelta
 from platform import python_version
+from shutil import which
 from time import time
 from traceback import print_exc
 
@@ -119,20 +120,20 @@ async def update_bot(event):
 
 @ldr.add("sysd", sudo=True, hide_help=True)
 async def sysd(event):
-    try:
-        neo = "neofetch --stdout"
-
-        fetch = await asyncio.create_subprocess_shell(
-            neo,
-            stdout=asyncio.subprocess.PIPE,
-            stderr=asyncio.subprocess.PIPE,
-        )
-
-        stdout, stderr = await fetch.communicate()
-
-        await event.reply(f"`{stdout.decode().strip()}{stderr.decode().strip()}`")
-    except FileNotFoundError:
+    if which("neofetch") is not None:
+        command = "neofetch --stdout"
+    else:
         await event.reply("Neofetch not found!")
+        return
+
+    fetch = await asyncio.create_subprocess_shell(
+        command,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE,
+    )
+
+    stdout, stderr = await fetch.communicate()
+    await event.reply(f"```{stdout.decode().strip()}{stderr.decode().strip()}```")
 
 
 @ldr.add("alive", sudo=True, hide_help=True)

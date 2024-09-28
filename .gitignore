@@ -5,3 +5,5 @@ settings.ini
 *.sqlite*
 testing.py
 cache
+.venv
+.directory
