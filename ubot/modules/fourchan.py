@@ -5,7 +5,7 @@ from ubot import ldr
 BOARD_URL = "https://a.4cdn.org/{0}/threads.json"
 POST_URL = "https://a.4cdn.org/{0}/thread/{1}.json"
 CONTENT_URL = "https://i.4cdn.org/{0}/{1}{2}"
-VALID_ENDS = (".webm", ".jpg", ".png", ".gif")
+VALID_ENDS = (".webm", ".jpg", ".png", ".gif", ".mp4")
 NSFW_BOARDS = ['aco', 'b', 'bant', 'd', 'e', 'f', 'gif', 'h', 'hc', 'hm', 'hr', 'i', 'ic', 'pol', 'r', 'r9k', 's', 's4s', 'soc', 't', 'trash', 'u', 'wg', 'y']
 
 
