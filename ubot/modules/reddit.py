@@ -38,7 +38,7 @@ async def imagefetcher(event, sub):
 
     for _ in range(10):
         try:
-            post = await subreddit.random() or await imagefetcherfallback(subreddit)
+            post = await imagefetcherfallback(subreddit)
             post.title
 
             if event.nsfw_disabled and post.over_18:
@@ -71,7 +71,7 @@ async def titlefetcher(event, sub):
     subreddit = await REDDIT.subreddit(sub)
 
     try:
-        post = await subreddit.random() or await titlefetcherfallback(subreddit)
+        post = await titlefetcherfallback(subreddit)
         post.title
     except redex.Forbidden:
         await event.reply(f"**r/{sub}** is private!")
@@ -91,7 +91,7 @@ async def bodyfetcher(event, sub):
 
     for _ in range(10):
         try:
-            post = await subreddit.random() or await bodyfetcherfallback(subreddit)
+            post = await bodyfetcherfallback(subreddit)
             post.title
         except redex.Forbidden:
             await event.reply(f"**r/{sub}** is private!")
