@@ -74,6 +74,7 @@ class MicroBot():
             logger.info("Stopping bot.")
 
         await self.loader.aioclient.close()
+        await client.disconnect()
 
         if exit_code is not None:
             logger.info("Exiting with exit code: %i", exit_code)
