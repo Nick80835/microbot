@@ -1,6 +1,7 @@
 import io
 
 from PIL import Image, ImageOps
+from telethon.types import MessageMediaPhoto, MessageMediaDocument
 
 from ubot import ldr
 
@@ -28,6 +29,46 @@ async def useridgetter(event):
         user_id = event.sender_id
 
     await event.reply(f"**User ID:** {user_id}")
+
+
+@ldr.add("dcid")
+async def datacenteridgetter(event):
+    sender = await event.get_sender()
+    reply = await event.get_reply_message()
+    sender_dc_id = "Unknown (No photo.)"
+    other_dc_id = ""
+
+    if sender and sender.photo:
+        sender_dc_id = f"`{sender.photo.dc_id}`"
+
+    if event.media:
+        if isinstance(event.media, MessageMediaPhoto):
+            other_dc_id += f"\nUploaded photo DC ID: `{event.media.photo.dc_id}`"
+        elif isinstance(event.media, MessageMediaDocument):
+            other_dc_id += f"\nUploaded document DC ID: `{event.media.document.dc_id}`"
+        else:
+            other_dc_id += "\nUploaded media DC ID: Unknown"
+
+    if reply:
+        reply_sender = await reply.get_sender()
+
+        if reply_sender and reply_sender.id != event.sender_id:
+            if reply_sender.photo:
+                other_dc_id += f"\nReplied sender DC ID: `{reply_sender.photo.dc_id}`"
+            else:
+                other_dc_id += f"\nReplied sender DC ID: Unknown (No photo.)"
+
+        if reply.media:
+            if isinstance(reply.media, MessageMediaPhoto):
+                other_dc_id += f"\nReplied photo DC ID: `{reply.media.photo.dc_id}`"
+            elif isinstance(reply.media, MessageMediaDocument):
+                other_dc_id += f"\nReplied document DC ID: `{reply.media.document.dc_id}`"
+            else:
+                other_dc_id += f"\nReplied media DC ID: Unknown"
+
+    await event.reply(
+        f"Your DC ID: {sender_dc_id}" + other_dc_id
+    )
 
 
 @ldr.add("stickpng", help="Converts stickers to PNG files.")
