@@ -91,7 +91,7 @@ class Loader():
 
         return decorator
 
-    def add_dict(self, pattern: dict = None, **args):
+    def add_dict(self, pattern: dict = None, lenient: bool = False, **args):
         pattern_dict = args.get("pattern", pattern)
 
         def decorator(func):
@@ -101,12 +101,12 @@ class Loader():
                         this_args = args.copy()
                         this_args["pattern"] = patt
                         this_args["extra"] = args.get('extra', extra)
-                        self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", False))
+                        self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", lenient))
                 else:
                     this_args = args.copy()
                     this_args["pattern"] = pattern
                     this_args["extra"] = args.get('extra', extra)
-                    self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", False))
+                    self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", lenient))
 
             return func
 
