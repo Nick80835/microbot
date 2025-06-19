@@ -347,3 +347,7 @@ class CommandHandler():
 
     def is_blacklisted(self, event: ExtendedNewMessage|ExtendedInlineQuery) -> bool:
         return event.query.user_id if isinstance(event, ExtendedInlineQuery) else event.sender_id in self.db.blacklisted_users
+
+    @property
+    def all_incoming_commands(self) -> list[Command]:
+        return self.incoming_commands + self.incoming_lenient_commands

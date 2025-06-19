@@ -27,7 +27,7 @@ async def start_cmd(event):
 @ldr.add("help", no_disable=True, pass_nsfw=True)
 async def help_cmd(event):
     if event.args:
-        for command in ldr.command_handler.incoming_commands:
+        for command in ldr.command_handler.all_incoming_commands:
             if not command.hide_help:
                 if event.args == command.pattern:
                     if command.help:
@@ -39,7 +39,7 @@ async def help_cmd(event):
 
     help_dict = {}
 
-    for command in ldr.command_handler.incoming_commands:
+    for command in ldr.command_handler.all_incoming_commands:
         if not command.hide_help:
             if not event.nsfw_disabled or (event.nsfw_disabled and not command.nsfw):
                 if command.module in help_dict:
@@ -93,7 +93,7 @@ async def set_group_prefix(event):
 @ldr.add("sudohelp", sudo=True)
 async def sudohelp(event):
     if event.args:
-        for command in ldr.command_handler.incoming_commands:
+        for command in ldr.command_handler.all_incoming_commands:
             if command.hide_help:
                 if event.args == command.pattern:
                     if command.help:
@@ -105,7 +105,7 @@ async def sudohelp(event):
 
     help_dict = {}
 
-    for command in ldr.command_handler.incoming_commands:
+    for command in ldr.command_handler.all_incoming_commands:
         if command.hide_help:
             if command.module in help_dict:
                 help_dict[command.module].append(command.pattern)
@@ -133,7 +133,7 @@ async def bot_repo(event):
 @ldr.add("disable", admin=True, no_private=True, help="Disables commands in the current chat, requires admin.")
 async def disable_command(event):
     if event.args:
-        for command in ldr.command_handler.incoming_commands:
+        for command in ldr.command_handler.all_incoming_commands:
             if event.args == command.pattern:
                 if command.not_disableable:
                     await event.reply(f"**{command.pattern}** cannot be disabled!")
@@ -151,7 +151,7 @@ async def disable_command(event):
 @ldr.add("enable", admin=True, no_private=True, help="Enables commands in the current chat, requires admin.")
 async def enable_command(event):
     if event.args:
-        for command in ldr.command_handler.incoming_commands:
+        for command in ldr.command_handler.all_incoming_commands:
             if event.args == command.pattern:
                 await event.reply(f"Enabling **{command.pattern}** in chat **{event.chat.id}**!")
                 event.chat_db.enable_command(command.pattern)
