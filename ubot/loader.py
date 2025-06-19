@@ -56,6 +56,7 @@ class Loader():
 
     def reload_all_modules(self):
         self.command_handler.incoming_commands = []
+        self.command_handler.incoming_lenient_commands = []
         self.command_handler.inline_photo_commands = []
         self.command_handler.inline_article_commands = []
         self.command_handler.callback_queries = []
@@ -77,6 +78,15 @@ class Loader():
         def decorator(func):
             args["pattern"] = args.get("pattern", pattern)
             self.command_handler.incoming_commands.append(Command(func, args))
+
+            return func
+
+        return decorator
+
+    def add_lenient(self, pattern: str = None, **args):
+        def decorator(func):
+            args["pattern"] = args.get("pattern", pattern)
+            self.command_handler.incoming_lenient_commands.append(Command(func, args))
 
             return func
 
