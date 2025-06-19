@@ -351,3 +351,16 @@ class CommandHandler():
     @property
     def all_incoming_commands(self) -> list[Command]:
         return self.incoming_commands + self.incoming_lenient_commands
+
+    def push_incoming_command(self, command: Command, lenient: bool = False):
+        if lenient:
+            self.incoming_lenient_commands.append(command)
+        else:
+            self.incoming_commands.append(command)
+
+    def clear_commands(self):
+        self.incoming_commands = []
+        self.incoming_lenient_commands = []
+        self.inline_photo_commands = []
+        self.inline_article_commands = []
+        self.callback_queries = []

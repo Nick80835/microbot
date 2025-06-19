@@ -55,12 +55,7 @@ class Loader():
                 print_exc()
 
     def reload_all_modules(self):
-        self.command_handler.incoming_commands = []
-        self.command_handler.incoming_lenient_commands = []
-        self.command_handler.inline_photo_commands = []
-        self.command_handler.inline_article_commands = []
-        self.command_handler.callback_queries = []
-
+        self.command_handler.clear_commands()
         errors = ""
 
         for module in self.loaded_modules:
@@ -74,32 +69,23 @@ class Loader():
 
         return errors or None
 
-    def add(self, pattern: str = None, **args):
+    def add(self, pattern: str = None, lenient: bool = False, **args):
         def decorator(func):
             args["pattern"] = args.get("pattern", pattern)
-            self.command_handler.incoming_commands.append(Command(func, args))
+            self.command_handler.push_incoming_command(Command(func, args), lenient)
 
             return func
 
         return decorator
 
-    def add_lenient(self, pattern: str = None, **args):
-        def decorator(func):
-            args["pattern"] = args.get("pattern", pattern)
-            self.command_handler.incoming_lenient_commands.append(Command(func, args))
-
-            return func
-
-        return decorator
-
-    def add_list(self, pattern: list = None, **args):
+    def add_list(self, pattern: list = None, lenient: bool = False, **args):
         pattern_list = args.get("pattern", pattern)
 
         def decorator(func):
             for pattern in pattern_list:
                 this_args = args.copy()
                 this_args["pattern"] = pattern
-                self.command_handler.incoming_commands.append(Command(func, this_args))
+                self.command_handler.push_incoming_command(Command(func, this_args), lenient)
 
             return func
 
@@ -115,12 +101,12 @@ class Loader():
                         this_args = args.copy()
                         this_args["pattern"] = patt
                         this_args["extra"] = args.get('extra', extra)
-                        self.command_handler.incoming_commands.append(Command(func, this_args))
+                        self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", False))
                 else:
                     this_args = args.copy()
                     this_args["pattern"] = pattern
                     this_args["extra"] = args.get('extra', extra)
-                    self.command_handler.incoming_commands.append(Command(func, this_args))
+                    self.command_handler.push_incoming_command(Command(func, this_args), args.get("lenient", False))
 
             return func
 
@@ -154,7 +140,7 @@ class Loader():
         return decorator
 
     def get_cmds_by_func(self, func) -> list:
-        return [i for i in self.command_handler.incoming_commands if i.function == func]
+        return [i for i in self.command_handler.all_incoming_commands if i.function == func]
 
     def get_cbs_by_func(self, func) -> list:
         return [i for i in self.command_handler.callback_queries if i.function == func]
