@@ -51,6 +51,9 @@ class CommandHandler():
                 await event.client.send_message(int(self.settings.get_list("owner_id")[0]), str(format_exc()))
 
     async def handle_incoming(self, event: ExtendedNewMessage, command_list: list[Command]):
+        if not command_list:
+            return
+
         chat_db = self.db.get_chat((await event.get_chat()).id)
         chat_prefix = chat_db.prefix
 
