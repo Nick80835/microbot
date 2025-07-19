@@ -118,7 +118,7 @@ def flipstickersync(sticker_webp_io):
     return sticker_flipped_io
 
 
-@ldr.add("stickimg", help="Converts images to sticker sized PNG files.")
+@ldr.add("stickimg", help="Converts images to sticker-sized PNG files.")
 async def createsticker(event):
     data = await event.get_image()
 
@@ -131,22 +131,32 @@ async def createsticker(event):
     await event.reply(file=await ldr.run_async(createstickersync, image_io), force_document=True)
 
 
-def createstickersync(image_io):
+@ldr.add("emojiimg", help="Converts images to emoji-sized PNG files.")
+async def createemoji(event):
+    data = await event.get_image()
+
+    if not data:
+        await event.reply("Reply to or caption an image to make it emoji-sized!")
+        return
+
+    image_io = io.BytesIO()
+    await event.client.download_media(data, image_io)
+    await event.reply(file=await ldr.run_async(createstickersync, image_io, 100, 100, "emoji.png"), force_document=True)
+
+
+def createstickersync(image_io, final_width: int = 512, final_height: int = 512, filename: str = "sticker.png"):
     sticker_png = Image.open(image_io)
     sticker_png = sticker_png.crop(sticker_png.getbbox())
 
-    final_width = 512
-    final_height = 512
-
     if sticker_png.width > sticker_png.height:
-        final_height = 512 * (sticker_png.height / sticker_png.width)
+        final_height = final_height * (sticker_png.height / sticker_png.width)
     elif sticker_png.width < sticker_png.height:
-        final_width = 512 * (sticker_png.width / sticker_png.height)
+        final_width = final_width * (sticker_png.width / sticker_png.height)
 
     sticker_png = ImageOps.fit(sticker_png, (int(final_width), int(final_height)))
     sticker_new_io = io.BytesIO()
     sticker_png.save(sticker_new_io, "PNG")
-    sticker_new_io.name = "sticker.png"
+    sticker_new_io.name = filename
     sticker_new_io.seek(0)
 
     return sticker_new_io
