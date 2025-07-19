@@ -43,7 +43,7 @@ async def deepfryer(event):
     except ValueError:
         frycount = 1
 
-    data = await event.get_image()
+    data = await event.get_image(1024 * 3072)
 
     if not data:
         await event.reply("Reply to an image or sticker or caption an image to deep fry it!")

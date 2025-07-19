@@ -120,7 +120,7 @@ def flipstickersync(sticker_webp_io):
 
 @ldr.add("stickimg", help="Converts images to sticker-sized PNG files.")
 async def createsticker(event):
-    data = await event.get_image()
+    data = await event.get_image(size_limit=1024 * 3072)
 
     if not data:
         await event.reply("Reply to or caption an image to make it sticker-sized!")
@@ -133,7 +133,7 @@ async def createsticker(event):
 
 @ldr.add("emojiimg", help="Converts images to emoji-sized PNG files.")
 async def createemoji(event):
-    data = await event.get_image()
+    data = await event.get_image(size_limit=1024 * 3072)
 
     if not data:
         await event.reply("Reply to or caption an image to make it emoji-sized!")

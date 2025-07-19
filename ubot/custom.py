@@ -42,7 +42,7 @@ class ExtendedNewMessage(NewMessage.Event):
 
         return (default, self) if return_msg else default
 
-    async def get_image(self, event=None, with_reply=True, force_reply=False):
+    async def get_image(self, event: NewMessage.Event = None, with_reply=True, force_reply=False, size_limit: int = 0):
         event = event or self
 
         if event and event.media and not force_reply:
@@ -54,6 +54,9 @@ class ExtendedNewMessage(NewMessage.Event):
                     return
 
                 if event.gif or event.video or event.audio or event.voice:
+                    return
+
+                if size_limit and event.file.size > size_limit:
                     return
 
                 return event.media.document
