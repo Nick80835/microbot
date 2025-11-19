@@ -1,7 +1,6 @@
 aiodns
 aiofiles
 aiohttp[speedups]
-asyncbooru>=0.0.9
 asyncpraw
 cchardet
 cryptg
