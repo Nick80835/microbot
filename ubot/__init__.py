@@ -23,7 +23,8 @@ if sys.version_info.major < 3 or (sys.version_info.major == 3 and sys.version_in
 basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=INFO)
 logger = getLogger(__name__)
 startup_time = time()
-loop = asyncio.get_event_loop()
+loop = asyncio.new_event_loop()
+asyncio.set_event_loop(loop)
 
 client: TelegramClient
 ldr: Loader
